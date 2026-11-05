@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.88 "Once" · Thu Nov 5, 8:30 AM
+- When the Student Athlete casts a spell, the log says so once, in bold. Removed: the second "The Student Athlete cast X." line under it.
+- The log's text scrolls up smoothly, with reduced motion turned on too, and the bold bottom line rises into place when it changes on its own. Removed: lines just appearing with reduced motion, and the bottom line swapping without moving.
+
 ## v0.87 "Scholarship" · Thu Nov 5, 8:25 AM
 - The opponent is the Student Athlete everywhere: in the log, on the button and at the end. Removed: "the Webmaster".
 - While the Student Athlete decides, the log says what they're up to instead ("The Student Athlete works hard for their scholarship.", "...is icing their knee…", and eight more), a different line each time. Removed: "The Webmaster is thinking…".

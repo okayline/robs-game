@@ -325,7 +325,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.87" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.88" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -634,7 +634,7 @@
     "The Student Athlete is cramming for a midterm…", "The Student Athlete is watching game film…", "The Student Athlete is checking the group chat…",
     "The Student Athlete is chugging a sports drink…", "The Student Athlete is asking their coach…", "The Student Athlete is checking their NIL deal…",
     "The Student Athlete is stretching it out…"];
-  let thinking = null, lastThink = -1;
+  let thinking = null, lastThink = -1, lastBottom = null;   // lastBottom: the log's bottom line at the last board
   let lastV = null, sentAway = new Set(), discarding = false;   // discarding: you pressed Discard and are picking the card   // the board before this one; the Wiretap cards already flown back onto a deck
   // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
   let played = null, looked = new Set(), lookOrder = [];   // looked: the Wiretap look cards on screen; lookOrder: their uids, left to right
@@ -658,8 +658,7 @@
     let ask, playable = () => null;
     if (v.winner) ask = v.winner === "me" ? "You win!" : "The Student Athlete wins.";
     else if (p?.kind === "answer" && p.mine) {
-      const top = v.stack[v.stack.length - 1];
-      ask = `The Student Athlete cast ${CARDS[top.card][0]}.`;   // what happened, no instructions (kura, Nov 5: "take out all explainer text")
+      ask = null;   // the log's own last line already says it, so it isn't said twice (kura, Nov 5: "could it only say it once"; it added "The Student Athlete cast X.")
       playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Resolve", () => send({ do: "let" })]);
     } else if (p?.kind === "wiretap" && p.mine) ask = "Wiretap.";
@@ -680,18 +679,24 @@
       ask = thinking;
     }
     if (ask !== thinking) thinking = null;
-    const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
+    const now = ask == null ? null : mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
     // oldest at the top, fading towards the top (CSS), and what to do now at the bottom (kura, Nov 5); when a line is added, the lines start
     // one new line lower and slide smoothly up into place (kura, Nov 5: "smoothly scroll up"): one more line than shows sits above the
     // box's top edge, so the top line slides out of sight instead of vanishing
     $("turnno").textContent = `Turn ${v.n}, Move ${v.moves ?? 0}`;
     const lines = v.log.slice(-3).map((l) => mk("div", "", l));
     const added = logN != null && v.log.length > logN; logN = v.log.length;
-    $("log").replaceChildren(...lines, now);
-    if (added && lines.length && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (!now && lines.length) lines[lines.length - 1].classList.add("now");   // no line of its own: the log's last line is the bold one
+    $("log").replaceChildren(...lines, ...(now ? [now] : []));
+    // even with reduced motion asked for: a short slide of a few lines of text (kura, Nov 5, who has reduced motion on: "for the text, can it
+    // smoothly scroll up instead of just appear. including the main line"); a bottom line that changed on its own rises into place too
+    const bottom = $("log").lastElementChild, bottomText = bottom?.textContent ?? null;
+    if (added && lines.length) {
       const up = lines[lines.length - 1].offsetHeight + 3;   // the new line and the 3px gap above it
       for (const d of $("log").children) d.animate([{ transform: `translateY(${up}px)` }, { transform: "none" }], { duration: 500, easing: "ease-in-out" });
-    }
+    } else if (bottom && lastBottom != null && bottomText !== lastBottom)
+      bottom.animate([{ transform: `translateY(${bottom.offsetHeight + 3}px)` }, { transform: "none" }], { duration: 500, easing: "ease-in-out" });
+    lastBottom = bottomText;
     // the stack, full size so its text can be read (kura, Nov 4); a Wiretap being finished stays there, with the cards it looks at
     const cards = p?.kind === "wiretap" ? [p.card] : v.stack, from = [];
     const els = cards.map((c, i) => {
