@@ -48,7 +48,6 @@
   #stack { justify-content: center; align-items: flex-end; flex-wrap: nowrap; }
   /* every panel keeps one height whatever is in it, so nothing on the screen moves up or down (kura, Nov 4) */
   #stack { height: calc(var(--stack-w) * var(--h) / 108 + 12px); }   /* not clipped, so a card flying in shows all the way (kura, Nov 4) */
-  #err { height: 1.2em; overflow: hidden; }
   /* a row of piles and Broadcasts: a small card and its label (kura, Nov 4: no empty space under the piles) */
   .zone { height: calc(var(--sw) * 76 / 108 + 20px); }
   /* wider than a phone, each row of piles and Broadcasts has 5 things (3 places, deck, graveyard), so they line up in your hand's
@@ -60,8 +59,9 @@
   }
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
   #hand { height: calc(var(--h) * var(--u) + 4px); }
-  /* the shared footer (dungeon-items footer.js), drawn into #ddfoot under the screen, a little in from the right (as in tap-game) */
-  .ddfoot { margin: 1px 0 0 !important; padding: 0 12px !important; }
+  /* the shared footer (dungeon-items footer.js), drawn into #ddfoot under the screen, a little in from the right (as in tap-game);
+     3px under the last panel (kura, Nov 5: "move up towards the frame a bit more, still outside but closer"; it was 9px: the 8px gap + 1px) */
+  .ddfoot { margin: -5px 0 0 !important; padding: 0 12px !important; }
   #hand { flex-wrap: nowrap; overflow-x: auto; min-height: calc(var(--h) * var(--u)); padding-top: 2px; }
   .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
   #hand:not(:has(.card))::before { content: attr(data-empty); font-style: italic; color: var(--mute); }   /* your hand always holds the phone deck, so it is never :empty */
@@ -76,7 +76,10 @@
      inactive grey"; was pink, with a blue Resolve) */
   .bar button:disabled { cursor: default; background: #d3d9e3; color: #5f6b80; }
   .bar button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
-  #err { color: #d4558c; font-size: 13px; min-height: 1em; }
+  /* an error (a refused move, a dropped connection) shows over the log's last line until your next move; it takes no room of its own
+     (kura, Nov 5: "save a little room underneath the main card ... it looks like there's maybe an empty row there"; it kept 1.2em) */
+  #err { color: #d4558c; font-size: 13px; position: absolute; left: 10px; right: 40px; bottom: 8px; z-index: 2; background: #f0f6ff; }
+  #err:empty { display: none; }
   /* "Turn 4, Move 2" in the upper left of the middle panel (kura, Nov 5): the turn counts each player's turn; the move counts the cards
      played this turn by either side, counters and a discard-to-draw included, from 0 */
   .mid { position: relative; }
@@ -311,7 +314,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.83" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.84" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -380,7 +383,7 @@
     const cv = mk("canvas"); cv.width = 88; cv.height = 31;
     let im = pics.get(src);
     if (!im) { im = new Image(); im.src = src; pics.set(src, im); }
-    const put = () => cv.getContext("2d").drawImage(im, 0, 0, 88, 31);
+    const put = () => cv.getContext("2d").drawImage(im, 0, 0, 88, 31, 0, 0, 88, 31);   // the left 88x31: all of a still, the first frame of a frames strip (kura, Nov 5: the 5090 showed its whole strip squeezed in on a phone)
     if (im.complete && im.naturalWidth) put(); else im.addEventListener("load", put, { once: true });
     return cv;
   }

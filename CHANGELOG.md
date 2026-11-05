@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.84 "Room" · Thu Nov 5, 8:01 AM
+- Fixed: with reduced motion turned on, an ONLINE GPU showed its fans' whole strip of frames squeezed into its picture; it now shows its fans standing still. Removed: nothing.
+- The middle panel keeps no empty line under the card being played: a message (a refused move, a lost connection) now shows over the log's last line until your next move. On a phone the page is a little shorter, so it fills more of the screen's width. Removed: the always-empty line for messages.
+- The footer sits closer under the last panel (3px, was 9px). Removed: nothing.
+
 ## v0.83 "Student Athlete" · Thu Nov 5, 7:52 AM
 - The opponent is "Student Athlete #832". Its line (with its hand count) is under its three places at the left, where the deck's label was; on a phone, on a line of its own under its cards. Removed: "The Webmaster" and its line above the opponent's cards.
 - Both decks show their count on their back in big white numbers on every screen, as they already did on a phone. Removed: the "Deck 25" labels under the decks on PC, and the empty space under your cards they left.
