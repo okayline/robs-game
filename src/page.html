@@ -100,10 +100,11 @@
   /* the log: a strip across the bottom of the middle panel, under the stack, so its lines are long and mostly one line each (kura,
      Nov 5: "a little bigger font size, and have a longer row that sits closer to the bottom of the panel ... less double lines"; it was
      a narrow column left of the stack, in 9px); 3 lines high, each older line fainter */
-  #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 15px/1.3 var(--body); overflow: hidden; color: var(--ink); display: flex; }
+  #log { height: calc(3 * 1.3em); white-space: pre-wrap; font: italic 500 15px/1.3 var(--body); overflow: hidden; color: var(--ink); display: flex; }
   /* a C:\> on each row of the box, always there and still, like tap-game: only the lines beside them slide and fade (kura, Nov 5: "can the
      C:\> always be persistent like in tap-game"; each line had its own, which slid and faded with it). The rows are 1.3em apart with no gap,
-     so a wrapped line's second row has its prompt too. */
+     so a wrapped line's second row has its prompt too. The box is exactly its rows tall, so no sliver of the line above shows (kura, Nov 5:
+     "you can see a little bit of the bottom of the line above"; it kept the 6px the old 3px gaps used). */
   #logPrompts, #logLines { display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
   #logPrompts { flex: none; white-space: pre; }
   #logPrompts div:last-child { font-weight: 700; }
@@ -263,7 +264,7 @@
     #game { gap: 6px; }   /* 6px between the big parts (8 elsewhere) */
     .bar, .bar button { height: 44px; }   /* the button (50 elsewhere) */
     .bar button { white-space: nowrap; font-size: 16px; letter-spacing: 2px; }   /* "Student Athlete's answering" on one line (17px, 3px elsewhere) */
-    #log { height: calc(2 * 1.3em + 6px); }   /* 2 lines (3 elsewhere) */
+    #log { height: calc(2 * 1.3em); }   /* 2 lines (3 elsewhere) */
     .side.them { padding-bottom: 4px; }   /* less under the opponent's line (8 elsewhere) */
     /* the card being played takes the 12px kept above it for flying cards (the row stays as tall): 12 * 108 / 134 wider */
     .mid { --stack-w: calc((100vw - 40px) / 3 + 17px + 9.7px); }
@@ -330,7 +331,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.90" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.91" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS

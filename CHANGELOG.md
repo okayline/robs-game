@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.91 "No Sliver" · Thu Nov 5, 9:08 AM
+- The log box is exactly its lines tall, so no sliver of the line above shows at its top. Removed: the extra 6px at the top of the box.
+
 ## v0.90 "Prompt" · Thu Nov 5, 8:51 AM
 - The log's C:\> prompts stay put on every row, like UN/TAP's: only the text beside them scrolls and fades. The bottom one is bold. Removed: a C:\> on each line that scrolled and faded with it.
 
