@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.58 "Flick" · Thu Nov 5, 12:43 AM
+- On a phone, flick a card up quickly to play it, the same as tapping it: it goes to the stack. A slow drag, a short move or a sideways move doesn't play it. Removed: nothing.
+- The action button is blue whenever you can press it, and grey when it only says what's happening (Passing…, Discard, Webmaster's turn). Removed: the pink action button, the blue Resolve of its own, and the pink label when it couldn't be pressed.
+
 ## v0.57 "Nameless" · Thu Nov 5, 12:37 AM
 - Cards have no pink name bar, and they're shorter by its height (134 units tall, was 150), so the page shrinks less to fit a phone. The big card still shows the button's name, at the old height. Removed: the name bar on cards and the 150-unit card height.
 - A graveyard you can tap for a discard has a grey dotted outline, and a solid pink one once tapped (on a graveyard with a card in it, the outline was greyed out with the card). Removed: the pink dashed outline before tapping.

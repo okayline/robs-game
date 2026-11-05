@@ -64,10 +64,11 @@
   /* your button (pass turn, resolve, don't pay) is a bar of its own above your panel, like UN/TAP's (kura, Nov 4: "the pass turn line be
      it's own panel like in un/tap"; tap-game's button.act); the bar keeps its height when there's no button, so nothing moves */
   .bar { display: flex; gap: 8px; height: 50px; flex: none; }
-  .bar button { flex: 1; height: 50px; border-radius: 6px; border: 2px solid #fff; cursor: pointer; color: #3a2a4a; background: #f7b3cf;
+  .bar button { flex: 1; height: 50px; border-radius: 6px; border: 2px solid #fff; cursor: pointer; color: #3a2a4a; background: #b3cdf7;
                 font: 800 17px/1 var(--title); letter-spacing: 3px; text-transform: uppercase; }
-  .bar button.blue { background: #b3cdf7; }   /* Resolve: a pastel blue, the pink's twin (kura, Nov 5) */
-  .bar button:disabled { cursor: default; }   /* still pink: it only says what's happening */
+  /* blue whenever you can press it, grey when it only says what's happening (kura, Nov 5: "always be colored blue, except when its the
+     inactive grey"; was pink, with a blue Resolve) */
+  .bar button:disabled { cursor: default; background: #d3d9e3; color: #5f6b80; }
   .bar button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
   /* the log: a strip across the bottom of the middle panel, under the stack, so its lines are long and mostly one line each (kura,
@@ -246,7 +247,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.57" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.58" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -312,7 +313,11 @@
     txt.append(fx, mk("div", "rule"), mk("div", "flav", `“${c.flav}”`));
     inn.append(mk("div", "gc-name", c.name), art, mk("div", "gc-type", small ? name : kind), txt);
     gc.append(inn); el.append(gc);
-    if (click) el.onclick = click;
+    if (click) {   // a tap plays it, and so does a quick upward flick on a phone; a flick's own click (if the browser sends one) is skipped
+      let flicked = -1e9;
+      el.onclick = (e) => { if (e.timeStamp - flicked > 500) click(e); };
+      flickable(el, (e) => { flicked = e.timeStamp; click(e); });
+    }
     el.dataset.uid = c.uid;
     if (c.uid?.[0] === "b") el.classList.add("theirs");   // seat b is always the Webmaster
     if (zoom) zoomable(el, () => c);
@@ -350,6 +355,18 @@
     if (held && bigCard && e.pointerType !== "mouse") turnBig((e.clientX - hx) * FINGER_DEG_PX);
   });
   addEventListener("pointerup", endHold); addEventListener("pointercancel", endHold);
+  // a quick upward flick on a card (a finger or pen, not a mouse) plays it, the same as tapping it (kura, Nov 5: "flick the card up to
+  // play it", "the flick sends it to the stack"): at least FLICK_PX up, more up than sideways, within FLICK_MS; never while its big card is open
+  const FLICK_PX = 40, FLICK_MS = 350;
+  function flickable(el, play) {
+    let x0 = 0, y0 = 0, t0 = 0;
+    el.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") { x0 = e.clientX; y0 = e.clientY; t0 = e.timeStamp; } });
+    el.addEventListener("pointerup", (e) => {
+      if (e.pointerType === "mouse" || held || bigCard) return;
+      const up = y0 - e.clientY;
+      if (up >= FLICK_PX && up > Math.abs(e.clientX - x0) && e.timeStamp - t0 <= FLICK_MS) play(e);
+    });
+  }
   // el shows getC()'s card when held (touch or pen) or hovered (mouse)
   function zoomable(el, getC) {
     el.addEventListener("pointerdown", (e) => {
@@ -487,7 +504,7 @@
       const top = v.stack[v.stack.length - 1];
       ask = `The Webmaster cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
       playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
-      acts.push(["Resolve", () => send({ do: "let" }), "blue"]);
+      acts.push(["Resolve", () => send({ do: "let" })]);
     } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to go under the other.";
     else if (p?.kind === "paywall" && p.mine) {
       ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
@@ -569,7 +586,7 @@
       acts[0] = ["Passing…", null];
     }
     if (!acts.length) acts.push([v.winner ? (v.winner === "me" ? "You win" : "The Webmaster wins") : p?.kind === "wiretap" && p.mine ? "Pick a card" : v.turn === "them" ? "Webmaster's turn" : "Webmaster's answering", null]);
-    $("acts").replaceChildren(...acts.map(([t, f, cls = ""]) => { const b = mk("button", cls, t); if (f) b.onclick = f; else b.disabled = true; return b; }));
+    $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); if (f) b.onclick = f; else b.disabled = true; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining
     // cards stay in the same place")
     const held = new Map(v.me.hand.map((c) => [c.uid, c]));
