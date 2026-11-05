@@ -43,7 +43,6 @@
   /* every panel keeps one height whatever is in it, so nothing on the screen moves up or down (kura, Nov 4) */
   #stack { height: calc(var(--h) * var(--u) + 36px); }   /* not clipped, so a card flying in shows all the way (kura, Nov 4) */
   #err { height: 1.2em; overflow: hidden; }
-  #log { height: calc(4 * 1.35em); overflow: hidden; }
   .zone { height: max(calc(var(--sw) * 76 / 108 + 20px), 88px); }
   .stat.mine { margin-top: -4px; }   /* closer to the row above (kura, Nov 4) */
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
@@ -59,9 +58,12 @@
   .acts button { font: 600 13px/1 var(--title); letter-spacing: 1px; padding: 9px 14px; border-radius: 6px; border: 1px solid #f0b8d0; background: #ffe1ee; color: var(--ink); cursor: pointer; }
   .acts button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
-  #log { font: 11px/1.35 ui-monospace, Consolas, monospace; color: var(--mute); }
-  /* the log's last line says what to do now (kura, Nov 4: it was a line of its own above the stack) */
-  #log .now { color: var(--ink); font-weight: 700; }
+  /* the log: a panel of its own under yours, like UN/TAP's (kura, Nov 4: "take the log out of the game panel ... like in un/tap"):
+     newest at the top, next to your panel, each older line fainter; 3 lines (kura, Nov 4: "only have it show three lines"), one height whatever is in it */
+  #log { white-space: pre-wrap; font: italic 500 15px/1.5 var(--body); height: calc(3 * 1.5em + 20px); overflow: hidden; background: var(--cream);
+         border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; color: var(--ink); }
+  /* its top line says what to do now (kura, Nov 4: it was a line of its own above the stack) */
+  #log .now { font-weight: 700; }
   #log .now.win { color: #2f9e6b; } #log .now.lose { color: #d4558c; }
   #log div::before { content: "C:\\> "; }
   /* the card: blue frame, cream inside (tap-game's .gc) */
@@ -135,16 +137,16 @@
   <div class="mid">
     <div class="row" id="stack" data-empty=""></div>
     <div id="err"></div>
-    <div id="log"></div>
   </div>
   <div class="side">
     <div class="zone"><div class="piles" id="mPiles"></div><div class="row" id="mField" data-empty="No Broadcasts yet."></div><div class="acts" id="acts"></div></div>
     <div class="stat mine">Player</div>
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
+  <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.25" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.26" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -273,7 +275,8 @@
       acts.push(["Pass turn", () => send({ do: "pass" })]);
     } else ask = "The dummy is thinking…";
     const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
-    $("log").replaceChildren(...v.log.slice(-3).map((l) => mk("div", "", l)), now);
+    // newest at the top: what to do now, then the log's newest lines, each fainter (as in UN/TAP's renderLog())
+    $("log").replaceChildren(now, ...v.log.slice(-2).reverse().map((l, k) => { const d = mk("div", "", l); d.style.opacity = 1 - (k + 1) * 0.125; return d; }));
     // the stack, full size so its text can be read (kura, Nov 4); a Wiretap being finished stays there, with the cards it looks at
     const cards = p?.kind === "wiretap" ? [p.card] : v.stack, from = [];
     const els = cards.map((c, i) => {

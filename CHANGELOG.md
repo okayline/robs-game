@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.26 "Log Panel" · Wed Nov 4, 9:56 PM
+- The log is a panel of its own under yours, like UN/TAP's (kura: "take the log out of the game panel and can we make a panel for it like in un/tap"): cream, italic EB Garamond, newest at the top next to your panel, each older line fainter, 3 lines (kura: "only have it show three lines"). Its top line still says what to do now, in bold. Removed: the log inside the middle panel (3 small grey monospace lines, newest at the bottom, under the stack).
+
 ## v0.25 "In Order" · Wed Nov 4, 9:50 PM
 - Fixed: after your move, the boards the page plays one at a time all showed the end of the round for your hand, both fields, both graveyards and the log, so your hand refilled before the round was over (kura: "the cards refill from the deck before the round is over"). The match now copies each board when its log line is written. Removed: the boards sharing the game's own lists, which kept changing until they were sent.
 - On a phone, the deck in your hand's last place shows its count in the middle of the card back (kura: "just put a 20 in the middle of the back of the card"). Removed: the "deck 20" label under it.
