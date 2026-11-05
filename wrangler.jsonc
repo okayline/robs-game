@@ -3,8 +3,8 @@
   "name": "robs-game",
   "main": "src/index.js",
   "compatibility_date": "2026-10-01",
-  "durable_objects": { "bindings": [{ "name": "MATCH", "class_name": "Game" }] },
-  // v2 and v3 (kura, Nov 5): the class became Game and Match's namespace was deleted, with every match stored in it
+  "durable_objects": { "bindings": [{ "name": "GAME", "class_name": "Game" }] },
+  // v2 and v3 (kura, Nov 5): the class and its binding became Game/GAME (Cloudflare will not delete Match while a binding named MATCH remains) and Match's namespace was deleted, with every match stored in it
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Match"] }, { "tag": "v2", "new_sqlite_classes": ["Game"] }, { "tag": "v3", "deleted_classes": ["Match"] }],
   "services": [{ "binding": "REGISTRY", "service": "dungeon-items", "entrypoint": "Registry" }],
   "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
