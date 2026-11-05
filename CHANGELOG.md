@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.93 "Depth" · Thu Nov 5, 1:50 PM
+- The RTX 5090's big card shows it in 3D: turn the card and you see its real sides, 10 px deep (the real card is two slots, 40 mm). On top: the black middle section with two vents, the lit white GeForce RTX logo and the recessed power socket. Underneath: one vent. At the far end: solid metal. On the bracket: three DisplayPorts and the HDMI at the bottom, and a screw notch for each slot. The gold fingers stand 1 px off the card. Face on, it looks as it did. Removed: nothing.
+- A GPU's big card (one with a 3D shape) tilts up and down too: drag a finger up or down, or move the mouse up or down over the card (it still closes more than 16 px above or below the card). Other cards turn sideways only, as before. Removed: nothing.
+- Each GPU's 3D shape is its settings in `src/page.html` (`GPU_3D`): its parts' places on the picture, how deep, and what's on each side. The other nine GPUs are still flat. Removed: nothing.
+
 ## v0.92 "Tidy" · Thu Nov 5, 9:45 AM
 - A match that goes a day with no move is deleted, and every match stored before this version was deleted (kura: "can we please clean up all the empty unused runs"). Every page load starts a match, so these were mostly ones nobody played. A link to a deleted match says "No such match". Removed: matches kept forever.
 - Fixed, Thu Nov 5, 10:40 AM: This version reached the site only then. A setting left over from the old matches stopped the update from going live. Removed: that setting.
