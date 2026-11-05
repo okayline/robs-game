@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.32 "Face Down" · Wed Nov 4, 10:20 PM
+- Fixed: the Resolve button was missing on the board that shows the dummy's cast (kura: "the resolve button disappeared when it was the dummy's turn"); it came back a step later. A cast now asks for an answer before its log line is written, so that board shows Resolve. Removed: that step without a button.
+- The dummy's Wiretap shows what happens (kura: "simply and lightly animate what's actually happening"): your top cards come off your deck face down, one by one, beside the Wiretap; the one it picks flies to your graveyard; the rest fly back onto your deck. The match now tells your page how many cards are being looked at (only the count). Removed: the Wiretap just standing on the stack and going.
+- Your Wiretap's cards keep their places on screen while you pick, then turn face down halfway as they fly back onto the dummy's deck, in the order they go back, the new top card last (kura: "have them turn face down ... and go in the correct order"). Removed: the cards reordering on screen just before going back, and flying back face up.
+
 ## v0.31 "Right Edge" · Wed Nov 4, 10:17 PM
 - On a phone, your 3 Broadcast places sit at the right edge of your row, with space between them and your graveyard (kura: "left two deck and graveyard can have space between right three broadcast places", "for phones only"). Removed: the places bunched just right of the graveyard.
 

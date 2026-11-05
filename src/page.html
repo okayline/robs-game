@@ -83,6 +83,9 @@
   .card.dim { opacity: .55; }
   .card.gap { visibility: hidden; }
   #hand .handdeck { display: none; }   /* your deck in the hand's last place: phones only (below) */
+  /* a card face down: the card-back stripes over it (a Wiretap's cards going back on a deck, and the dummy's look at yours) */
+  .card.down { background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
+  .card.down .gc { visibility: hidden; }
   #stack .look { align-self: center; margin-bottom: 24px; }   /* a Wiretap's look cards, a little higher (kura, Nov 4) */   /* the place of a card that left your hand */
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
   .card.gone { filter: grayscale(1); opacity: .75; }
@@ -175,7 +178,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.31" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.32" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -305,7 +308,8 @@
   // one after another when there are several (the opening five)
   let inHand = new Set(), slots = [];   // slots: your hand's places, a card's uid or null for a gap
   // from your deck: the one in your hand's last place on a phone, else the one in your piles (whichever is showing)
-  const deal = (els) => fly(els, [$("hand").querySelector(".handdeck"), $("mPiles").querySelector(".back, .slot")].find((e) => e && e.offsetParent));
+  const myDeck = () => [$("hand").querySelector(".handdeck"), $("mPiles").querySelector(".back, .slot")].find((e) => e && e.offsetParent);
+  const deal = (els) => fly(els, myDeck());
   // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
   // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
   // from: an element, or a box already measured (a card you played, measured when you clicked it); gap: ms between cards
@@ -323,19 +327,24 @@
   // cards flying off to a spot on the screen and staying there, at its size, until the next board (the reverse of fly; nothing fades:
   // kura, Nov 4, "not have disappearing animations"): a Wiretap's unpicked cards back onto the dummy's deck, in the order they go
   // back, so the card on top lands last
-  function away(els, to) {
-    if (!els.length || !to || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // flip: each card turns face down halfway there, the way a card put back on a deck goes face down (kura, Nov 4)
+  function away(els, to, { flip = false } = {}) {
+    if (!els.length || !to || matchMedia("(prefers-reduced-motion: reduce)").matches) { if (flip) els.forEach((el) => el.classList.add("down")); return; }
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1, d = to.getBoundingClientRect();
     els.forEach((el, i) => {
       const r = el.getBoundingClientRect();
-      const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k;
+      const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k, s = d.width / r.width;
       el.style.position = "relative"; el.style.zIndex = 5 + i;   // a later card flies over an earlier one
-      el.animate([{ transform: "none" }, { transform: `translate(${dx}px, ${dy}px) scale(${d.width / r.width})` }],
-        { duration: 700, delay: 300 + i * 500, easing: "ease-in-out", fill: "forwards" });
+      const delay = 300 + i * 500, ms = 700;
+      const mid = `translate(${dx / 2}px, ${dy / 2}px) scale(${(1 + s) / 2})`;
+      el.animate(flip ? [{ transform: "none" }, { transform: `${mid} scaleX(0)`, offset: .5 }, { transform: `translate(${dx}px, ${dy}px) scale(${s})` }]
+        : [{ transform: "none" }, { transform: `translate(${dx}px, ${dy}px) scale(${s})` }], { duration: ms, delay, easing: "ease-in-out", fill: "forwards" });
+      if (flip) setTimeout(() => el.classList.add("down"), delay + ms / 2);
     });
   }
   // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
-  let played = null, looked = new Set();   // looked: the Wiretap look cards on screen
+  let played = null, looked = new Set(), lookOrder = [];   // looked: the Wiretap look cards on screen; lookOrder: their uids, left to right
+  let downN = 0, downBoxes = [];   // the dummy's Wiretap: how many of your cards it's looking at (face down), and where they were on screen
   const play1 = (c, msg) => (e) => { played = { uid: c.uid, box: e.currentTarget.getBoundingClientRect() }; send(msg); };
   const fresh = (el, c, cls) => { if (!shown.has(c.uid)) el.classList.add(cls); return el; };
 
@@ -377,15 +386,32 @@
     });
     // a Wiretap's look: the cards come off the top of the dummy's deck one by one, slowly (kura, Nov 4: they appeared too fast), and
     // sit a little higher than the bottom of the stack row
-    const back = p?.step === "back";   // the cards not picked going back on top of the dummy's deck: not clickable, and they fly there
-    const look = p?.kind === "wiretap" && p.mine ? p.look.map((c) => { const el = card(c, { small: true, click: back ? null : () => send({ do: "tap", uid: c.uid }) }); el.classList.add("look"); return el; }) : [];
-    const newLook = look.filter((el, i) => !looked.has(p.look[i].uid));
-    looked = new Set(look.length ? p.look.map((c) => c.uid) : []);
-    els.push(...look);
+    const back = p?.step === "back";   // the cards not picked going back on top of the deck: not clickable, and they fly there
+    // yours: the cards keep their places on screen while you pick (kura, Nov 4: they seemed to go back in the wrong order); going back,
+    // they turn face down and fly onto the dummy's deck in the order they go back, so the new top card lands last
+    const mineLook = p?.kind === "wiretap" && p.mine ? [...p.look] : [];
+    mineLook.sort((x, y) => (lookOrder.indexOf(x.uid) + 1 || 99) - (lookOrder.indexOf(y.uid) + 1 || 99));
+    const look = mineLook.map((c) => { const el = card(c, { small: true, click: back ? null : () => send({ do: "tap", uid: c.uid }) }); el.classList.add("look"); el.dataset.uid = c.uid; return el; });
+    const newLook = look.filter((el, i) => !looked.has(mineLook[i].uid));
+    looked = new Set(mineLook.map((c) => c.uid)); lookOrder = mineLook.map((c) => c.uid);
+    // the dummy's: your top cards, face down, come off your deck; the one it picks goes to your graveyard; the rest go back on your deck
+    // (kura, Nov 4: "simply and lightly animate what's actually happening")
+    const n = p?.kind === "wiretap" && !p.mine ? p.n : 0;
+    const down = Array.from({ length: n }, () => mk("div", "card small look down"));
+    els.push(...look, ...down);
     $("stack").replaceChildren(...els);
+    const prevDown = downN, prevBoxes = downBoxes;
+    downN = back ? 0 : n; downBoxes = down.map((el) => el.getBoundingClientRect());
+    const later = [];   // animations that need your hand drawn first (on a phone your deck is in it)
     for (const [el, src] of from) fly([el], src);
     fly(newLook, $("tPiles").querySelector(".back, .slot"), { gap: 400, ms: 900, scale: .6 });
-    if (back) away([...look].reverse(), $("tPiles").querySelector(".back, .slot"));   // look[0] is the new top card: it lands last
+    if (back && look.length) {
+      const byUid = new Map(look.map((el) => [el.dataset.uid, el]));
+      away([...p.look].reverse().map((c) => byUid.get(c.uid)), $("tPiles").querySelector(".back, .slot"), { flip: true });   // p.look[0]: the new top card
+    }
+    if (n && !back && n > prevDown) later.push(() => fly(down.slice(prevDown), myDeck(), { gap: 400, ms: 900, scale: .6 }));
+    if (n && !back && n < prevDown && prevBoxes.length) later.push(() => fly([$("mPiles").querySelectorAll(".pile")[1]?.firstChild].filter(Boolean), prevBoxes[prevBoxes.length - 1], { ms: 700, scale: 1 }));
+    if (n && back) later.push(() => away([...down].reverse(), myDeck()));
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining
@@ -405,6 +431,7 @@
     }), deck);
     inHand = new Set(held.keys());
     deal(dealt);
+    for (const f of later) f();
     fit();
   }
   // shrink the whole screen to fit a short window, never grow it (tap-game's fit())

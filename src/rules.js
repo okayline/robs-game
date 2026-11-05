@@ -108,8 +108,10 @@ export function cast(g, s, uid) {
   }
   side.hand.splice(i, 1);
   g.stack.push({ ...c, by: s });
-  say(g, `${cap(NAMES[s])} cast${s === "a" ? "" : "s"} ${cardName(c)}${isCounter(c) ? " at " + CARDS[g.stack[g.stack.length - 2].card].name : ""}.`);
+  // the answer is asked for before the log line, so that line's board already shows it (kura, Nov 4: the Resolve button was missing
+  // while the dummy's cast was shown)
   g.pending = { kind: "answer", who: other(s) };
+  say(g, `${cap(NAMES[s])} cast${s === "a" ? "" : "s"} ${cardName(c)}${isCounter(c) ? " at " + CARDS[g.stack[g.stack.length - 2].card].name : ""}.`);
   return null;
 }
 
@@ -230,6 +232,7 @@ export function view(g, s) {
     stack: g.stack.map((c) => ({ ...strip(c), by: c.by === s ? "me" : "them" })), log: g.log, n: g.n, waiting: waitingOn(g) === s };
   if (p) v.pending = { kind: p.kind, mine: p.who === s, step: p.step, uid: p.uid };
   if (p?.kind === "wiretap") v.pending.card = { ...p.card, by: p.who === s ? "me" : "them" };
+  if (p?.kind === "wiretap") v.pending.n = p.n;   // how many cards are being looked at: the other side sees them face down
   if (p?.kind === "wiretap" && p.who === s) v.pending.look = g.sides[o].deck.slice(0, p.n);
   return v;
 }
