@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.63 "Step Down" · Thu Nov 5, 1:19 AM
+- The type line on cards (Instant, Sorcery, Enchantment) is one size smaller (11, was 12), with a slightly shorter bar. Removed: the 12-size type line.
+- A Broadcast's big card has the same dark Enchantment bar as on the board. Removed: the light bar on Broadcast's big card.
+
 ## v0.62 "Short Version" · Thu Nov 5, 1:15 AM
 - Cards show a short line ("Broadcast · Stays on your side.", "Remand · Counter; it goes back to their hand."), in bigger text (11, was 8.5, the biggest that fits all eight). The big card shows the full text. Card texts start with a capital. Removed: the full text on cards on the board, and the 8.5 card text.
 

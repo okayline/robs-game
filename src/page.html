@@ -128,10 +128,10 @@
   .card .gc-name { display: none; }
   .gc-art { height: calc(31 * var(--u)); display: flex; align-items: center; justify-content: center; }
   .gc-art img { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
-  .gc-type { font: 500 calc(12 * var(--u))/1 var(--body); background: #e2f0ff; border: 1px solid var(--line); border-radius: 2px; padding: 0 calc(4 * var(--u));
-             height: calc(16.4 * var(--u)); display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
-  /* as big as fits (kura, Nov 5: "Instant and Sorcery font much bigger ... as big as possible"; was 6.4 in a 15 bar), then one step down
-     to 12 (kura, Nov 5); 14 cut Wiretap's text */
+  .gc-type { font: 500 calc(11 * var(--u))/1 var(--body); background: #e2f0ff; border: 1px solid var(--line); border-radius: 2px; padding: 0 calc(4 * var(--u));
+             height: calc(15.2 * var(--u)); display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  /* as big as fits (kura, Nov 5: "Instant and Sorcery font much bigger ... as big as possible"; was 6.4 in a 15 bar), then down to 12 and
+     11 (kura, Nov 5); 14 cut Wiretap's text */
   /* a Broadcast (a game point): its type line is inverted (kura, Nov 4) */
   .broadcast .gc-type { background: var(--ink); color: #e2f0ff; border-color: var(--ink); }
   .gc-txt { flex: 1; min-height: 0; overflow: hidden; background: #fffdf8; border: 1px solid var(--line); border-radius: 2px; padding: calc(4 * var(--u));
@@ -269,7 +269,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.62" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.63" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -367,7 +367,7 @@
     const gc = card(c, { zoom: false, live, full: true }).querySelector(".gc"), box = mk("div", "zbox");
     bigFlip = mk("div", "zflip"); bigFlip.append(gc, mk("div", "zback"));
     for (let k = 0; k < ZEDGE; k++) { const e = mk("div", "zedge"); e.style.setProperty("--k", (k + 0.5) / ZEDGE); bigFlip.append(e); }
-    box.append(bigFlip); bigCard = mk("div", c.uid?.[0] === "b" ? "zoom theirs" : "zoom"); bigCard.append(box); document.body.append(bigCard);
+    box.append(bigFlip); bigCard = mk("div", `zoom ${c.card}${c.uid?.[0] === "b" ? " theirs" : ""}`); bigCard.append(box); document.body.append(bigCard);   // its kind too, so a Broadcast's bar is dark there (kura, Nov 5)
   }
   function hideBig() { bigCard?.remove(); bigCard = null; bigFlip = null; bigBy = null; }
   // turning the open big card: a finger turns it by how far it has moved sideways since the press; a mouse by how far it has moved
