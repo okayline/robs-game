@@ -76,7 +76,7 @@ export class Match extends DurableObject {
     if (err) { hooks.say = null; return ws.send(JSON.stringify({ error: err })); }
     dummyRun(g);
     hooks.say = null;
-    if (!frames.length) frames.push(view(g, "a"));
+    frames.push(view(g, "a"));   // and the board as it stands now: a line can be written before its move is finished (a cast asks for an answer after it)
     await this.ctx.storage.put("g", g);
     for (const s of this.ctx.getWebSockets()) s.send(JSON.stringify({ frames }));
   }

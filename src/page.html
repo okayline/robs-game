@@ -62,6 +62,7 @@
   .card.small { --w: var(--sw); --u: calc(var(--w) / 108); height: calc(76 * var(--u)); }
   .card.can { cursor: pointer; filter: drop-shadow(0 0 6px var(--pink)); }
   .card.dim { opacity: .55; }
+  .card.gap { visibility: hidden; }   /* the place of a card that left your hand */
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
   .card.gone { filter: grayscale(1); opacity: .75; }
   .gc-art canvas { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
@@ -123,7 +124,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.17" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.18" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -192,7 +193,7 @@
   let shown = new Set();
   // your hand at the last draw: a card that wasn't in it is dealt, flying from your deck to its place (kura, Nov 4: "auto deal"),
   // one after another when there are several (the opening five)
-  let inHand = new Set();
+  let inHand = new Set(), slots = [];   // slots: your hand's places, a card's uid or null for a gap
   const deal = (els) => fly(els, $("mPiles").querySelector(".back, .slot"));
   // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
   // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
@@ -247,9 +248,21 @@
     for (const [el, src] of from) fly([el], src);
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
+    // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining
+    // cards stay in the same place")
+    const held = new Map(v.me.hand.map((c) => [c.uid, c]));
+    slots = slots.map((u) => (held.has(u) ? u : null));
+    for (const c of v.me.hand) if (!slots.includes(c.uid)) { const i = slots.indexOf(null); if (i < 0) slots.push(c.uid); else slots[i] = c.uid; }
+    while (slots.length && slots[slots.length - 1] === null) slots.pop();
     const dealt = [];
-    $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); if (!inHand.has(c.uid)) dealt.push(el); return el; }));
-    inHand = new Set(v.me.hand.map((c) => c.uid));
+    $("hand").replaceChildren(...slots.map((u) => {
+      if (u === null) return mk("div", "card gap");
+      const c = held.get(u), f = v.winner ? null : playable(c), el = card(c, { click: f });
+      if (!f && !v.winner) el.classList.add("dim");
+      if (!inHand.has(c.uid)) dealt.push(el);
+      return el;
+    }));
+    inHand = new Set(held.keys());
     deal(dealt);
     fit();
   }
