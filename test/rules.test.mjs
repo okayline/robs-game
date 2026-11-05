@@ -37,7 +37,7 @@ test("three resolved Broadcasts win; drawing from an empty deck loses", () => {
   cast(g, "a", "a1"); letIt(g, "b");
   assert.equal(g.winner, "a");
   const h = newGame(dealDeck(pool, "a"), dealDeck(pool, "b"));
-  h.turn = "a"; h.sides.b.deck = [];
+  h.turn = "a"; h.sides.b.deck = []; h.sides.b.hand = [];   // an empty hand must refill, from an empty deck
   pass(h, "a");
   assert.equal(h.winner, "a");
 });

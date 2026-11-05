@@ -2,7 +2,7 @@
 // (index.js), the dummy (dummy.js) and the tests all use the same rules.
 //
 // Each player has a 30-card deck: 5 Broadcast, 13 Wiretap, 2 Undelete, 6 Refute, 2 Rollback, 2 Paywall. Start with 5 cards.
-// On your turn: draw 1 (the first player skips the first draw), then cast at most one Enchantment or Sorcery, then pass.
+// On your turn: your hand refills to 5 (kura, Nov 4), then cast at most one Enchantment or Sorcery, then pass.
 // Instants (Refute, Rollback, Paywall) are only cast in answer to a spell, and a Counter can be answered by another Counter:
 // the stack resolves from the top, each Counter countering the spell just below it.
 // You win when 3 of your Broadcasts have resolved. You lose when you must draw from an empty deck.
@@ -209,13 +209,15 @@ export function pay(g, s, uid) {
   return null;
 }
 
-// s ends the turn; the other player draws (unless it's the first player's first turn: only the first turn is skipped).
+// s ends the turn; the other player's hand refills to HAND (kura, Nov 4: "the player's hand refill every round"), a card at a time,
+// so an empty deck still loses
 export function pass(g, s) {
   if (g.winner) return "The match is over.";
   if (g.turn !== s || g.pending || g.stack.length) return "Not now.";
   g.turn = other(s); g.cast = false; g.n++;
-  say(g, g.turn === "a" ? "Your turn." : "The dummy's turn.");
-  draw(g, g.turn);
+  const side = g.sides[g.turn], n = Math.max(0, HAND - side.hand.length);
+  for (let i = 0; i < n && !g.winner; i++) draw(g, g.turn);
+  if (!g.winner) say(g, `${g.turn === "a" ? "Your turn: you draw" : "The dummy's turn: it draws"} ${n} card${n === 1 ? "" : "s"}.`);
   return null;
 }
 

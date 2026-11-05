@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.21 "Refill" · Wed Nov 4, 9:10 PM
+- At the start of each turn, the player's hand refills to 5 (both players), one card at a time, so drawing from an empty deck still loses. The log says how many were drawn. kura: "have the player's hand refill every round". Removed: drawing 1 card a turn, and the first player skipping their first draw (their hand is already 5).
+
 ## v0.20 "Back on Top" · Wed Nov 4, 9:02 PM
 - After a Wiretap's picks, its unpicked cards fly back onto the dummy's deck while the Wiretap stays on the stack, with a log line ("Wiretap puts the rest back on top of the dummy's deck"); the next board takes the Wiretap to the graveyard. kura: the card and the rest vanished at once. Removed: the Wiretap and its last cards disappearing the moment the last pick was made.
 
