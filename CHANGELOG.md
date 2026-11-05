@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.66 "Short Address" · Thu Nov 5, 3:28 AM
+- Once a match connects, the address bar shows just the site ("/"), without the match's long number. If the connection drops, the long address comes back, so reloading still reconnects to the match; reloading while connected starts a new match. Removed: the long /m/… address staying in the bar.
+
 ## v0.65 "Turn Counter" · Thu Nov 5, 1:33 AM
 - "Turn 4, Move 2" in the upper left of the middle panel. The turn counts each player's turn (Turn 1 is whoever goes first). The move counts the cards played this turn by either side, counters and a discard-to-draw included, starting from 0; paying for a Paywall isn't a move. Removed: nothing.
 

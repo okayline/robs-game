@@ -276,7 +276,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.65" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.66" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -299,7 +299,11 @@
   const offAir = () => { const e = mk("div", "slot spot"); e.innerHTML = `${NO_SIGNAL}<span>Broadcast:<br>off</span>`; return e; };
   const $ = (id) => document.getElementById(id);
   const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  const ws = new WebSocket(location.href.replace(/^http/, "ws") + "/ws");
+  // the match's own address (/m/<id>), kept here: once connected, the address bar shows just "/" (kura, Nov 5: hide the long number);
+  // if the connection drops, the long address comes back, so reloading reconnects to this match
+  const HREF = location.href, MATCH_PAGE = location.pathname.startsWith("/m/");
+  const ws = new WebSocket(HREF.replace(/^http/, "ws") + "/ws");
+  ws.onopen = () => { if (MATCH_PAGE) history.replaceState(null, "", "/"); };
   const send = (o) => { $("err").textContent = ""; clearTimeout(autoTimer); autoTimer = null; ws.send(JSON.stringify(o)); };
   // when your only move is to pass the turn (no card you can play), it happens by itself a beat after the board has settled (kura, Nov 4:
   // "instead of PASS TURN can we have it automatically go to the next turn ... give it a beat"; Resolve stays a button: "i still like RESOLVE")
@@ -320,7 +324,7 @@
   };
   const play = () => { if (playing) return; const next = () => { same(); if (!queue.length) { playing = null; return; } show(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
   ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) show(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
-  ws.onclose = () => { $("err").textContent = "Disconnected. Reload the page to reconnect."; };
+  ws.onclose = () => { if (MATCH_PAGE) history.replaceState(null, "", HREF); $("err").textContent = "Disconnected. Reload the page to reconnect."; };
 
   // a card: name, picture, type line, effect and flavour (small: name, picture and the card's name)
   // a picture as one still frame on a canvas (like tap-game's still()); the loaded picture is kept per address, so a redraw is instant
