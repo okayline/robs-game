@@ -199,7 +199,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.44" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.45" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -253,11 +253,12 @@
     return cv;
   }
 
-  function card(c, { small = false, click = null, gone = false, zoom = true } = {}) {
+  // live: a Broadcast on its side's field. A Broadcast's picture is still until it resolves and is "turned on", then it moves (kura, Nov 4)
+  function card(c, { small = false, click = null, gone = false, zoom = true, live = false } = {}) {
     const [name, kind, text] = CARDS[c.card];
     const el = mk(click ? "button" : "div", `card ${c.card}${small ? " small" : ""}${click ? " can" : ""}${gone ? " gone" : ""}`);
     const gc = mk("div", "gc"), inn = mk("div", "gc-in"), art = mk("div", "gc-art");
-    if (c.image && gone) art.append(still(c.image));
+    if (c.image && (gone || (c.card === "broadcast" && !live))) art.append(still(c.image));
     else if (c.image) { const img = mk("img"); img.src = c.image; img.alt = ""; art.append(img); }
     const txt = mk("div", "gc-txt"), fx = mk("div");
     fx.append(mk("b", "", name), ` · ${text}`);
@@ -280,7 +281,8 @@
   const fighting = () => !!playing;
   function showBig(c) {
     hideBig();
-    const gc = card(c, { zoom: false }).querySelector(".gc"), box = mk("div", "zbox");
+    const live = !!lastV && [...lastV.me.field, ...lastV.them.field].some((x) => x.uid === c.uid);   // a resolved Broadcast moves on the big card too
+    const gc = card(c, { zoom: false, live }).querySelector(".gc"), box = mk("div", "zbox");
     bigFlip = mk("div", "zflip"); bigFlip.append(gc, mk("div", "zback"));
     for (let k = 0; k < ZEDGE; k++) { const e = mk("div", "zedge"); e.style.setProperty("--k", (k + 0.5) / ZEDGE); bigFlip.append(e); }
     box.append(bigFlip); bigCard = mk("div", "zoom"); bigCard.append(box); document.body.append(bigCard);
@@ -417,7 +419,7 @@
     const onStack = v.pending?.kind === "wiretap" ? v.pending.card.uid : null;
     $("tPiles").replaceChildren(...piles(v.them, onStack)); $("mPiles").replaceChildren(...piles(v.me, onStack));
     // each side's Broadcasts fill three dotted places, one per Broadcast needed to win (kura, Nov 4: "blank areas for the 3 broadcast cards")
-    const field = (list) => [...list.map((c) => card(c, { small: true })), ...Array.from({ length: Math.max(0, WIN - list.length) }, offAir)];
+    const field = (list) => [...list.map((c) => card(c, { small: true, live: true })), ...Array.from({ length: Math.max(0, WIN - list.length) }, offAir)];
     $("tField").replaceChildren(...field(v.them.field));
     $("mField").replaceChildren(...field(v.me.field));
     const p = v.pending, mine = v.waiting, acts = [];

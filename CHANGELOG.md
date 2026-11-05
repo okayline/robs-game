@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.45 "Turned On" · Wed Nov 4, 11:28 PM
+- A Broadcast's picture is still (its first frame) in hands, on the stack and in graveyards, and moves once it has resolved and sits in its place (kura: "can the gifs be stopped until they get turned on by getting resolved"), on the big card too. Other cards' pictures are unchanged. Removed: Broadcasts moving before they resolved.
+
 ## v0.44 "Remand" · Wed Nov 4, 11:24 PM
 - A new counter, Remand (Instant): "counter target spell. Return it to its caster's hand" (kura: "let's do a new mechanic. Remand please"). Unlike Magic's Remand, it doesn't draw a card (drawing comes out of your own deck). Half the Wiretaps are Remands: each deck is 5 Wiretap and 4 Remand. The dummy counters with Refute first, then Rollback, then Remand, then Paywall. A remanded card flies from the stack back to the hand (the dummy's, face down, to its hand count). Its flavour lines are real ones from tap-game's list. Removed: 4 of the 9 Wiretaps.
 - A discard rule, no text on the cards (kura: "i have wanted a discard mechanic", "i dont want to write a lot of text on every card"): on your turn, instead of casting a spell, you may discard a card to draw a card. The pink bar shows Discard beside Pass turn; Discard, then tap the card (two taps, so a stray tap throws nothing away; Cancel backs out). The dummy discards its least useful card (an Undelete, then its weakest counter) when it has nothing to cast and a full hand. The card flies to your graveyard and the new one is dealt from your deck. Removed: nothing.
