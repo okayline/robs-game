@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.82 "Blower" · Thu Nov 5, 7:33 AM
+- The GTX 1080 Ti's blower fan spins once it has resolved: its whole silver wheel turns inside the ring. Nine of the ten GPUs now spin; the Voodoo3 3000 stays still. Removed: nothing.
+- `tools/spin.py` can keep a picture's own middle and turn it with the fan (for blower wheels). Removed: nothing.
+
 ## v0.81 "XT" · Thu Nov 5, 7:26 AM
 - The RX 9070 XT's three fans spin once it has resolved, like the RX 9070, RTX 5090, RTX 5080, RTX 5070 Ti, RTX 5070, RTX 4090 and Arc B580. Its picture now has round hubs. Removed: the diagonal silver hubs and a few grey pixels at the fans' edges.
 

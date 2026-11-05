@@ -15,7 +15,9 @@
 #   fans       each fan's middle, [x, y] in pixels. Find the hub (the bright silver blob) with "look": a hub an even number of pixels
 #              wide has its middle on a whole number (pixels 69-74 wide: x 72), an odd number on a half (pixels 21-27: x 24.5)
 #   HUB        the round hub's radius: 3.0 for a 6-pixel hub, 3.3 for a 7-pixel one. The old hub is painted over with a round one
-#              that stays still (three of the hub's own silvers, light at the top left), so it doesn't wobble as it turns
+#              that stays still (three of the hub's own silvers, light at the top left), so it doesn't wobble as it turns.
+#              0: no new hub and nothing painted over: the picture's own middle turns with the fan (the GTX 1080 Ti's blower
+#              wheel, whose blades sit where the hub clean-up would paint them out)
 #   R          how far out from the middle the fan turns: up to the frame. Too small leaves a still ring of blade, too big turns the frame
 #   Y0, Y1     only rows Y0 to Y1 turn: the frame's straight top and bottom rows (and the dark line just inside them) stay still
 #   connected  true for cards whose frame crosses into the fan's circle (the X-shaped RTX 50 frames): a bright pixel inside the circle
@@ -68,7 +70,10 @@
 #                and down), so no circle fits them. The middles are the rings' middles, from the walls and dividers (x 13, 36-37, 59,
 #                82); rows 6-21 turn, the rings' tops and bottoms (rows 3-5, 22-24) stay still. The gap_px are grey or faint pixels
 #                beside the turning blades that kura marked, at 3 and 9 o'clock and in row 22 under fan 3.)
-# Still to do: gtx-1080-ti (a blower);
+#   gtx-1080-ti  {"fans": [[62.5, 13.5]], "R": 8.2, "Rin": 8.2, "Y0": 5, "Y1": 21, "HUB": 0}
+#                (a blower: its silver ring (9 out) stays still and the whole silver wheel inside it turns, soft. R 8.2, not 8.4,
+#                so the ring's grey pixel at (64, 5), 8.25 out, stays still instead of circling as a dot.)
+# Still to do:
 # the voodoo3-3000's fan is under the 3dfx logo, so it would turn the logo too (kura hasn't decided).
 import json, math, os, sys, tempfile
 from PIL import Image
@@ -92,11 +97,11 @@ def spin(name, fans, R, Rin, Y0, Y1, HUB=3.0, connected=False, gap_px=(), src=No
     W, H = im.size
     sp = im.load()
     near = lambda R_: [(x, y) for cx, cy in fans for y in range(H) for x in range(W) if dist(x, y, cx, cy) <= R_]
-    hub = sorted((sp[p] for p in near(HUB) if lum(sp[p]) > 80), key=lum)
-    LIGHT, MID, DARK = hub[-1], hub[len(hub) // 2], hub[0]
+    hub = sorted((sp[p] for p in near(HUB) if lum(sp[p]) > 80), key=lum) if HUB else []
+    LIGHT, MID, DARK = (hub[-1], hub[len(hub) // 2], hub[0]) if hub else (None, None, None)
     darks = sorted(lum(sp[p]) for p in near(R) if sp[p][3] and lum(sp[p]) < 40)
     GAP = next(sp[p] for p in near(R) if sp[p][3] and lum(sp[p]) == darks[len(darks) // 2])   # the fan's usual dark gap colour
-    for cx, cy in fans:   # the old hub's silver just outside the new round hub would circle it as dots
+    for cx, cy in (fans if HUB else []):   # the old hub's silver just outside the new round hub would circle it as dots
         for y in range(H):
             for x in range(W):
                 if HUB < dist(x, y, cx, cy) <= 4.6 and lum(sp[x, y]) > 80: sp[x, y] = GAP
@@ -124,7 +129,7 @@ def spin(name, fans, R, Rin, Y0, Y1, HUB=3.0, connected=False, gap_px=(), src=No
                 for x in range(W):
                     dx, dy = x + .5 - cx, y + .5 - cy
                     if dx * dx + dy * dy > R * R or still(x, y, cx, cy): continue
-                    if math.hypot(dx, dy) <= HUB:
+                    if HUB and math.hypot(dx, dy) <= HUB:
                         t = dx + dy
                         px[x, y] = LIGHT if t < -1.5 else DARK if t > 1.5 else MID
                         continue
@@ -133,7 +138,7 @@ def spin(name, fans, R, Rin, Y0, Y1, HUB=3.0, connected=False, gap_px=(), src=No
                         for i in range(SUB):
                             ux, uy = dx + (i + .5) / SUB - .5, dy + (j + .5) / SUB - .5
                             sx, sy = int(cx + ux * ca + uy * sa), int(cy - ux * sa + uy * ca)
-                            ok = 0 <= sx < W and 0 <= sy < H and HUB < dist(sx, sy, cx, cy) <= R and not still(sx, sy, cx, cy)
+                            ok = 0 <= sx < W and 0 <= sy < H and (not HUB or HUB < dist(sx, sy, cx, cy)) and dist(sx, sy, cx, cy) <= R and not still(sx, sy, cx, cy)
                             p = sp[sx, sy] if ok else GAP
                             acc = [acc[k] + p[k] for k in range(4)]
                             n += 1
