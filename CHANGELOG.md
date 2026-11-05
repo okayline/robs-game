@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.41 "Off Air" · Wed Nov 4, 11:12 PM
+- Each empty Broadcast place shows a crossed-out signal and "Broadcast: off" (kura: "could we put like Broadcast: OFF and have some sort of no signal sign"), in small grey capitals sized to the place (about 8px on a wide screen, 6px on a phone; kura: "can the text be smaller"). Removed: the empty dotted places with nothing in them.
+
 ## v0.40 "Spam" · Wed Nov 4, 11:08 PM
 - A new Sorcery, Spam: "put the top 2 cards of their deck into their graveyard" (kura: "let's add sorcery, spam"), a blind mill with no look and no choice. Its picture is a Guestbook button and its flavour lines are real guestbook lines (from tap-game's list). Each deck is 9 Wiretap and 4 Spam. The dummy casts Spam before a Wiretap, and counters your Spam as it does your Wiretap (only while it holds 3 or more counters). The card Spam mills flies from the deck to the graveyard. In 400 simulated games (the dummy's rules playing both sides): 19.2 turns a match on average (was 23.5), 159 won by 3 Broadcasts (was 72), 240 by decking (was 328), 1 left unfinished after 400 moves (was 0). Removed: 4 of the 13 Wiretaps.
 - Fixed: the page threw an error, and stopped drawing the rest of that board, when a card went to a graveyard under another card going there in the same step (graveOf() looked the graveyard up by the wrong kind of name, since v0.33). Spam does this every time. Removed: the wrong lookup.

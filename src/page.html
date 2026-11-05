@@ -130,6 +130,10 @@
   .back { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
           background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
   .slot.spot { border-style: dotted; }   /* a Broadcast's empty place: dotted (kura, Nov 4) */
+  /* ... with a crossed-out signal and "Broadcast: OFF" in it (kura, Nov 4: "some sort of no signal sign"); sized to the place, small (kura, Nov 4: "can the text be smaller"), 6px at least */
+  .slot.spot { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--sw) * .04); color: #9aa3b8;
+               font: 600 max(6px, calc(var(--sw) * .075))/1.15 var(--title); letter-spacing: .5px; text-transform: uppercase; text-align: center; }
+  .slot.spot svg { width: calc(var(--sw) * .28); height: calc(var(--sw) * .28); }
   .slot { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); border: 1.5px dashed var(--line); flex: none; }
   /* who cast a card on the stack: a label under it, so it covers nothing */
   .tagged { display: flex; flex-direction: column; align-items: center; gap: 3px; }
@@ -198,7 +202,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.40" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.41" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -211,6 +215,9 @@
     paywall: ["Paywall", "Instant", "counter target spell unless its caster discards a card."],
   };
   const WIN = 3;   // Broadcasts to win (rules.js WIN)
+  // an empty Broadcast place: a signal with a line through it, and "Broadcast: OFF"
+  const NO_SIGNAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="1.5"/><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.5 5.5a9 9 0 0 0 0 13M18.5 5.5a9 9 0 0 1 0 13M12 14v7"/><path d="M3 3l18 18"/></svg>';
+  const offAir = () => { const e = mk("div", "slot spot"); e.innerHTML = `${NO_SIGNAL}<span>Broadcast:<br>off</span>`; return e; };
   const $ = (id) => document.getElementById(id);
   const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const ws = new WebSocket(location.href.replace(/^http/, "ws") + "/ws");
@@ -406,7 +413,7 @@
     const onStack = v.pending?.kind === "wiretap" ? v.pending.card.uid : null;
     $("tPiles").replaceChildren(...piles(v.them, onStack)); $("mPiles").replaceChildren(...piles(v.me, onStack));
     // each side's Broadcasts fill three dotted places, one per Broadcast needed to win (kura, Nov 4: "blank areas for the 3 broadcast cards")
-    const field = (list) => [...list.map((c) => card(c, { small: true })), ...Array.from({ length: Math.max(0, WIN - list.length) }, () => mk("div", "slot spot"))];
+    const field = (list) => [...list.map((c) => card(c, { small: true })), ...Array.from({ length: Math.max(0, WIN - list.length) }, offAir)];
     $("tField").replaceChildren(...field(v.them.field));
     $("mField").replaceChildren(...field(v.me.field));
     const p = v.pending, mine = v.waiting, acts = [];
