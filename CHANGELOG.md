@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.72 "Help" · Thu Nov 5, 6:42 AM
+- A small "?" at the bottom right of the middle panel shows how to play again, in the same light-blue box as at the start. Rest the mouse on it to see it, or click or tap it to keep it open; click or tap again to close it. The log's lines now stop short of the "?". Removed: nothing.
+
 ## v0.71 "Counts Wait" · Thu Nov 5, 6:38 AM
 - The numbers on the board (graveyards, decks and the Webmaster's hand) change once the cards moving in a step have landed, everywhere in the game. Removed: the numbers jumping ahead before the cards got there.
 
