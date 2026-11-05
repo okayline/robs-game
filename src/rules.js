@@ -158,7 +158,7 @@ function spell(g, c) {
   } else if (c.card === "wiretap") {
     const n = Math.min(3, them.deck.length);
     if (!n) { say(g, "Wiretap: their deck is empty, nothing to look at."); return; }
-    g.pending = { kind: "wiretap", who: c.by, step: "mill", n };
+    g.pending = { kind: "wiretap", who: c.by, step: "mill", n, card: strip(c) };   // card: the Wiretap itself, shown while it is chosen
     say(g, `Wiretap: ${NAMES[c.by]} look${c.by === "a" ? "" : "s"} at the top ${n} of ${c.by === "a" ? "the dummy's" : "your"} deck.`);
   }
 }
@@ -222,6 +222,7 @@ export function view(g, s) {
   const v = { me: side(s), them: side(o), turn: g.turn === s ? "me" : "them", cast: g.cast, winner: g.winner && (g.winner === s ? "me" : "them"),
     stack: g.stack.map((c) => ({ ...strip(c), by: c.by === s ? "me" : "them" })), log: g.log, n: g.n, waiting: waitingOn(g) === s };
   if (p) v.pending = { kind: p.kind, mine: p.who === s, step: p.step, uid: p.uid };
+  if (p?.kind === "wiretap") v.pending.card = { ...p.card, by: p.who === s ? "me" : "them" };
   if (p?.kind === "wiretap" && p.who === s) v.pending.look = g.sides[o].deck.slice(0, p.n);
   return v;
 }

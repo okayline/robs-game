@@ -35,11 +35,10 @@
   /* the stack: the cards being cast, full size, in the middle of the screen */
   #stack { justify-content: center; align-items: flex-end; flex-wrap: nowrap; }
   /* every panel keeps one height whatever is in it, so nothing on the screen moves up or down (kura, Nov 4) */
-  #ask { height: 2.7em; overflow: hidden; }
-  #stack { height: calc(var(--h) * var(--u) + 36px); overflow: hidden; }
+  #stack { height: calc(var(--h) * var(--u) + 36px); }   /* not clipped, so a card flying in shows all the way (kura, Nov 4) */
   #err { height: 1.2em; overflow: hidden; }
-  #log { height: calc(3 * 1.35em); overflow: hidden; }
-  .zone { height: max(calc(var(--sw) * 76 / 108 + 16px), 84px); }
+  #log { height: calc(4 * 1.35em); overflow: hidden; }
+  .zone { height: max(calc(var(--sw) * 76 / 108 + 20px), 88px); }
   .stat.mine { margin-top: -4px; }   /* closer to the row above (kura, Nov 4) */
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
   #hand { height: calc(var(--h) * var(--u) + 4px); }
@@ -48,14 +47,15 @@
   #hand { flex-wrap: nowrap; overflow-x: auto; min-height: calc(var(--h) * var(--u)); padding-top: 2px; }
   .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
   .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
-  #ask { font: 600 14px/1.3 var(--title); color: var(--ink); }
-  #ask.win { color: #2f9e6b; } #ask.lose { color: #d4558c; }
   /* your buttons: the upper right of your panel (kura, Nov 4) */
   .acts { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex: none; }
   .acts button { font: 600 13px/1 var(--title); letter-spacing: 1px; padding: 9px 14px; border-radius: 6px; border: 1px solid #f0b8d0; background: #ffe1ee; color: var(--ink); cursor: pointer; }
   .acts button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
   #log { font: 11px/1.35 ui-monospace, Consolas, monospace; color: var(--mute); }
+  /* the log's last line says what to do now (kura, Nov 4: it was a line of its own above the stack) */
+  #log .now { color: var(--ink); font-weight: 700; }
+  #log .now.win { color: #2f9e6b; } #log .now.lose { color: #d4558c; }
   #log div::before { content: "C:\\> "; }
   /* the card: blue frame, cream inside (tap-game's .gc) */
   .card { position: relative; width: var(--w); height: calc(var(--h) * var(--u)); border: 0; padding: 0; background: none; border-radius: calc(7 * var(--u)); text-align: left; color: var(--ink); flex: none; }
@@ -88,7 +88,7 @@
   .zone { display: flex; gap: 10px; align-items: flex-start; }
   .zone .row { flex: 1; min-width: 0; }
   .piles { display: flex; gap: 8px; flex: none; }
-  .pile { display: flex; flex-direction: column; align-items: center; gap: 3px; font: 600 10px/1 var(--title); letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
+  .pile { display: flex; flex-direction: column; align-items: center; gap: 7px; font: 600 10px/1 var(--title); letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
   .pile b { color: var(--ink); }
   .back { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
           background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
@@ -99,11 +99,7 @@
   /* the stack, like Magic's: each card cast in answer sits on top of the one before, overlapping it and a little higher (kura, Nov 4) */
   #stack .tagged + .tagged { margin-left: calc(-0.55 * var(--w)); }
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
-  @keyframes fromMe { from { transform: translateY(60px) scale(.85); opacity: 0; } }
-  @keyframes fromThem { from { transform: translateY(-60px) scale(.85); opacity: 0; } }
   @keyframes land { from { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.12); } }
-  .enter-me { animation: fromMe .6s ease-out; }
-  .enter-them { animation: fromThem .6s ease-out; }
   .enter-land { animation: land .6s ease-out; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -116,7 +112,6 @@
     <div class="zone"><div class="row" id="tField" data-empty="No Broadcasts yet."></div><div class="piles" id="tPiles"></div></div>
   </div>
   <div class="mid">
-    <div id="ask">Connecting…</div>
     <div class="row" id="stack" data-empty=""></div>
     <div id="err"></div>
     <div id="log"></div>
@@ -128,7 +123,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.16" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.17" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -149,7 +144,7 @@
   let playing = null;
   const play = () => { if (playing) return; const next = () => { if (!queue.length) { playing = null; return; } draw(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
   ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) draw(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
-  ws.onclose = () => { $("ask").textContent = "Disconnected. Reload the page to reconnect."; };
+  ws.onclose = () => { $("err").textContent = "Disconnected. Reload the page to reconnect."; };
 
   // a card: name, picture, type line, effect and flavour (small: name, picture and the card's name)
   // a picture as one still frame on a canvas (like tap-game's still()); the loaded picture is kept per address, so a redraw is instant
@@ -198,10 +193,11 @@
   // your hand at the last draw: a card that wasn't in it is dealt, flying from your deck to its place (kura, Nov 4: "auto deal"),
   // one after another when there are several (the opening five)
   let inHand = new Set();
-  function deal(els) {
-    if (!els.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const from = $("mPiles").querySelector(".back, .slot");
-    if (!from) return;
+  const deal = (els) => fly(els, $("mPiles").querySelector(".back, .slot"));
+  // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
+  // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
+  function fly(els, from) {
+    if (!els.length || !from || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1;   // fit()'s scale
     const d = from.getBoundingClientRect();
     els.forEach((el, i) => {
@@ -236,22 +232,25 @@
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? () => send({ do: "cast", uid: c.uid }) : null);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
     } else ask = "The dummy is thinking…";
-    $("ask").textContent = ask;
-    $("ask").className = v.winner ? (v.winner === "me" ? "win" : "lose") : "";
-    if (p?.kind === "wiretap" && p.mine) $("stack").replaceChildren(...p.look.map((c) => card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) })));
-    else $("stack").replaceChildren(...v.stack.map((c, i) => {   // full size, so its text can be read (kura, Nov 4)
+    const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
+    $("log").replaceChildren(...v.log.slice(-3).map((l) => mk("div", "", l)), now);
+    // the stack, full size so its text can be read (kura, Nov 4); a Wiretap being finished stays there, with the cards it looks at
+    const cards = p?.kind === "wiretap" ? [p.card] : v.stack, from = [];
+    const els = cards.map((c, i) => {
       const el = card(c, { tag: c.by === "me" ? "you" : "dummy" });
       el.style.marginBottom = `${i * 10}px`;   // each later card sits a little higher
-      fresh(el.firstChild, c, c.by === "me" ? "enter-me" : "enter-them");
+      if (!shown.has(c.uid)) from.push([el.firstChild, c.by === "me" ? $("hand") : $("tHand")]);
       return el;
-    }));
-    shown = new Set([...v.stack, ...v.them.field, ...v.me.field].map((c) => c.uid));
+    });
+    if (p?.kind === "wiretap" && p.mine) els.push(...p.look.map((c) => card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) })));
+    $("stack").replaceChildren(...els);
+    for (const [el, src] of from) fly([el], src);
+    shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     const dealt = [];
     $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); if (!inHand.has(c.uid)) dealt.push(el); return el; }));
     inHand = new Set(v.me.hand.map((c) => c.uid));
     deal(dealt);
-    $("log").replaceChildren(...v.log.slice(-3).map((l) => mk("div", "", l)));
     fit();
   }
   // shrink the whole screen to fit a short window, never grow it (tap-game's fit())

@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.17 "Fly In" · Wed Nov 4, 8:51 PM
+- A card cast onto the stack flies there from your hand or the dummy's side (the same flight as dealing, like UN/TAP's cards sliding between rows), and nothing clips it. A Wiretap stays on the stack, full size, while its cards are picked, with the cards it looks at beside it. The line saying what to do now is the last line of the log, in bold. A little more space between the piles and their labels. kura: the slide-in was cut off at the top; the Wiretap vanished as soon as it resolved; "remove it, and incorporate it into the log"; "little more space above deck". Removed: the slide up/down animations, the stack's clipping, the prompt line above the stack, and the Wiretap leaving the stack before its cards were picked.
+
 ## v0.16 "Player" · Wed Nov 4, 8:46 PM
 - Your deck and graveyard are at the top left of your panel (the dummy's stay at the right of its panel), your stat line says "PLAYER", and it sits a little closer to the row above. Removed: your piles at the right, "YOU", and some of the space above it.
 
