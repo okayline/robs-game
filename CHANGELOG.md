@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.5 "Piles" · Wed Nov 4, 8:28 PM
+- The dummy's deck shows as a face-down pile (UN/TAP's card-back stripes, thicker when fuller) with its count, and both graveyards show their top card face up with a count (an empty dashed outline when empty), beside each side's Broadcasts. kura: "a visual representation of the opponents card deck ... and maybe the graveyards too". Removed: the dummy's deck and graveyard counts and your graveyard count on the stat lines (the piles show them). Your deck count stays on your stat line.
+
 ## v0.4 "Big Stack" · Wed Nov 4, 8:27 PM
 - The cards being cast (the stack) are shown full size, with their text and flavour, in the middle of the screen; the row takes no room when nothing is being cast. kura: the dummy's card had no text. Removed: small cards on the stack.
 
