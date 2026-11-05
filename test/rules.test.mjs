@@ -1,14 +1,26 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { dealDeck, newGame, cast, letIt, pass, pay } from "../src/rules.js";
+import { dealDeck, newGame, cast, letIt, pass, pay, discard } from "../src/rules.js";
 
 // a hand-made pool: 15 buttons of each of the three types
 const pool = ["neon", "construction", "counter"].flatMap((type, t) => Array.from({ length: 15 }, (_, i) => ({ id: t * 100 + i, name: `${type} ${i}`, type, image: null })));
 const c = (uid, card, by) => ({ uid, card, id: 1, name: "x", image: null, flav: "" });
 
-test("a deck is 30 cards: 5 Broadcast, 9 Wiretap, 4 Spam, 2 Undelete, 6 Refute, 2 Rollback, 2 Paywall", () => {
+test("a deck is 30 cards: 5 Broadcast, 5 Wiretap, 4 Spam, 2 Undelete, 6 Refute, 4 Remand, 2 Rollback, 2 Paywall", () => {
   const d = dealDeck(pool, "a"), n = (k) => d.filter((x) => x.card === k).length;
-  assert.deepEqual([d.length, n("broadcast"), n("wiretap"), n("spam"), n("undelete"), n("refute"), n("rollback"), n("paywall")], [30, 5, 9, 4, 2, 6, 2, 2]);
+  assert.deepEqual([d.length, n("broadcast"), n("wiretap"), n("spam"), n("undelete"), n("refute"), n("remand"), n("rollback"), n("paywall")], [30, 5, 5, 4, 2, 6, 4, 2, 2]);
+});
+
+test("Remand counters a spell and returns it to its caster's hand", () => {
+  const g = newGame(dealDeck(pool, "a"), dealDeck(pool, "b"));
+  g.turn = "a"; g.sides.a.hand = [c("a1", "broadcast")]; g.sides.b.hand = [c("b1", "remand")];
+  assert.equal(cast(g, "a", "a1"), null);
+  assert.equal(cast(g, "b", "b1"), null);
+  assert.equal(letIt(g, "a"), null);
+  assert.deepEqual(g.sides.a.hand.map((x) => x.uid), ["a1"]);
+  assert.deepEqual(g.sides.b.grave.map((x) => x.uid), ["b1"]);
+  assert.equal(g.sides.a.field.length, 0);
+  assert.equal(g.stack.length, 0);
 });
 
 test("Spam puts the top 2 cards of their deck in their graveyard", () => {
@@ -50,4 +62,14 @@ test("three resolved Broadcasts win; drawing from an empty deck loses", () => {
   h.turn = "a"; h.sides.b.deck = []; h.sides.b.hand = [];   // an empty hand must refill, from an empty deck
   pass(h, "a");
   assert.equal(h.winner, "a");
+});
+
+test("Discard: instead of a spell, discard a card to draw one; then no spell that turn", () => {
+  const g = newGame(dealDeck(pool, "a"), dealDeck(pool, "b"));
+  g.turn = "a"; g.sides.a.hand = [c("a1", "refute"), c("a2", "wiretap")];
+  const top = g.sides.a.deck[0].uid;
+  assert.equal(discard(g, "a", "a1"), null);
+  assert.deepEqual(g.sides.a.grave.map((x) => x.uid), ["a1"]);
+  assert.deepEqual(g.sides.a.hand.map((x) => x.uid), ["a2", top]);
+  assert.equal(cast(g, "a", "a2"), "You've already cast a spell this turn.");
 });

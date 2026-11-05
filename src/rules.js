@@ -15,11 +15,13 @@ export const CARDS = {
   spam: { name: "Spam", kind: "Sorcery", type: "guestbook", text: "put the top 2 cards of their deck into their graveyard." },
   undelete: { name: "Undelete", kind: "Sorcery", type: "construction", text: "shuffle your graveyard into your deck." },
   refute: { name: "Refute", kind: "Instant", type: "counter", text: "counter target spell." },
+  remand: { name: "Remand", kind: "Instant", type: "counter", text: "counter target spell. Return it to its caster's hand." },
   rollback: { name: "Rollback", kind: "Instant", type: "counter", text: "counter target spell. Put it on top of its caster's deck." },
   paywall: { name: "Paywall", kind: "Instant", type: "counter", text: "counter target spell unless its caster discards a card." },
 };
 // kura, Nov 4: "too many Wiretap"; 4 of them are Spam (was 13 Wiretap)
-export const DECK = { broadcast: 5, wiretap: 9, spam: 4, undelete: 2, refute: 6, rollback: 2, paywall: 2 };
+// kura, Nov 4: half of the 9 Wiretaps are counters, a new one: Remand (was 9 Wiretap, no Remand)
+export const DECK = { broadcast: 5, wiretap: 5, spam: 4, undelete: 2, refute: 6, remand: 4, rollback: 2, paywall: 2 };
 export const HAND = 5, WIN = 3;
 export const isCounter = (c) => CARDS[c.card].kind === "Instant";
 export const other = (s) => (s === "a" ? "b" : "a");
@@ -40,6 +42,8 @@ export const FLAVOUR = {
     "...come back next week when the other stuff's been recovered..."],
   refute: ["Stop! Think! Do you really want to do this?", "Please ask me before using these pictures", "Please do NOT link these graphics to my server",
     "Sorry, Your browser does not support this applet.", "NO TRESPASSING", "When pigs fly!"],
+  // tap-game page.html's lines: oocities.org/esberet/Webrings.html; oocities.org/capecanaveral/lab/8803/geobook.html (1998-2000)
+  remand: ["Go to the previous site!", "What about a new background?", "fantastische Bilder komme bald wieder"],
   rollback: ["Coming Soon (some of the diagram links don't work...be patient)", "...or just hit your \"back\" button on your web browser.", "Wednesday. More reviews. Be here!"],
   paywall: ["No frames? Too bad! Continue at your own risk.", "Once you're here you're stuck.", "Any reproduction, duplication, or distribution in any form is expressly prohibited."],
 };
@@ -143,7 +147,8 @@ function resolve(g) {
         return;
       }
       g.stack.pop();
-      if (top.card === "rollback") { g.sides[target.by].deck.unshift(strip(target)); say(g, `${CARDS[target.card].name} is countered and goes on top of ${NAMES[target.by] === "you" ? "your" : "the dummy's"} deck.`); }
+      if (top.card === "remand") { g.sides[target.by].hand.push(strip(target)); say(g, `${CARDS[target.card].name} is countered and goes back to ${NAMES[target.by] === "you" ? "your" : "the dummy's"} hand.`); }
+      else if (top.card === "rollback") { g.sides[target.by].deck.unshift(strip(target)); say(g, `${CARDS[target.card].name} is countered and goes on top of ${NAMES[target.by] === "you" ? "your" : "the dummy's"} deck.`); }
       else { toGrave(g, target); say(g, `${CARDS[target.card].name} is countered.`); }
     } else spell(g, top);
   }
@@ -219,6 +224,22 @@ export function pay(g, s, uid) {
   }
   g.pending = null;
   resolve(g);
+  return null;
+}
+
+// Instead of casting a spell on their turn, s may discard a card from their hand to draw a card (kura, Nov 4: "i have wanted a discard
+// mechanic", a rule, no text on the cards). It counts as their spell for the turn, and it keeps a match from stalling: with two full
+// hands of cards that can't be cast on your own turn, the refill drew nothing and both sides passed forever.
+export function discard(g, s, uid) {
+  if (g.winner) return "The match is over.";
+  if (g.turn !== s || g.pending || g.stack.length) return "Not now.";
+  if (g.cast) return "You've already cast a spell this turn.";
+  const side = g.sides[s], i = find(side.hand, uid);
+  if (i < 0) return "That card isn't in your hand.";
+  const [c] = side.hand.splice(i, 1);
+  side.grave.push(c); g.cast = true;
+  say(g, `${cap(NAMES[s])} discard${s === "a" ? "" : "s"} ${cardName(c)} to draw a card.`);
+  draw(g, s);
   return null;
 }
 

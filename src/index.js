@@ -4,7 +4,7 @@
 //   GET /img/<n>     88x31 button n's GIF, from this site (img(), below)
 // Built like UN/TAP (okayline/tap-game), and dealt from the same 88x31 buttons.
 import { DurableObject } from "cloudflare:workers";
-import { newGame, dealDeck, cast, letIt, tap, pay, pass, view, hooks } from "./rules.js";
+import { newGame, dealDeck, cast, letIt, tap, pay, pass, discard, view, hooks } from "./rules.js";
 import { dummyRun } from "./dummy.js";
 import PAGE from "./page.html";
 
@@ -75,7 +75,8 @@ export class Match extends DurableObject {
       a.do === "let" ? letIt(g, "a") :
       a.do === "tap" ? tap(g, "a", a.uid) :
       a.do === "pay" ? pay(g, "a", a.uid ?? null) :
-      a.do === "pass" ? pass(g, "a") : "Unknown action.";
+      a.do === "pass" ? pass(g, "a") :
+      a.do === "discard" ? discard(g, "a", a.uid) : "Unknown action.";
     if (err) { hooks.say = null; return ws.send(JSON.stringify({ error: err })); }
     dummyRun(g);
     hooks.say = null;

@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.44 "Remand" · Wed Nov 4, 11:24 PM
+- A new counter, Remand (Instant): "counter target spell. Return it to its caster's hand" (kura: "let's do a new mechanic. Remand please"). Unlike Magic's Remand, it doesn't draw a card (drawing comes out of your own deck). Half the Wiretaps are Remands: each deck is 5 Wiretap and 4 Remand. The dummy counters with Refute first, then Rollback, then Remand, then Paywall. A remanded card flies from the stack back to the hand (the dummy's, face down, to its hand count). Its flavour lines are real ones from tap-game's list. Removed: 4 of the 9 Wiretaps.
+- A discard rule, no text on the cards (kura: "i have wanted a discard mechanic", "i dont want to write a lot of text on every card"): on your turn, instead of casting a spell, you may discard a card to draw a card. The pink bar shows Discard beside Pass turn; Discard, then tap the card (two taps, so a stray tap throws nothing away; Cancel backs out). The dummy discards its least useful card (an Undelete, then its weakest counter) when it has nothing to cast and a full hand. The card flies to your graveyard and the new one is dealt from your deck. Removed: nothing.
+- Fixed: a match could go on forever. When both hands were 5 cards that can't be cast on your own turn (counters, or an Undelete the dummy won't cast), the refill drew 0 cards and both sides passed forever: 1 in 400 simulated matches before Remand, 8 in 400 with it. Discarding to draw keeps the decks shrinking. In 400 simulated matches (the dummy's rules playing both sides): none unfinished, the longest 44 turns, 15.4 turns on average, 280 won by 3 Broadcasts and 120 by decking. Removed: nothing.
+
 ## v0.43 "Auto Pass" · Wed Nov 4, 11:18 PM
 - When passing the turn is your only move (no card in your hand you can play then), it happens by itself 1 s after the last board of the move has shown (kura: "instead of PASS TURN can we have it automatically go to the next turn ... give it a beat"). The pink button says "Passing…" and can't be pressed. A new board or a move of yours cancels the wait. "Pass turn" still shows when you have a card you could cast instead, and Resolve and Don't pay stay buttons (kura: "i still like RESOLVE though, just not the final PASS"). Removed: pressing "Pass turn" when there was nothing else to do.
 

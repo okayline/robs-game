@@ -199,7 +199,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.43" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.44" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -208,6 +208,7 @@
     wiretap: ["Wiretap", "Sorcery", "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in any order."],
     undelete: ["Undelete", "Sorcery", "shuffle your graveyard into your deck."],
     refute: ["Refute", "Instant", "counter target spell."],
+    remand: ["Remand", "Instant", "counter target spell. Return it to its caster's hand."],
     rollback: ["Rollback", "Instant", "counter target spell. Put it on top of its caster's deck."],
     paywall: ["Paywall", "Instant", "counter target spell unless its caster discards a card."],
   };
@@ -401,7 +402,7 @@
     if (flip) setTimeout(() => g.classList.add("down"), delay + MOVE_MS / 2);
     g.animate(k, { duration: MOVE_MS, delay, easing: "ease-in-out", fill: "forwards" }).finished.then(() => g.remove());
   }
-  let lastV = null, sentAway = new Set();   // the board before this one; the Wiretap cards already flown back onto a deck
+  let lastV = null, sentAway = new Set(), discarding = false;   // discarding: you pressed Discard and are picking the card   // the board before this one; the Wiretap cards already flown back onto a deck
   // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
   let played = null, looked = new Set(), lookOrder = [];   // looked: the Wiretap look cards on screen; lookOrder: their uids, left to right
   let downN = 0, downBoxes = [];   // the dummy's Wiretap: how many of your cards it's looking at (face down), and where they were on screen
@@ -432,9 +433,15 @@
       ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
       playable = (c) => () => send({ do: "pay", uid: c.uid });
       acts.push(["Don't pay", () => send({ do: "pay", uid: null })]);
+    } else if (mine && v.turn === "me" && discarding && !v.cast) {   // after pressing Discard: any card in your hand
+      ask = "Discard: pick a card to throw away. You draw one.";
+      playable = (c) => () => { discarding = false; send({ do: "discard", uid: c.uid }); };
+      acts.push(["Cancel", () => { discarding = false; draw(lastV); }]);
     } else if (mine && v.turn === "me") {
-      ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, or pass.";
+      ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, discard a card to draw one, or pass.";
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
+      // instead of a spell: Discard, then pick the card (kura, Nov 4: a discard mechanic; two taps, so a stray tap throws nothing away)
+      if (!v.cast && v.me.hand.length) acts.push(["Discard", () => { discarding = true; draw(lastV); }]);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
     } else ask = "The dummy is thinking…";
     const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
@@ -501,7 +508,7 @@
       if (u === null) return mk("div", "card gap");
       const c = held.get(u), f = v.winner ? null : playable(c), el = card(c, { click: f });
       if (!f && !v.winner) el.classList.add("dim");
-      if (!inHand.has(c.uid)) dealt.push(el);
+      if (!inHand.has(c.uid) && !before.has(c.uid)) dealt.push(el);   // a card back from the stack (Remand) flies from there instead
       return el;
     }), deck);
     inHand = new Set(held.keys());
@@ -509,13 +516,14 @@
     for (const f of later) f();
     // the rule: cards that left the stack, your hand or a graveyard's top fly to where they went
     const graveOf = (sel) => document.querySelector(sel)?.querySelectorAll(".pile")[1]?.firstElementChild;   // sel: "#mPiles" or "#tPiles"
-    const deckOf = (uid) => (uid[0] === "a" ? myDeck() : $("tPiles").querySelector(".back, .slot"));   // seat a is always you
+    const deckOf = (uid) => (uid[0] === "a" ? myDeck() : pv && v.them.deck <= pv.them.deck ? $("tHand") : $("tPiles").querySelector(".back, .slot"));   // seat a is always you; the dummy's card goes to its hand (Remand) unless its deck grew
     const inGrave = (uid) => (v.me.grave.some((c) => c.uid === uid) ? "#mPiles" : v.them.grave.some((c) => c.uid === uid) ? "#tPiles" : null);
     let i = 0;
     for (const [uid, b] of before) {
       if (sentAway.has(uid)) continue;
       const now = document.querySelector(`#game .card[data-uid="${uid}"]`);
       if (now) {   // still on screen: moved from the stack or your hand to a Broadcast place or a graveyard's top
+        if (b.where === "stack" && now.closest("#hand")) { fly([now], b.box, { ms: MOVE_MS, scale: b.box.width / now.getBoundingClientRect().width, delay: i++ * MOVE_GAP }); continue; }
         if (b.where !== "other" && !now.closest("#stack, #hand")) fly([now], b.box, { ms: MOVE_MS, scale: b.box.width / now.getBoundingClientRect().width, delay: i++ * MOVE_GAP });
         continue;
       }
