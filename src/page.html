@@ -87,6 +87,13 @@
   /* a card face down: the card-back stripes over it (a Wiretap's cards going back on a deck, and the dummy's look at yours) */
   .card.down { background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
   .card.down .gc { visibility: hidden; }
+  /* the stack's cards stay in the middle, and a Wiretap's look cards come in to their right, sized to fit there (kura, Nov 4: "can the
+     main card stay where it is and the buttons come in to the right of it"); 24px: a 6px gap before them and between them */
+  #stack { container-type: inline-size; --stack-w: var(--w); }   /* --stack-w: a stack card's width (a small card's --w is its own) */
+  #stack > .mid-stack { flex: none; display: flex; align-items: flex-end; }
+  #stack > .stack-side { flex: 1 1 0; min-width: 0; align-self: stretch; display: flex; gap: 6px; align-items: center; }
+  #stack > .stack-side.right { padding-left: 6px; }
+  #stack .stack-side .look { --sw: min(100px, calc((50cqw - var(--stack-w) / 2 - 24px) / 3)); }
   #stack .look { align-self: center; margin-bottom: 24px; }   /* a Wiretap's look cards, a little higher (kura, Nov 4) */   /* the place of a card that left your hand */
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
   .card.gone { filter: grayscale(1); opacity: .75; }
@@ -177,7 +184,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.34" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.35" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -197,8 +204,14 @@
   // you can follow what happened (kura, Nov 4: "space out when they are displayed", and the log too)
   const STEP_MS = 1500, queue = [];   // (kura, Nov 4: slower; was 800)
   let playing = null;
-  const play = () => { if (playing) return; const next = () => { if (!queue.length) { playing = null; return; } draw(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
-  ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) draw(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
+  // a board the same as the one on screen is skipped (the last board of a move often repeats the one before it): redrawing it 1.5 s
+  // later replaced the cards under your finger, so a click made then was lost (kura, Nov 4: after a Wiretap's first pick, "the next
+  // click is a dropped click")
+  let onScreen = "";
+  const same = () => { while (queue.length && JSON.stringify(queue[0]) === onScreen) queue.shift(); };
+  const show = (v) => { onScreen = JSON.stringify(v); draw(v); };
+  const play = () => { if (playing) return; const next = () => { same(); if (!queue.length) { playing = null; return; } show(queue.shift()); same(); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
+  ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) show(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
   ws.onclose = () => { $("err").textContent = "Disconnected. Reload the page to reconnect."; };
 
   // a card: name, picture, type line, effect and flavour (small: name, picture and the card's name)
@@ -422,7 +435,9 @@
     const n = p?.kind === "wiretap" && !p.mine ? p.n : 0;
     const down = Array.from({ length: n }, () => mk("div", "card small look down"));
     els.push(...look, ...down);
-    $("stack").replaceChildren(...els);
+    const mid = mk("div", "mid-stack"), right = mk("div", "stack-side right");
+    mid.append(...els.filter((el) => !el.classList.contains("look"))); right.append(...els.filter((el) => el.classList.contains("look")));
+    $("stack").replaceChildren(mk("div", "stack-side"), mid, right);
     const prevDown = downN, prevBoxes = downBoxes;
     downN = back ? 0 : n; downBoxes = down.map((el) => el.getBoundingClientRect());
     const later = [];   // animations that need your hand drawn first (on a phone your deck is in it)

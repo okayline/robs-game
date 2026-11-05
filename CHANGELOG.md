@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.35 "Stays Put" · Wed Nov 4, 10:32 PM
+- The stack's cards stay in the middle, and a Wiretap's look cards (yours, and the dummy's face-down ones) come in to their right, sized to fit there (kura: "can the main card stay where it is and the buttons come in to the right of it"): about 70px wide on a desktop, 40px on a phone (hold one to see it whole). Removed: the stack re-centering when the look cards came in, which jumped the Wiretap left.
+- Fixed: after a Wiretap's first pick, the next click was lost (kura: "the next click is a dropped click"). The last board of a move is usually the same as the one before it (2,133 of 2,327 simulated moves, every first Wiretap pick); the page redrew it 1.5 s later, replacing the cards under your finger. A board the same as the one on screen is now skipped. Removed: that redraw, and the 1.5 s pause before it.
+
 ## v0.34 "Always Pink" · Wed Nov 4, 10:18 PM
 - The pink button is always there (kura: "after i click pass turn the pink button disappeared again! could we always see the pink button"). With nothing for you to press it can't be pressed and says what's happening: "Dummy's turn", "Dummy's answering" (your spell, on your turn), "Pick a card" (your Wiretap), "You win" or "The dummy wins". Removed: the empty space where the button was.
 
