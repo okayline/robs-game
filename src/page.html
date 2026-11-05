@@ -18,20 +18,23 @@
     --bg: #1d2742; --panel: #f7fbff; --line: #b9d0ea; --frame: #8fb6de; --cream: #fffaf2;
     --ink: #3a4a6b; --mute: #5a6a8a; --pink: #e98ab3; --blue: #6d8fd0;
     --title: Cinzel, Georgia, serif; --body: "EB Garamond", Georgia, serif;
-    --w: min(150px, calc((100vw - 64px) / 3)); --u: calc(var(--w) / 108); --h: 150;
+    --w: min(112px, calc((100vw - 72px) / 5)); --u: calc(var(--w) / 108); --h: 150;
+    --sw: min(64px, calc((100vw - 72px) / 8));   /* small cards (fields, the stack, a Wiretap's look) */
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); height: 100%; overflow: hidden; }   /* one screen: fit(), below */
   body { font: 15px/1.35 var(--body); }
-  #game { max-width: 640px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; user-select: none; -webkit-user-select: none; }
+  #game { max-width: 640px; margin: 0 auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; user-select: none; -webkit-user-select: none; transform-origin: top center; }
   h1 { font: 800 22px/1 var(--title); letter-spacing: 2px; color: #d97aa6; margin: 0; display: flex; justify-content: space-between; align-items: baseline; }
   h1 a { font: 600 12px/1 var(--title); letter-spacing: 1.5px; color: var(--blue); text-decoration: none; }
-  .side { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .side { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
   .stat { font: 600 12px/1 var(--title); letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); display: flex; gap: 12px; flex-wrap: wrap; }
   .stat b { color: var(--ink); }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; min-height: calc(var(--h) * var(--u)); align-items: center; }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; min-height: calc(var(--sw) * 150 / 108); align-items: center; }
+  /* your hand stays one row: it scrolls sideways when it's wider than the screen */
+  #hand { flex-wrap: nowrap; overflow-x: auto; min-height: calc(var(--h) * var(--u)); padding-top: 2px; }
   .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
-  .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
   #ask { font: 600 14px/1.3 var(--title); color: var(--ink); }
   #ask.win { color: #2f9e6b; } #ask.lose { color: #d4558c; }
   .acts { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -42,7 +45,7 @@
   #log div::before { content: "C:\\> "; }
   /* the card: blue frame, cream inside (tap-game's .gc) */
   .card { position: relative; width: var(--w); height: calc(var(--h) * var(--u)); border: 0; padding: 0; background: none; border-radius: calc(7 * var(--u)); text-align: left; color: var(--ink); flex: none; }
-  .card.small { --w: min(96px, calc((100vw - 64px) / 5)); --u: calc(var(--w) / 108); }
+  .card.small { --w: var(--sw); --u: calc(var(--w) / 108); }
   .card.can { cursor: pointer; filter: drop-shadow(0 0 6px var(--pink)); }
   .card.dim { opacity: .55; }
   .gc { width: 100%; height: 100%; background: var(--frame); border-radius: calc(7 * var(--u)); padding: calc(5 * var(--u)); display: flex; flex-direction: column; }
@@ -87,7 +90,7 @@
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.1" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.2" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -151,8 +154,12 @@
     else $("stack").replaceChildren(...v.stack.map((c) => card(c, { small: true, tag: c.by === "me" ? "you" : "dummy" })));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); return el; }));
-    $("log").replaceChildren(...v.log.slice(-6).map((l) => mk("div", "", l)));
+    $("log").replaceChildren(...v.log.slice(-3).map((l) => mk("div", "", l)));
+    fit();
   }
+  // shrink the whole screen to fit a short window, never grow it (tap-game's fit())
+  const fit = () => { const g = $("game"); g.style.transform = `scale(${Math.min(1, innerHeight / g.offsetHeight)})`; };
+  addEventListener("resize", fit);
 </script>
 </body>
 </html>
