@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.34 "Always Pink" · Wed Nov 4, 10:18 PM
+- The pink button is always there (kura: "after i click pass turn the pink button disappeared again! could we always see the pink button"). With nothing for you to press it can't be pressed and says what's happening: "Dummy's turn", "Dummy's answering" (your spell, on your turn), "Pick a card" (your Wiretap), "You win" or "The dummy wins". Removed: the empty space where the button was.
+
 ## v0.33 "Where It Went" · Wed Nov 4, 10:24 PM
 - One rule for every card that leaves a spot (kura: "i like your rule"): it flies to where it went, one after another, 0.4 s apart, 0.7 s each. A resolved Broadcast flies from the stack to its place; a countered spell, a used counter, a finished Wiretap or Undelete fly to their graveyard; your Paywall discard flies from your hand to your graveyard; your Wiretap's pick flies to the dummy's graveyard; a card going onto a deck (Rollback, Undelete's top card) turns face down halfway there. A card now out of sight (in a deck, or under a newer graveyard card) is copied, and the copy flies onto the pile. The dummy's draws: face-down cards fly from its deck to its hand count. Removed: the Broadcast's pop-in with a bounce at its place, and cards vanishing from the stack and your hand.
 
