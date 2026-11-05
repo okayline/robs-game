@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.43 "Auto Pass" · Wed Nov 4, 11:18 PM
+- When passing the turn is your only move (no card in your hand you can play then), it happens by itself 1 s after the last board of the move has shown (kura: "instead of PASS TURN can we have it automatically go to the next turn ... give it a beat"). The pink button says "Passing…" and can't be pressed. A new board or a move of yours cancels the wait. "Pass turn" still shows when you have a card you could cast instead, and Resolve and Don't pay stay buttons (kura: "i still like RESOLVE though, just not the final PASS"). Removed: pressing "Pass turn" when there was nothing else to do.
+
 ## v0.42 "No Labels" · Wed Nov 4, 11:12 PM
 - No label under the cards on the stack (kura: "get rid of YOU under the card in the play area"), and the room it took goes to the cards (kura: "make the cards in the play area bigger"): 179px wide on a wide screen (was 162), about 136px on a 390px phone (was 119), with the middle panel the same height. A Wiretap's look cards grow a little with them. Removed: the "you" label and its 24px, and card()'s tag option (its last use).
 

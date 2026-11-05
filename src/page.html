@@ -199,7 +199,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.42" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.43" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -218,7 +218,11 @@
   const $ = (id) => document.getElementById(id);
   const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const ws = new WebSocket(location.href.replace(/^http/, "ws") + "/ws");
-  const send = (o) => { $("err").textContent = ""; ws.send(JSON.stringify(o)); };
+  const send = (o) => { $("err").textContent = ""; clearTimeout(autoTimer); autoTimer = null; ws.send(JSON.stringify(o)); };
+  // when your only move is to pass the turn (no card you can play), it happens by itself a beat after the board has settled (kura, Nov 4:
+  // "instead of PASS TURN can we have it automatically go to the next turn ... give it a beat"; Resolve stays a button: "i still like RESOLVE")
+  const BEAT_MS = 1000;
+  let autoAct = null, autoTimer = null;
   // after your move the match sends one board per action (each log line: yours, then the dummy's); they're shown STEP_MS apart, so
   // you can follow what happened (kura, Nov 4: "space out when they are displayed", and the log too)
   const STEP_MS = 1500, queue = [];   // (kura, Nov 4: slower; was 800)
@@ -228,8 +232,11 @@
   // click is a dropped click")
   let onScreen = "";
   const same = () => { while (queue.length && JSON.stringify(queue[0]) === onScreen) queue.shift(); };
-  const show = (v) => { onScreen = JSON.stringify(v); draw(v); };
-  const play = () => { if (playing) return; const next = () => { same(); if (!queue.length) { playing = null; return; } show(queue.shift()); same(); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
+  const show = (v) => {
+    onScreen = JSON.stringify(v); draw(v); same();
+    clearTimeout(autoTimer); autoTimer = !queue.length && autoAct ? setTimeout(() => { autoTimer = null; autoAct(); }, BEAT_MS) : null;   // the last board only
+  };
+  const play = () => { if (playing) return; const next = () => { same(); if (!queue.length) { playing = null; return; } show(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
   ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) show(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
   ws.onclose = () => { $("err").textContent = "Disconnected. Reload the page to reconnect."; };
 
@@ -475,6 +482,11 @@
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     // the pink button is always there (kura, Nov 4: "could we always see the pink button"): with nothing for you to press, it says why
     // and can't be pressed
+    autoAct = null;
+    if (acts.length === 1 && acts[0][0] === "Pass turn" && !v.winner && !v.me.hand.some((c) => playable(c))) {   // nothing else to do: it passes by itself
+      autoAct = acts[0][1];
+      acts[0] = ["Passing…", null];
+    }
     if (!acts.length) acts.push([v.winner ? (v.winner === "me" ? "You win" : "The dummy wins") : p?.kind === "wiretap" && p.mine ? "Pick a card" : v.turn === "them" ? "Dummy's turn" : "Dummy's answering", null]);
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); if (f) b.onclick = f; else b.disabled = true; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining
