@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.70 "Quick Return" · Thu Nov 5, 6:35 AM
+- After you pick a Wiretap's card for the graveyard, the other cards go back on the deck as soon as it lands (0.7 s, was 1.5 s). Removed: the longer pause before they went back.
+
 ## v0.69 "GPUs" · Thu Nov 5, 6:28 AM
 - Broadcasts are now GPUs: ten real graphics cards in pixel art, from a Voodoo3 3000 to an RTX 5090, and each deck gets 5 different ones. A GPU is broken until it resolves; resolve 3 to win. The rules are the same.
 - The card says "GPU · Stable temps once resolved." Its big card names the model, says "Enchantment — " and the chip generation (Blackwell, Ada Lovelace, Pascal, Battlemage, RDNA 4, Avenger), and quotes a line from when the card was on sale.

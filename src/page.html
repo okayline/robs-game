@@ -285,7 +285,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.69" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.70" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -332,7 +332,10 @@
     onScreen = JSON.stringify(v); draw(v); same();
     clearTimeout(autoTimer); autoTimer = !queue.length && autoAct ? setTimeout(() => { autoTimer = null; autoAct(); }, BEAT_MS) : null;   // the last board only
   };
-  const play = () => { if (playing) return; const next = () => { same(); if (!queue.length) { playing = null; return; } show(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
+  // a Wiretap's other cards going back follow your pick sooner: as soon as the picked card has landed (kura, Nov 5: "shorten that pause")
+  const BACK_MS = 700;   // MOVE_MS, the picked card's flight
+  const wait = () => !queue.length ? 0 : queue[0].pending?.kind === "wiretap" && queue[0].pending.step === "back" ? BACK_MS : STEP_MS;
+  const play = () => { if (playing) return; const next = () => { same(); if (!queue.length) { playing = null; return; } show(queue.shift()); playing = setTimeout(next, wait()); }; next(); };
   ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) show(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
   ws.onclose = () => { history.replaceState(null, "", PATH); $("err").textContent = "Disconnected. Reload the page to reconnect."; };
 
