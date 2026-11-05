@@ -32,6 +32,9 @@
   .stat b { color: var(--ink); }
   .row { display: flex; gap: 6px; flex-wrap: wrap; min-height: calc(var(--sw) * 76 / 108); align-items: center; }
   /* your hand stays one row: it scrolls sideways when it's wider than the screen */
+  /* the stack: the cards being cast, full size, in the middle of the screen */
+  #stack { justify-content: center; }
+  #stack:empty { min-height: 0; }
   #hand { flex-wrap: nowrap; overflow-x: auto; min-height: calc(var(--h) * var(--u)); padding-top: 2px; }
   .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
   .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
@@ -93,7 +96,7 @@
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.3" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.4" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -154,7 +157,7 @@
     $("ask").textContent = ask;
     $("ask").className = v.winner ? (v.winner === "me" ? "win" : "lose") : "";
     if (p?.kind === "wiretap" && p.mine) $("stack").replaceChildren(...p.look.map((c) => card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) })));
-    else $("stack").replaceChildren(...v.stack.map((c) => card(c, { small: true, tag: c.by === "me" ? "you" : "dummy" })));
+    else $("stack").replaceChildren(...v.stack.map((c) => card(c, { tag: c.by === "me" ? "you" : "dummy" })));   // full size, so its text can be read (kura, Nov 4)
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); return el; }));
     $("log").replaceChildren(...v.log.slice(-3).map((l) => mk("div", "", l)));
