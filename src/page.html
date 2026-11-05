@@ -71,6 +71,10 @@
   .bar button:disabled { cursor: default; background: #d3d9e3; color: #5f6b80; }
   .bar button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
+  /* "Turn 4, Move 2" in the upper left of the middle panel (kura, Nov 5): the turn counts each player's turn; the move counts the cards
+     played this turn by either side, counters and a discard-to-draw included, from 0 */
+  .mid { position: relative; }
+  #turnno { position: absolute; left: 10px; top: 8px; font: 600 11px/1 var(--title); letter-spacing: 1px; color: var(--blue); pointer-events: none; }
   /* the log: a strip across the bottom of the middle panel, under the stack, so its lines are long and mostly one line each (kura,
      Nov 5: "a little bigger font size, and have a longer row that sits closer to the bottom of the panel ... less double lines"; it was
      a narrow column left of the stack, in 9px); 3 lines high, each older line fainter */
@@ -260,6 +264,7 @@
     <div class="zone"><div class="row" id="tField"></div><div class="piles" id="tPiles"></div></div>
   </div>
   <div class="mid">
+    <div id="turnno"></div>
     <div class="row" id="stack" data-empty=""></div>
     <div id="err"></div>
     <div id="log"></div>
@@ -271,7 +276,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.64" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.65" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -555,6 +560,7 @@
     // oldest at the top, fading towards the top (CSS), and what to do now at the bottom (kura, Nov 5); when a line is added, the lines start
     // one new line lower and slide smoothly up into place (kura, Nov 5: "smoothly scroll up"): one more line than shows sits above the
     // box's top edge, so the top line slides out of sight instead of vanishing
+    $("turnno").textContent = `Turn ${v.n}, Move ${v.moves ?? 0}`;
     const lines = v.log.slice(-3).map((l) => mk("div", "", l));
     const added = logN != null && v.log.length > logN; logN = v.log.length;
     $("log").replaceChildren(...lines, now);

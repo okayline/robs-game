@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.65 "Turn Counter" · Thu Nov 5, 1:33 AM
+- "Turn 4, Move 2" in the upper left of the middle panel. The turn counts each player's turn (Turn 1 is whoever goes first). The move counts the cards played this turn by either side, counters and a discard-to-draw included, starting from 0; paying for a Paywall isn't a move. Removed: nothing.
+
 ## v0.64 "Smooth Scroll" · Thu Nov 5, 1:26 AM
 - The log scrolls up smoothly: the top line slides out of the top of the box instead of vanishing, and the slide is a little slower and eases in and out (0.5 s, was 0.35 s). Removed: the top line disappearing before the slide.
 - The log's text fades towards the top: 25% at the box's top edge, whole by the end of the top line. Removed: each older line being a step fainter.

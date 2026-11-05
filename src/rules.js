@@ -74,7 +74,7 @@ export function dealDeck(pool, side, rnd = Math.random) {
 
 export function newGame(deckA, deckB, rnd = Math.random) {
   const side = (deck) => ({ deck, hand: deck.splice(0, HAND), grave: [], field: [] });
-  const g = { sides: { a: side(deckA), b: side(deckB) }, turn: rnd() < 0.5 ? "a" : "b", cast: false, stack: [], pending: null, winner: null, log: [], n: 1 };
+  const g = { sides: { a: side(deckA), b: side(deckB) }, turn: rnd() < 0.5 ? "a" : "b", cast: false, stack: [], pending: null, winner: null, log: [], n: 1, moves: 0 };
   g.first = g.turn;
   say(g, `${cap(NAMES[g.turn])} ${g.turn === "a" ? "go" : "goes"} first.`);
   return g;
@@ -116,6 +116,7 @@ export function cast(g, s, uid) {
   }
   side.hand.splice(i, 1);
   g.stack.push({ ...c, by: s });
+  g.moves = (g.moves ?? 0) + 1;   // a card played this turn, by either side (counters too): the page's "Turn 4, Move 2" (kura, Nov 5)
   // the answer is asked for before the log line, so that line's board already shows it (kura, Nov 4: the Resolve button was missing
   // while the dummy's cast was shown)
   g.pending = { kind: "answer", who: other(s) };
@@ -230,7 +231,7 @@ export function discard(g, s, uid) {
   const side = g.sides[s], i = find(side.hand, uid);
   if (i < 0) return "That card isn't in your hand.";
   const [c] = side.hand.splice(i, 1);
-  side.grave.push(c); g.cast = true;
+  side.grave.push(c); g.cast = true; g.moves = (g.moves ?? 0) + 1;   // discarding to draw is a move too
   say(g, `${cap(NAMES[s])} discard${s === "a" ? "" : "s"} ${cardName(c)} to draw a card.`);
   draw(g, s);
   return null;
@@ -241,7 +242,7 @@ export function discard(g, s, uid) {
 export function pass(g, s) {
   if (g.winner) return "The match is over.";
   if (g.turn !== s || g.pending || g.stack.length) return "Not now.";
-  g.turn = other(s); g.cast = false; g.n++;
+  g.turn = other(s); g.cast = false; g.n++; g.moves = 0;
   const side = g.sides[g.turn], n = Math.max(0, HAND - side.hand.length);
   for (let i = 0; i < n && !g.winner; i++) draw(g, g.turn);
   if (!g.winner) say(g, `${g.turn === "a" ? "Your turn: you draw" : "The Webmaster's turn: it draws"} ${n} card${n === 1 ? "" : "s"}.`);
@@ -254,7 +255,7 @@ export function view(g, s) {
   const o = other(s), p = g.pending;
   const side = (x) => ({ hand: x === s ? g.sides[x].hand : g.sides[x].hand.length, deck: g.sides[x].deck.length, grave: g.sides[x].grave, field: g.sides[x].field });
   const v = { me: side(s), them: side(o), turn: g.turn === s ? "me" : "them", cast: g.cast, winner: g.winner && (g.winner === s ? "me" : "them"),
-    stack: g.stack.map((c) => ({ ...strip(c), by: c.by === s ? "me" : "them" })), log: g.log, n: g.n, waiting: waitingOn(g) === s };
+    stack: g.stack.map((c) => ({ ...strip(c), by: c.by === s ? "me" : "them" })), log: g.log, n: g.n, moves: g.moves ?? 0, waiting: waitingOn(g) === s };
   if (p) v.pending = { kind: p.kind, mine: p.who === s, step: p.step, uid: p.uid };
   if (p?.kind === "wiretap") v.pending.card = { ...p.card, by: p.who === s ? "me" : "them" };
   if (p?.kind === "wiretap") v.pending.n = p.n;   // how many cards are being looked at: the other side sees them face down
