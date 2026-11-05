@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.10 "Stack" · Wed Nov 4, 8:36 PM
+- Cards animate in: a card you cast slides up from your hand, one the dummy casts slides down from its side, and a Broadcast that resolves pops into its row. Only a card that just arrived moves; nothing moves for people who ask their system for reduced motion. On the stack, each card cast in answer sits on top of the one before, overlapping it and a little higher, like Magic's stack. Removed: the stack's cards side by side, and cards appearing with no movement.
+
 ## v0.9 "Resolve" · Wed Nov 4, 8:34 PM
 - The button for letting a spell resolve says "Resolve", and the prompt above says "or resolve it". Removed: "Let it resolve" and "or let it resolve".
 

@@ -33,7 +33,7 @@
   .row { display: flex; gap: 6px; flex-wrap: wrap; min-height: calc(var(--sw) * 76 / 108); align-items: center; }
   /* your hand stays one row: it scrolls sideways when it's wider than the screen */
   /* the stack: the cards being cast, full size, in the middle of the screen */
-  #stack { justify-content: center; }
+  #stack { justify-content: center; align-items: flex-end; flex-wrap: nowrap; }
   #stack:empty { min-height: 0; }
   #hand { flex-wrap: nowrap; overflow-x: auto; min-height: calc(var(--h) * var(--u)); padding-top: 2px; }
   .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
@@ -86,7 +86,16 @@
   /* who cast a card on the stack: a label under it, so it covers nothing */
   .tagged { display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .by { font: 600 10px/1 var(--title); letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  /* the stack, like Magic's: each card cast in answer sits on top of the one before, overlapping it and a little higher (kura, Nov 4) */
+  #stack .tagged + .tagged { margin-left: calc(-0.55 * var(--w)); }
+  /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
+  @keyframes fromMe { from { transform: translateY(60px) scale(.85); opacity: 0; } }
+  @keyframes fromThem { from { transform: translateY(-60px) scale(.85); opacity: 0; } }
+  @keyframes land { from { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.12); } }
+  .enter-me { animation: fromMe .35s ease-out; }
+  .enter-them { animation: fromThem .35s ease-out; }
+  .enter-land { animation: land .4s ease-out; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body>
@@ -108,7 +117,7 @@
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.9" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.10" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -170,11 +179,15 @@
     return out;
   }
 
+  // the cards on the stack and the fields at the last draw: only a card that wasn't there animates in
+  let shown = new Set();
+  const fresh = (el, c, cls) => { if (!shown.has(c.uid)) el.classList.add(cls); return el; };
+
   function draw(v) {
     $("tHand").textContent = v.them.hand; $("mDeck").textContent = v.me.deck;
     $("tPiles").replaceChildren(...piles(v.them, true)); $("mPiles").replaceChildren(...piles(v.me, false));
-    $("tField").replaceChildren(...v.them.field.map((c) => card(c, { small: true })));
-    $("mField").replaceChildren(...v.me.field.map((c) => card(c, { small: true })));
+    $("tField").replaceChildren(...v.them.field.map((c) => fresh(card(c, { small: true }), c, "enter-land")));
+    $("mField").replaceChildren(...v.me.field.map((c) => fresh(card(c, { small: true }), c, "enter-land")));
     const p = v.pending, mine = v.waiting, acts = [];
     let ask, playable = () => null;
     if (v.winner) ask = v.winner === "me" ? "You win!" : "The dummy wins.";
@@ -196,7 +209,13 @@
     $("ask").textContent = ask;
     $("ask").className = v.winner ? (v.winner === "me" ? "win" : "lose") : "";
     if (p?.kind === "wiretap" && p.mine) $("stack").replaceChildren(...p.look.map((c) => card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) })));
-    else $("stack").replaceChildren(...v.stack.map((c) => card(c, { tag: c.by === "me" ? "you" : "dummy" })));   // full size, so its text can be read (kura, Nov 4)
+    else $("stack").replaceChildren(...v.stack.map((c, i) => {   // full size, so its text can be read (kura, Nov 4)
+      const el = card(c, { tag: c.by === "me" ? "you" : "dummy" });
+      el.style.marginBottom = `${i * 10}px`;   // each later card sits a little higher
+      fresh(el.firstChild, c, c.by === "me" ? "enter-me" : "enter-them");
+      return el;
+    }));
+    shown = new Set([...v.stack, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); return el; }));
     $("log").replaceChildren(...v.log.slice(-3).map((l) => mk("div", "", l)));
