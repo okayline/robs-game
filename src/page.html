@@ -127,6 +127,21 @@
     #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
                       font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
+  /* the big card, copied from UN/TAP (tap-game src/page.html, kura, Nov 4: "copy the big card hover thing from un/tap exactly"): hold a
+     card (hover with a mouse) to see it whole; --u is set again here so the whole card scales */
+  .zoom { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; background: rgba(20, 26, 48, .45); pointer-events: none; }
+  .zoom .zbox { --w: min(78vw, 300px); --u: calc(var(--w) / 108); width: var(--w); height: calc(var(--h) * var(--u)); position: relative; filter: drop-shadow(0 8px 24px rgba(0,0,0,.45)); perspective: calc(600 * var(--u)); }
+  /* it turns with your finger or mouse, and past a quarter turn shows its back (UN/TAP's: 88x31 club's face-down stripes in the frame blue) */
+  .zflip { position: absolute; inset: 0; transform-style: preserve-3d; }
+  /* a finger sliding sideways on a card turns the big card, so the browser mustn't take the slide as a pan (that would cancel the hold) */
+  .card { touch-action: pinch-zoom; }
+  .zflip > .gc, .zflip > .zback { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  /* thickness: the front sits --zd/2 in front, the back --zd/2 behind, and ZEDGE layers of a darker frame blue fill the gap */
+  .zflip { --zd: calc(1 * var(--u)); }
+  .zflip > .gc { transform: translateZ(calc(var(--zd) / 2)); }
+  .zedge { position: absolute; inset: 0; border-radius: calc(7 * var(--u)); background: color-mix(in srgb, var(--frame) 75%, #000);
+           transform: translateZ(calc((var(--k) - .5) * var(--zd))); }
+  .zback { transform: rotateY(180deg) translateZ(calc(var(--zd) / 2)); border-radius: calc(7 * var(--u)); background: repeating-linear-gradient(45deg, var(--frame) 0 8px, color-mix(in srgb, var(--frame) 85%, #000) 8px 16px); }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -149,7 +164,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.27" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.28" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -184,7 +199,7 @@
     return cv;
   }
 
-  function card(c, { small = false, click = null, tag = null, gone = false } = {}) {
+  function card(c, { small = false, click = null, tag = null, gone = false, zoom = true } = {}) {
     const [name, kind, text] = CARDS[c.card];
     const el = mk(click ? "button" : "div", `card ${c.card}${small ? " small" : ""}${click ? " can" : ""}${gone ? " gone" : ""}`);
     const gc = mk("div", "gc"), inn = mk("div", "gc-in"), art = mk("div", "gc-art");
@@ -196,9 +211,67 @@
     inn.append(mk("div", "gc-name", c.name), art, mk("div", "gc-type", small ? name : kind), txt);
     gc.append(inn); el.append(gc);
     if (click) el.onclick = click;
-    el.title = `${name} · ${text}`;
+    if (zoom) zoomable(el, () => c);
     if (!tag) return el;
     const box = mk("div", "tagged"); box.append(el, mk("span", "by", tag)); return box;
+  }
+
+  // the big card, copied from UN/TAP (tap-game src/page.html showBig() .. zoomable(); kura, Nov 4: "its perfect there"): press and hold a
+  // card still for HOLD_MS (or rest the mouse on it without moving for HOVER_MS) to see it whole; letting go (or moving off) closes it. A
+  // hold doesn't also cast: the click after it is swallowed. With its big card open, the mouse can go sideways until the card has turned a
+  // half turn (TURN_OFF), and up or down HOVER_PAD px past the card. No big card from a mouse while the boards after a move are playing.
+  const HOLD_MS = 450, HOVER_MS = 1200, HOVER_PAD = 16, TURN_OFF = 180;
+  let bigCard = null, bigFlip = null, bigBy = null, held = false;   // bigBy: the card a mouse opened the big card from
+  const ZEDGE = 8;   // layers that make the big card's edge (its thickness, .zedge)
+  const fighting = () => !!playing;
+  function showBig(c) {
+    hideBig();
+    const gc = card(c, { zoom: false }).querySelector(".gc"), box = mk("div", "zbox");
+    bigFlip = mk("div", "zflip"); bigFlip.append(gc, mk("div", "zback"));
+    for (let k = 0; k < ZEDGE; k++) { const e = mk("div", "zedge"); e.style.setProperty("--k", (k + 0.5) / ZEDGE); bigFlip.append(e); }
+    box.append(bigFlip); bigCard = mk("div", "zoom"); bigCard.append(box); document.body.append(bigCard);
+  }
+  function hideBig() { bigCard?.remove(); bigCard = null; bigFlip = null; bigBy = null; }
+  // turning the open big card: a finger turns it by how far it has moved sideways since the press; a mouse by how far it has moved
+  // across the small card since the big card opened (the card's width is a half turn)
+  const FINGER_DEG_PX = 0.75;   // degrees per pixel a finger moves: 240px turns it to its back
+  const turnBig = (deg) => { if (bigFlip) bigFlip.style.transform = `rotateY(${deg}deg)`; };
+  addEventListener("click", (e) => { if (held) { held = false; e.stopPropagation(); e.preventDefault(); } }, true);
+  document.addEventListener("contextmenu", (e) => { if (e.target.closest(".card")) e.preventDefault(); });   // a long press opens no menu
+  // one press at a time: a hold starts on a card (zoomable, below); moving the finger or letting go anywhere ends it
+  let holdTimer = null, hx = 0, hy = 0;
+  const endHold = () => { clearTimeout(holdTimer); holdTimer = null; if (bigCard && held) { hideBig(); setTimeout(() => (held = false), 400); } };
+  addEventListener("pointermove", (e) => {
+    if (holdTimer && Math.hypot(e.clientX - hx, e.clientY - hy) > 8) { clearTimeout(holdTimer); holdTimer = null; }
+    if (held && bigCard && e.pointerType !== "mouse") turnBig((e.clientX - hx) * FINGER_DEG_PX);
+  });
+  addEventListener("pointerup", endHold); addEventListener("pointercancel", endHold);
+  // el shows getC()'s card when held (touch or pen) or hovered (mouse)
+  function zoomable(el, getC) {
+    el.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") return;
+      hx = e.clientX; hy = e.clientY; held = false; clearTimeout(holdTimer);
+      holdTimer = setTimeout(() => { holdTimer = null; held = true; showBig(getC()); }, HOLD_MS);
+    });
+    // a mouse: every move over the card starts the wait again, so it opens only once the mouse stops; once open it stays (and turns)
+    // until it has turned TURN_OFF or the mouse is more than HOVER_PAD above or below the card
+    let hover = null, open = false, x0 = 0;
+    const deg = (e) => (e.clientX - x0) / el.getBoundingClientRect().width * 180;
+    const turn = (e) => { if (bigBy === el) turnBig(deg(e)); };
+    const away = (e) => {
+      const r = el.getBoundingClientRect(), y = e.clientY;
+      if (el.isConnected && Math.abs(deg(e)) < TURN_OFF && y >= r.top - HOVER_PAD && y <= r.bottom + HOVER_PAD) { turn(e); return; }
+      removeEventListener("pointermove", away); open = false; if (bigBy === el) hideBig();
+    };
+    const wait = (e) => {
+      if (e.pointerType !== "mouse") return;
+      if (open) { turn(e); return; }
+      x0 = e.clientX; clearTimeout(hover);
+      if (fighting()) return;   // no big card from a mouse while boards are playing; the next move once they're done starts the wait again
+      hover = setTimeout(() => { if (el.isConnected && !fighting()) { open = true; showBig(getC()); bigBy = el; } }, HOVER_MS);
+    };
+    el.addEventListener("pointerenter", wait); el.addEventListener("pointermove", wait);
+    el.addEventListener("pointerleave", (e) => { if (e.pointerType !== "mouse") return; clearTimeout(hover); if (open) addEventListener("pointermove", away); });
   }
 
   // a side's piles (kura, Nov 4): its deck face down, then its graveyard; at the right of the dummy's panel, the top left of yours

@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.28 "Big Card" · Wed Nov 4, 10:05 PM
+- UN/TAP's big card, copied from tap-game (kura: "copy the big card hover thing from un/tap exactly please, its perfect there"): hold any card (your hand, the stack, the Broadcasts, a graveyard's top card, a Wiretap's look) for 0.45 s, or rest the mouse on it for 1.2 s, to see it whole over a dimmed screen; it turns with your finger or mouse, shows the striped back past a quarter turn, and has UN/TAP's thin edge. A hold doesn't also cast the card, and a long press opens no menu. No big card from a mouse while the boards after a move are playing. Removed: the browser's own hover tooltip on every card (its name and effect).
+
 ## v0.27 "Snug" · Wed Nov 4, 9:58 PM
 - The dummy's row of piles and Broadcasts is only as tall as a small card and its label, so on a phone its panel has no empty space under "deck" (kura: "a lot of space on the dummy's panel underneath DECK 25"; about 31px on a 390px phone). Desktop is unchanged (its small cards already need more than 88px). Removed: the 88px floor on the dummy's row (it was there for your buttons; your row keeps it).
 
