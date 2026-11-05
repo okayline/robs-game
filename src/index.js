@@ -22,7 +22,11 @@ export default {
         { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
     }
     const m = url.pathname.match(/^\/m\/([0-9a-f]{64})(\/ws)?$/);
-    if (m && m[2]) return env.MATCH.get(env.MATCH.idFromString(m[1])).fetch(req);
+    if (m && m[2]) {
+      // a link to a match from before the Nov 5 wipe has an id the new class doesn't know: "No such match", like an expired one
+      let id; try { id = env.MATCH.idFromString(m[1]); } catch { return new Response("No such match", { status: 404 }); }
+      return env.MATCH.get(id).fetch(req);
+    }
     if (m) return new Response(PAGE, { headers: { "content-type": "text/html; charset=utf-8" } });
     return new Response("Not found", { status: 404 });
   },
@@ -45,11 +49,18 @@ async function img(n, req, ctx) {
 
 // The deal pool is 88x31's commons and uncommons (dungeon-items dealPool, through the REGISTRY service binding); rarer buttons
 // come back hidden and are left out (rules.js dealDeck).
-export class Match extends DurableObject {
+// A match is deleted after a day with no move (kura, Nov 5: "clean up all the empty unused runs"): every page load starts a match,
+// and nothing else ever removed one. The alarm is set when the match starts and pushed back a day by every move.
+const EXPIRE_MS = 24 * 60 * 60 * 1000;
+
+// Game, not Match: the class was renamed on Nov 5 so its old namespace, with every match stored before the expiry, could be
+// deleted (wrangler.jsonc migrations v2 and v3)
+export class Game extends DurableObject {
   async setup(pool) {
     const g = newGame(...dealDecks(pool));
     dummyRun(g);
     await this.ctx.storage.put("g", g);
+    await this.ctx.storage.setAlarm(Date.now() + EXPIRE_MS);
   }
 
   async fetch(req) {
@@ -64,6 +75,7 @@ export class Match extends DurableObject {
 
   async webSocketMessage(ws, msg) {
     const g = await this.ctx.storage.get("g");
+    if (!g) return ws.close(1000, "No such match");
     let a;
     try { a = JSON.parse(msg); } catch { return; }
     // one board per log line, yours and the dummy's: the page shows them one at a time (kura, Nov 4: actions and the log showed up
@@ -85,6 +97,14 @@ export class Match extends DurableObject {
     hooks.say = null;
     frames.push(view(g, "a"));   // and the board as it stands now: a line can be written before its move is finished (a cast asks for an answer after it)
     await this.ctx.storage.put("g", g);
+    await this.ctx.storage.setAlarm(Date.now() + EXPIRE_MS);
     for (const s of this.ctx.getWebSockets()) s.send(JSON.stringify({ frames }));
+  }
+
+  // The alarm: a day has passed with no move, so the match is deleted (deleteAll also removes the alarm at this compatibility
+  // date). An open page is told it's gone.
+  async alarm() {
+    await this.ctx.storage.deleteAll();
+    for (const ws of this.ctx.getWebSockets()) ws.close(1000, "Match expired");
   }
 }
