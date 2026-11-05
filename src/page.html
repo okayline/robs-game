@@ -18,7 +18,9 @@
     --bg: #1d2742; --panel: #f7fbff; --line: #b9d0ea; --frame: #8fb6de; --cream: #fffaf2;
     --ink: #3a4a6b; --mute: #5a6a8a; --pink: #e98ab3; --blue: #6d8fd0;
     --title: Cinzel, Georgia, serif; --body: "EB Garamond", Georgia, serif;
-    --w: min(112px, calc((100vw - 72px) / 5)); --u: calc(var(--w) / 108); --h: 150;
+    /* five across: 78px = the page's 16px sides, the panel's 10px padding and 1px border each side, and four 6px gaps (was 72: 6px too
+       wide on a phone, so the hand scrolled sideways) */
+    --w: min(112px, calc((100vw - 78px) / 5)); --u: calc(var(--w) / 108); --h: 150;
     --sw: min(100px, calc((100vw - 72px) / 6));   /* small cards (fields, the stack, a Wiretap's look): name, picture and card name only */
   }
   * { box-sizing: border-box; }
@@ -50,6 +52,7 @@
   .ddfoot { margin: 1px 0 0 !important; padding: 0 12px !important; }
   #hand { flex-wrap: nowrap; overflow-x: auto; min-height: calc(var(--h) * var(--u)); padding-top: 2px; }
   .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
+  #hand:not(:has(.card))::before { content: attr(data-empty); font-style: italic; color: var(--mute); }   /* your hand always holds the phone deck, so it is never :empty */
   .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
   /* your buttons: the upper right of your panel (kura, Nov 4) */
   .acts { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex: none; }
@@ -67,6 +70,7 @@
   .card.can { cursor: pointer; filter: drop-shadow(0 0 6px var(--pink)); }
   .card.dim { opacity: .55; }
   .card.gap { visibility: hidden; }
+  #hand .handdeck { display: none; }   /* your deck in the hand's last place: phones only (below) */
   #stack .look { align-self: center; margin-bottom: 24px; }   /* a Wiretap's look cards, a little higher (kura, Nov 4) */   /* the place of a card that left your hand */
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
   .card.gone { filter: grayscale(1); opacity: .75; }
@@ -107,6 +111,16 @@
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
   @keyframes land { from { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.12); } }
   .enter-land { animation: land .6s ease-out; }
+  /* on a phone your hand is two rows, 3 and then 2, so each card is about 1.7 times as wide (kura, Nov 4: "make the cards bigger on mobile",
+     using the empty height); 66px = the page's 16px sides, the panel's 10px padding and 1px border each side, and two 6px gaps */
+  @media (max-width: 500px) {
+    #hand { --w: calc((100vw - 66px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
+    /* your deck moves from the piles into the hand's last place, face down at card size (kura, Nov 4: "last space can be the player's
+       deck, face down cards"); its count stays under it, and the card back is that much shorter so the row keeps its height */
+    #mPiles .pile:first-child { display: none; }
+    #hand .handdeck { display: flex; }
+    #hand .handdeck .back, #hand .handdeck .slot { width: var(--w); height: calc(var(--h) * var(--u) - 17px); border-radius: calc(7 * var(--u)); }
+  }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -129,7 +143,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.23" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.24" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -199,7 +213,8 @@
   // your hand at the last draw: a card that wasn't in it is dealt, flying from your deck to its place (kura, Nov 4: "auto deal"),
   // one after another when there are several (the opening five)
   let inHand = new Set(), slots = [];   // slots: your hand's places, a card's uid or null for a gap
-  const deal = (els) => fly(els, $("mPiles").querySelector(".back, .slot"));
+  // from your deck: the one in your hand's last place on a phone, else the one in your piles (whichever is showing)
+  const deal = (els) => fly(els, [$("hand").querySelector(".handdeck .back, .handdeck .slot"), $("mPiles").querySelector(".back, .slot")].find((e) => e && e.offsetParent));
   // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
   // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
   // from: an element, or a box already measured (a card you played, measured when you clicked it); gap: ms between cards
@@ -286,13 +301,14 @@
     for (const c of v.me.hand) if (!slots.includes(c.uid)) { const i = slots.indexOf(null); if (i < 0) slots.push(c.uid); else slots[i] = c.uid; }
     while (slots.length && slots[slots.length - 1] === null) slots.pop();
     const dealt = [];
+    const deck = piles(v.me)[0]; deck.classList.add("handdeck");   // your deck again, for a phone's hand (CSS shows one of the two)
     $("hand").replaceChildren(...slots.map((u) => {
       if (u === null) return mk("div", "card gap");
       const c = held.get(u), f = v.winner ? null : playable(c), el = card(c, { click: f });
       if (!f && !v.winner) el.classList.add("dim");
       if (!inHand.has(c.uid)) dealt.push(el);
       return el;
-    }));
+    }), deck);
     inHand = new Set(held.keys());
     deal(dealt);
     fit();

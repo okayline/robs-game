@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.24 "Two Rows" · Wed Nov 4, 9:47 PM
+- On a phone (500px wide or less) your hand is two rows of 3, so each card is about 1.7 times as wide (108px instead of 63px on a 390px screen), and your deck sits face down at card size in the last place, with its count under it. kura: "is there a way to make the cards bigger on mobile??" and "last space can be the player's deck, face down cards". Dealt cards fly from whichever deck is showing. Fixed: the hand was 6px too wide on every phone and scrolled sideways (the card width left 72px for padding and gaps; it needs 78px). Removed: the phone hand's single row of 5 and its sideways scrollbar, and on a phone, the deck in the piles at the top of your panel (the graveyard stays there).
+
 ## v0.23 "Deep Space" · Wed Nov 4, 9:32 PM
 - The page's background is the same space picture as UN/TAP (`public/space.jpg`, 2560 × 1440, 378 KB), fixed behind everything. kura: "can you use this for robs-game background as well?" Removed: the flat midnight-blue background (it stays only as the colour shown until the picture loads).
 
