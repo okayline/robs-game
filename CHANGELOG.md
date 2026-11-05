@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.30 "Columns" · Wed Nov 4, 10:14 PM
+- Wider than a phone, each row of piles and Broadcasts (3 places, deck and graveyard: 5 things) lines up in your hand's 5 columns, each as wide as a hand card (kura: "spread out evenly across and match the cards below them"). Phones are unchanged. Removed: on wider screens, the smaller piles and places (100px) bunched at one end of their rows.
+
 ## v0.29 "Three Places" · Wed Nov 4, 10:10 PM
 - Each side's Broadcasts fill three dotted places, one for each Broadcast needed to win (kura: "blank areas for the 3 broadcast cards, dotted lines, and then they can show there"). Removed: the "No Broadcasts yet." text.
 - Your button (Pass turn, Resolve, Don't pay) is a pink bar of its own above your panel, like UN/TAP's (kura: "let's have the pass turn line be it's own panel like in un/tap"); the bar keeps its height when there's no button. This also makes room for your three places on a phone. Removed: the small pink button at the right of your panel, and the 88px height it kept your row of piles at.

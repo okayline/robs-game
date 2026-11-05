@@ -45,6 +45,12 @@
   #err { height: 1.2em; overflow: hidden; }
   /* a row of piles and Broadcasts: a small card and its label (kura, Nov 4: no empty space under the piles) */
   .zone { height: calc(var(--sw) * 76 / 108 + 20px); }
+  /* wider than a phone, each row of piles and Broadcasts has 5 things (3 places, deck, graveyard), so they line up in your hand's
+     5 columns, as wide as its cards (kura, Nov 4: "spread out evenly across and match the cards below them") */
+  @media (min-width: 501px) {
+    .side .zone { --sw: var(--w); display: grid; grid-template-columns: repeat(5, var(--w)); gap: 6px; align-items: start; }
+    .zone .row, .zone .piles { display: contents; }
+  }
   .stat.mine { margin-top: -4px; }   /* closer to the row above (kura, Nov 4) */
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
   #hand { height: calc(var(--h) * var(--u) + 4px); }
@@ -167,7 +173,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.29" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.30" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
