@@ -17,7 +17,7 @@ export const CARDS = {
   refute: { name: "Refute", kind: "Instant", type: "counter", text: "counter target spell." },
   remand: { name: "Remand", kind: "Instant", type: "counter", text: "counter target spell. Return it to its caster's hand." },
   rollback: { name: "Rollback", kind: "Instant", type: "counter", text: "counter target spell. Put it on top of its caster's deck." },
-  paywall: { name: "Paywall", kind: "Instant", type: "counter", text: "counter target spell unless its caster discards a card." },
+  paywall: { name: "Paywall", kind: "Instant", type: "counter", text: "counter target spell unless the player who cast it discards a card." },
 };
 // kura, Nov 4: "too many Wiretap"; 4 of them are Spam (was 13 Wiretap)
 // kura, Nov 4: half of the 9 Wiretaps are counters, a new one: Remand (was 9 Wiretap, no Remand)

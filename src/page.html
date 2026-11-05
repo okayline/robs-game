@@ -212,6 +212,10 @@
     .pile .gravn { display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap;
                    font: 800 calc(var(--sw) * 20 / 108)/1 var(--title); color: #fff; background: #000; border-radius: 3px;
                    padding: calc(var(--sw) * 3 / 108) calc(var(--sw) * 6 / 108); }   /* sized with the card again (kura, Nov 5: "bigger again like it was before"; 10px for a moment) */
+    /* on your turn your graveyard's box says DISCARD: off (grey on black) until tapped, then pink like its outline (kura, Nov 5: "the
+       button is turned off ... click it to turn on, DISCARD maybe lights up pink like the border"); smaller, so the word fits the card */
+    .pile.tapme .gravn { font-size: calc(var(--sw) * 13 / 108); letter-spacing: 1px; color: #9aa3b8; }
+    .pile.tapme.on .gravn { background: var(--pink); color: #fff; }
     #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
                       font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
@@ -253,7 +257,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.59" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.60" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -264,7 +268,7 @@
     refute: ["Refute", "Instant", "counter target spell."],
     remand: ["Remand", "Instant", "counter target spell. Return it to its caster's hand."],
     rollback: ["Rollback", "Instant", "counter target spell. Put it on top of its caster's deck."],
-    paywall: ["Paywall", "Instant", "counter target spell unless its caster discards a card."],
+    paywall: ["Paywall", "Instant", "counter target spell unless the player who cast it discards a card."],
   };
   const WIN = 3;   // Broadcasts to win (rules.js WIN)
   // an empty Broadcast place: a signal with a line through it, and "Broadcast: OFF"
@@ -585,6 +589,7 @@
     if (myGrave && canDiscard) {
       myGrave.classList.add("tapme"); myGrave.classList.toggle("on", discarding);
       myGrave.onclick = () => { discarding = !discarding; draw(lastV); };
+      myGrave.querySelector(".gravn").textContent = "DISCARD";   // on your turn the box is a Discard switch (kura, Nov 5)
     }
     autoAct = null;
     if (acts.length === 1 && acts[0][0] === "Pass turn" && !canDiscard && !v.winner && !v.me.hand.some((c) => playable(c))) {   // nothing else to do: it passes by itself

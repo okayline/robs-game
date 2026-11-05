@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.60 "Who Pays" · Thu Nov 5, 12:58 AM
+- Paywall's text: "counter target spell unless the player who cast it discards a card." The rule is the same; it now says plainly who pays. Removed: "unless its caster discards a card", which could read as the Paywall's caster.
+- On a phone, on your turn, your graveyard's box says DISCARD: grey while off, pink once you tap it (with the pink outline). Outside your turn it shows 🪦 and the count. Removed: the 🪦 count on your graveyard while you could discard.
+
 ## v0.59 "Just the Facts" · Thu Nov 5, 12:46 AM
 - The log says only what happened, with no instructions: its last line is short ("The Webmaster cast Remand.", "Your turn.", "Wiretap.", "Paywall.", "Discard."), and a Paywall's line reads "Paywall resolves on Broadcast." The log's text is bigger: 15 on PC, 14 on a phone. Removed: the instructions in the log ("Answer it with a counter, or resolve it.", "cast an Enchantment or a Sorcery, tap your graveyard…", "pick the card…", "you can discard a card to keep…"), and the 13 (PC) and 12 (phone) log text.
 - The type line on cards (Instant, Sorcery, Enchantment) is almost twice as big (12, was 6.4). Removed: the small type line.
