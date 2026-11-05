@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.62 "Short Version" · Thu Nov 5, 1:15 AM
+- Cards show a short line ("Broadcast · Stays on your side.", "Remand · Counter; it goes back to their hand."), in bigger text (11, was 8.5, the biggest that fits all eight). The big card shows the full text. Card texts start with a capital. Removed: the full text on cards on the board, and the 8.5 card text.
+
 ## v0.61 "Hands Off" · Thu Nov 5, 1:02 AM
 - Resting the mouse on your graveyard while it's the Discard button doesn't open the big card. Holding it with a finger still does, and so does hovering it outside your turn. Removed: the big card popping up over the Discard button.
 - Small cards (your and the Webmaster's Broadcasts, graveyards) use their frame better: a thinner frame, the picture a little wider (87% of the card, was 81%), picture and name in the middle, and the name bigger (12, was 8). Removed: the thicker frame on small cards, the picture at the top with space below, and the small name.

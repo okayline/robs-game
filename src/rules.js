@@ -10,14 +10,14 @@
 // A deck is an array with its top card at index 0.
 
 export const CARDS = {
-  broadcast: { name: "Broadcast", kind: "Enchantment", type: "neon", text: "stays on your side when it resolves. With 3 on your side, you win the game." },
-  wiretap: { name: "Wiretap", kind: "Sorcery", type: "construction", text: "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in their deck." },
-  spam: { name: "Spam", kind: "Sorcery", type: "guestbook", text: "put the top 2 cards of their deck into their graveyard." },
-  undelete: { name: "Undelete", kind: "Sorcery", type: "construction", text: "shuffle your graveyard into your deck." },
-  refute: { name: "Refute", kind: "Instant", type: "counter", text: "counter target spell." },
-  remand: { name: "Remand", kind: "Instant", type: "counter", text: "counter target spell. Return it to its caster's hand." },
-  rollback: { name: "Rollback", kind: "Instant", type: "counter", text: "counter target spell. Put it on top of its caster's deck." },
-  paywall: { name: "Paywall", kind: "Instant", type: "counter", text: "counter target spell unless the player who cast it discards a card." },
+  broadcast: { name: "Broadcast", kind: "Enchantment", type: "neon", text: "Stays on your side when it resolves. With 3 on your side, you win the game." },
+  wiretap: { name: "Wiretap", kind: "Sorcery", type: "construction", text: "Look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in their deck." },
+  spam: { name: "Spam", kind: "Sorcery", type: "guestbook", text: "Put the top 2 cards of their deck into their graveyard." },
+  undelete: { name: "Undelete", kind: "Sorcery", type: "construction", text: "Shuffle your graveyard into your deck." },
+  refute: { name: "Refute", kind: "Instant", type: "counter", text: "Counter target spell." },
+  remand: { name: "Remand", kind: "Instant", type: "counter", text: "Counter target spell. Return it to its caster's hand." },
+  rollback: { name: "Rollback", kind: "Instant", type: "counter", text: "Counter target spell. Put it on top of its caster's deck." },
+  paywall: { name: "Paywall", kind: "Instant", type: "counter", text: "Counter target spell unless the player who cast it discards a card." },
 };
 // kura, Nov 4: "too many Wiretap"; 4 of them are Spam (was 13 Wiretap)
 // kura, Nov 4: half of the 9 Wiretaps are counters, a new one: Remand (was 9 Wiretap, no Remand)
