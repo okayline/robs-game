@@ -6,6 +6,7 @@ Newest first. Times are Hawaii time (HST).
 
 ## v0.92 "Tidy" · Thu Nov 5, 9:45 AM
 - A match that goes a day with no move is deleted, and every match stored before this version was deleted (kura: "can we please clean up all the empty unused runs"). Every page load starts a match, so these were mostly ones nobody played. A link to a deleted match says "No such match". Removed: matches kept forever.
+- Fixed, Thu Nov 5, 10:40 AM: This version reached the site only then. A setting left over from the old matches stopped the update from going live. Removed: that setting.
 
 ## v0.91 "No Sliver" · Thu Nov 5, 9:08 AM
 - The log box is exactly its lines tall, so no sliver of the line above shows at its top. Removed: the extra 6px at the top of the box.
