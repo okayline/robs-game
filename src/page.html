@@ -125,7 +125,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.21" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.22" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -210,15 +210,18 @@
         { duration: ms, delay: i * gap, easing: "ease-out", fill: "backwards" });
     });
   }
-  // cards flying off to a spot on the screen and fading there (the reverse of fly): a Wiretap's unpicked cards back to the dummy's deck
+  // cards flying off to a spot on the screen and staying there, at its size, until the next board (the reverse of fly; nothing fades:
+  // kura, Nov 4, "not have disappearing animations"): a Wiretap's unpicked cards back onto the dummy's deck, in the order they go
+  // back, so the card on top lands last
   function away(els, to) {
     if (!els.length || !to || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1, d = to.getBoundingClientRect();
     els.forEach((el, i) => {
       const r = el.getBoundingClientRect();
       const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k;
-      el.animate([{ transform: "none", opacity: 1 }, { transform: `translate(${dx}px, ${dy}px) scale(.6)`, opacity: 0 }],
-        { duration: 800, delay: 300 + i * 200, easing: "ease-in", fill: "forwards" });
+      el.style.position = "relative"; el.style.zIndex = 5 + i;   // a later card flies over an earlier one
+      el.animate([{ transform: "none" }, { transform: `translate(${dx}px, ${dy}px) scale(${d.width / r.width})` }],
+        { duration: 700, delay: 300 + i * 500, easing: "ease-in-out", fill: "forwards" });
     });
   }
   // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
@@ -269,7 +272,7 @@
     $("stack").replaceChildren(...els);
     for (const [el, src] of from) fly([el], src);
     fly(newLook, $("tPiles").querySelector(".back, .slot"), { gap: 400, ms: 900, scale: .6 });
-    if (back) away(look, $("tPiles").querySelector(".back, .slot"));
+    if (back) away([...look].reverse(), $("tPiles").querySelector(".back, .slot"));   // look[0] is the new top card: it lands last
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining

@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.22 "Stays Put" · Wed Nov 4, 9:12 PM
+- A Wiretap's unpicked cards fly back onto the dummy's deck one at a time, in the order they go back: the card you chose for the top lands last, on top. They don't fade; each stays on the deck pile, at its size, until the next board. kura: "can they not disappear, and go back in the order that makes sense" and "not have disappearing animations". Removed: the fade-out, and both cards flying back at once in screen order.
+
 ## v0.21 "Refill" · Wed Nov 4, 9:10 PM
 - At the start of each turn, the player's hand refills to 5 (both players), one card at a time, so drawing from an empty deck still loses. The log says how many were drawn. kura: "have the player's hand refill every round". Removed: drawing 1 card a turn, and the first player skipping their first draw (their hand is already 5).
 
