@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.61 "Hands Off" · Thu Nov 5, 1:02 AM
+- Resting the mouse on your graveyard while it's the Discard button doesn't open the big card. Holding it with a finger still does, and so does hovering it outside your turn. Removed: the big card popping up over the Discard button.
+- Small cards (your and the Webmaster's Broadcasts, graveyards) use their frame better: a thinner frame, the picture a little wider (87% of the card, was 81%), picture and name in the middle, and the name bigger (12, was 8). Removed: the thicker frame on small cards, the picture at the top with space below, and the small name.
+- A resolved Broadcast shows an on-air sign at the right of its name bar: the Broadcast-off mast without its slash, its waves pulsing out. Removed: nothing.
+
 ## v0.60 "Who Pays" · Thu Nov 5, 12:58 AM
 - Paywall's text: "counter target spell unless the player who cast it discards a card." The rule is the same; it now says plainly who pays. Removed: "unless its caster discards a card", which could read as the Paywall's caster.
 - On a phone, on your turn, your graveyard's box says DISCARD: grey while off, pink once you tap it (with the pink outline). Outside your turn it shows 🪦 and the count. Removed: the 🪦 count on your graveyard while you could discard.

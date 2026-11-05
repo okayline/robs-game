@@ -146,7 +146,19 @@
   .zoom .gc-txt { font-size: calc(7.5 * var(--u)); }
   /* small cards (fields, the stack, the dummy's looks) show only the name, picture and card name */
   .card.small .gc-txt { display: none; }
-  .card.small .gc-type { font-size: calc(8 * var(--u)); }
+  /* small cards (fields, graveyards, the stack's look) use their frame better: a thinner frame and inside, the picture as wide as fits,
+     picture and name bar in the middle, and a bigger name (kura, Nov 5: "played button text bigger ... using the frame space better";
+     was a 5 frame, 4 inside, the picture at the top and the name at 8) */
+  .card.small .gc { padding: calc(3 * var(--u)); }
+  .card.small .gc-in { padding: calc(3 * var(--u)); justify-content: center; }
+  .card.small .gc-art { height: auto; }
+  .card.small .gc-art img, .card.small .gc-art canvas { width: 100%; height: auto; aspect-ratio: 88 / 31; }
+  .card.small .gc-type { font-size: calc(12 * var(--u)); }
+  /* a resolved Broadcast's on-air sign: at the right of its name bar, the inner waves then the outer ones fading in and out */
+  .gc-type .onair { margin-left: auto; width: 1.15em; height: 1.15em; flex: none; }
+  .onair .w1, .onair .w2 { animation: onair 1.6s ease-in-out infinite; }
+  .onair .w2 { animation-delay: .3s; }
+  @keyframes onair { 0%, 100% { opacity: .2; } 50% { opacity: 1; } }
   /* the piles: a deck face down (tap-game's card-back stripes, thicker the more cards are left) and a graveyard's top card face up */
   .zone { display: flex; gap: 10px; align-items: flex-start; }
   .zone .row { flex: 1; min-width: 0; }
@@ -257,7 +269,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.60" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.61" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -273,6 +285,9 @@
   const WIN = 3;   // Broadcasts to win (rules.js WIN)
   // an empty Broadcast place: a signal with a line through it, and "Broadcast: OFF"
   const NO_SIGNAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="1.5"/><path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.5 5.5a9 9 0 0 0 0 13M18.5 5.5a9 9 0 0 1 0 13M12 14v7"/><path d="M3 3l18 18"/></svg>';
+  // the same mast turned on, its waves pulsing out (kura, Nov 5: "this icon, but turned on and animated"), at the right of a resolved
+  // Broadcast's name bar
+  const ON_AIR = '<svg class="onair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="1.5"/><path class="w1" d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7"/><path class="w2" d="M5.5 5.5a9 9 0 0 0 0 13M18.5 5.5a9 9 0 0 1 0 13"/><path d="M12 14v7"/></svg>';
   const offAir = () => { const e = mk("div", "slot spot"); e.innerHTML = `${NO_SIGNAL}<span>Broadcast:<br>off</span>`; return e; };
   const $ = (id) => document.getElementById(id);
   const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
@@ -321,7 +336,9 @@
     const txt = mk("div", "gc-txt"), fx = mk("div");
     fx.append(mk("b", "", name), ` · ${text}`);
     txt.append(fx, mk("div", "rule"), mk("div", "flav", `“${c.flav}”`));
-    inn.append(mk("div", "gc-name", c.name), art, mk("div", "gc-type", small ? name : kind), txt);
+    const type = mk("div", "gc-type", small ? name : kind);
+    if (live && c.card === "broadcast") type.insertAdjacentHTML("beforeend", ON_AIR);   // on the air
+    inn.append(mk("div", "gc-name", c.name), art, type, txt);
     gc.append(inn); el.append(gc);
     if (click) {   // a tap plays it, and so does a quick upward flick on a phone; a flick's own click (if the browser sends one) is skipped
       let flicked = -1e9;
@@ -399,6 +416,7 @@
       if (open) { turn(e); return; }
       x0 = e.clientX; clearTimeout(hover);
       if (fighting()) return;   // no big card from a mouse while boards are playing; the next move once they're done starts the wait again
+      if (el.closest(".pile.tapme")) return;   // nor on your graveyard while it's the Discard button (kura, Nov 5)
       hover = setTimeout(() => { if (el.isConnected && !fighting()) { open = true; showBig(getC()); bigBy = el; } }, HOVER_MS);
     };
     el.addEventListener("pointerenter", wait); el.addEventListener("pointermove", wait);
