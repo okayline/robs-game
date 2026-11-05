@@ -128,6 +128,8 @@
      using the empty height); 66px = the page's 16px sides, the panel's 10px padding and 1px border each side, and two 6px gaps */
   @media (max-width: 500px) {
     #hand { --w: calc((100vw - 66px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
+    /* your 3 Broadcast places at the right edge, with space between them and your graveyard (kura, Nov 4: "for phones only") */
+    #mField { justify-content: flex-end; }
     /* your deck moves from the piles into the hand's last place, face down at card size (kura, Nov 4: "last space can be the player's
        deck, face down cards") */
     #mPiles .pile:first-child { display: none; }
@@ -173,7 +175,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.30" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.31" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {

@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.31 "Right Edge" · Wed Nov 4, 10:17 PM
+- On a phone, your 3 Broadcast places sit at the right edge of your row, with space between them and your graveyard (kura: "left two deck and graveyard can have space between right three broadcast places", "for phones only"). Removed: the places bunched just right of the graveyard.
+
 ## v0.30 "Columns" · Wed Nov 4, 10:14 PM
 - Wider than a phone, each row of piles and Broadcasts (3 places, deck and graveyard: 5 things) lines up in your hand's 5 columns, each as wide as a hand card (kura: "spread out evenly across and match the cards below them"). Phones are unchanged. Removed: on wider screens, the smaller piles and places (100px) bunched at one end of their rows.
 
