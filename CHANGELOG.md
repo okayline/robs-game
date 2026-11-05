@@ -4,6 +4,12 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.54 "Plain Text" · Thu Nov 5, 12:13 AM
+- Like UN/TAP, cards have no flavour line, and their text is bigger (8.5, was 7.5). The big card still shows the flavour. Removed: the flavour line and the line above it on cards.
+- The log is a strip across the bottom of the middle panel, under the stack, in bigger text (11, 10 on a phone), so most lines fit on one line. Removed: the narrow 9-size log column left of the stack, which cards on the stack could cover.
+- On a phone the panels sit 5px in from the screen's edges (more when the page shrinks to fit). Removed: the 14px gaps.
+- On a phone your deck always stays in the last place of your hand, however few cards you hold. Removed: the deck moving forward when your hand had fewer than 5 cards.
+
 ## v0.53 "Scroll Up" · Thu Nov 5, 12:06 AM
 - The log has no box of its own and reads top to bottom: oldest at the top, what to do now at the bottom. Each new line slides the lines up. Removed: the log's cream box and newest-on-top order.
 - On a phone each side's 3 Broadcast places share the room beside its piles, so the row fills the panel. Removed: the small places with empty space beside them.
