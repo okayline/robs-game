@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.33 "Where It Went" · Wed Nov 4, 10:24 PM
+- One rule for every card that leaves a spot (kura: "i like your rule"): it flies to where it went, one after another, 0.4 s apart, 0.7 s each. A resolved Broadcast flies from the stack to its place; a countered spell, a used counter, a finished Wiretap or Undelete fly to their graveyard; your Paywall discard flies from your hand to your graveyard; your Wiretap's pick flies to the dummy's graveyard; a card going onto a deck (Rollback, Undelete's top card) turns face down halfway there. A card now out of sight (in a deck, or under a newer graveyard card) is copied, and the copy flies onto the pile. The dummy's draws: face-down cards fly from its deck to its hand count. Removed: the Broadcast's pop-in with a bounce at its place, and cards vanishing from the stack and your hand.
+
 ## v0.32 "Face Down" · Wed Nov 4, 10:20 PM
 - Fixed: the Resolve button was missing on the board that shows the dummy's cast (kura: "the resolve button disappeared when it was the dummy's turn"); it came back a step later. A cast now asks for an answer before its log line is written, so that board shows Resolve. Removed: that step without a button.
 - The dummy's Wiretap shows what happens (kura: "simply and lightly animate what's actually happening"): your top cards come off your deck face down, one by one, beside the Wiretap; the one it picks flies to your graveyard; the rest fly back onto your deck. The match now tells your page how many cards are being looked at (only the count). Removed: the Wiretap just standing on the stack and going.

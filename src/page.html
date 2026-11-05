@@ -125,8 +125,6 @@
   /* the stack, like Magic's: each card cast in answer sits on top of the one before, overlapping it and a little higher (kura, Nov 4) */
   #stack .tagged + .tagged { margin-left: calc(-0.55 * var(--w)); }
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
-  @keyframes land { from { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.12); } }
-  .enter-land { animation: land .6s ease-out; }
   /* on a phone your hand is two rows, 3 and then 2, so each card is about 1.7 times as wide (kura, Nov 4: "make the cards bigger on mobile",
      using the empty height); 66px = the page's 16px sides, the panel's 10px padding and 1px border each side, and two 6px gaps */
   @media (max-width: 500px) {
@@ -178,7 +176,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.32" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.33" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -226,6 +224,7 @@
     inn.append(mk("div", "gc-name", c.name), art, mk("div", "gc-type", small ? name : kind), txt);
     gc.append(inn); el.append(gc);
     if (click) el.onclick = click;
+    el.dataset.uid = c.uid;
     if (zoom) zoomable(el, () => c);
     if (!tag) return el;
     const box = mk("div", "tagged"); box.append(el, mk("span", "by", tag)); return box;
@@ -313,7 +312,7 @@
   // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
   // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
   // from: an element, or a box already measured (a card you played, measured when you clicked it); gap: ms between cards
-  function fly(els, from, { gap = 150, ms = 600, scale = .45 } = {}) {
+  function fly(els, from, { gap = 150, ms = 600, scale = .45, delay = 0 } = {}) {
     if (!els.length || !from || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1;   // fit()'s scale
     const d = from.getBoundingClientRect ? from.getBoundingClientRect() : from;
@@ -321,7 +320,7 @@
       const r = el.getBoundingClientRect();
       const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k;
       el.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: .4 }, { transform: "none", opacity: 1 }],
-        { duration: ms, delay: i * gap, easing: "ease-out", fill: "backwards" });
+        { duration: ms, delay: delay + i * gap, easing: "ease-out", fill: "backwards" });
     });
   }
   // cards flying off to a spot on the screen and staying there, at its size, until the next board (the reverse of fly; nothing fades:
@@ -342,17 +341,40 @@
       if (flip) setTimeout(() => el.classList.add("down"), delay + ms / 2);
     });
   }
+  // kura, Nov 4 (the rule): every card that leaves a spot flies to where it went, one after another (MOVE_GAP apart): face up to a
+  // graveyard or a Broadcast place, turning face down halfway to a deck. A card still on screen flies from its old box to its new one;
+  // one that's now out of sight (in a deck, or under a graveyard's top card) is copied, and the copy flies onto the pile.
+  const MOVE_GAP = 400, MOVE_MS = 700;
+  function ghost(src, box, to, { delay = 0, flip = false } = {}) {
+    if (!to || !box.width || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const d = to.getBoundingClientRect(), g = src.cloneNode(true);
+    g.classList.remove("dim", "can"); g.style.cssText = "";
+    Object.assign(g.style, { position: "fixed", left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px`, margin: "0",
+      zIndex: "30", pointerEvents: "none", transformOrigin: "0 0", visibility: "hidden" });
+    g.style.setProperty("--w", `${box.width}px`); g.style.setProperty("--sw", `${box.width}px`); g.style.setProperty("--u", "calc(var(--w) / 108)");
+    document.body.append(g);
+    const s = d.width / box.width, dx = d.left - box.left, dy = d.top - box.top, end = `translate(${dx}px, ${dy}px) scale(${s})`;
+    const k = flip ? [{ transform: "none" }, { transform: `translate(${dx / 2}px, ${dy / 2}px) scale(${(1 + s) / 2}, ${(1 + s) / 2}) scaleX(0)`, offset: .5 }, { transform: end }]
+      : [{ transform: "none" }, { transform: end }];
+    setTimeout(() => (g.style.visibility = ""), delay);
+    if (flip) setTimeout(() => g.classList.add("down"), delay + MOVE_MS / 2);
+    g.animate(k, { duration: MOVE_MS, delay, easing: "ease-in-out", fill: "forwards" }).finished.then(() => g.remove());
+  }
+  let lastV = null, sentAway = new Set();   // the board before this one; the Wiretap cards already flown back onto a deck
   // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
   let played = null, looked = new Set(), lookOrder = [];   // looked: the Wiretap look cards on screen; lookOrder: their uids, left to right
   let downN = 0, downBoxes = [];   // the dummy's Wiretap: how many of your cards it's looking at (face down), and where they were on screen
   const play1 = (c, msg) => (e) => { played = { uid: c.uid, box: e.currentTarget.getBoundingClientRect() }; send(msg); };
-  const fresh = (el, c, cls) => { if (!shown.has(c.uid)) el.classList.add(cls); return el; };
 
   function draw(v) {
+    const before = new Map([...document.querySelectorAll("#game .card[data-uid]")].map((el) =>
+      [el.dataset.uid, { el, box: el.getBoundingClientRect(), where: el.closest("#stack") ? "stack" : el.closest("#hand") ? "hand" : "other" }]));
+    const pv = lastV; lastV = v;
+    const tDeckBox = $("tPiles").querySelector(".back, .slot")?.getBoundingClientRect();
     $("tHand").textContent = v.them.hand;
     $("tPiles").replaceChildren(...piles(v.them)); $("mPiles").replaceChildren(...piles(v.me));
     // each side's Broadcasts fill three dotted places, one per Broadcast needed to win (kura, Nov 4: "blank areas for the 3 broadcast cards")
-    const field = (list) => [...list.map((c) => fresh(card(c, { small: true }), c, "enter-land")), ...Array.from({ length: Math.max(0, WIN - list.length) }, () => mk("div", "slot spot"))];
+    const field = (list) => [...list.map((c) => card(c, { small: true })), ...Array.from({ length: Math.max(0, WIN - list.length) }, () => mk("div", "slot spot"))];
     $("tField").replaceChildren(...field(v.them.field));
     $("mField").replaceChildren(...field(v.me.field));
     const p = v.pending, mine = v.waiting, acts = [];
@@ -408,6 +430,7 @@
     if (back && look.length) {
       const byUid = new Map(look.map((el) => [el.dataset.uid, el]));
       away([...p.look].reverse().map((c) => byUid.get(c.uid)), $("tPiles").querySelector(".back, .slot"), { flip: true });   // p.look[0]: the new top card
+      for (const c of p.look) sentAway.add(c.uid);
     }
     if (n && !back && n > prevDown) later.push(() => fly(down.slice(prevDown), myDeck(), { gap: 400, ms: 900, scale: .6 }));
     if (n && !back && n < prevDown && prevBoxes.length) later.push(() => fly([$("mPiles").querySelectorAll(".pile")[1]?.firstChild].filter(Boolean), prevBoxes[prevBoxes.length - 1], { ms: 700, scale: 1 }));
@@ -432,6 +455,26 @@
     inHand = new Set(held.keys());
     deal(dealt);
     for (const f of later) f();
+    // the rule: cards that left the stack, your hand or a graveyard's top fly to where they went
+    const graveOf = (id) => $(id).querySelectorAll(".pile")[1]?.firstElementChild;
+    const deckOf = (uid) => (uid[0] === "a" ? myDeck() : $("tPiles").querySelector(".back, .slot"));   // seat a is always you
+    const inGrave = (uid) => (v.me.grave.some((c) => c.uid === uid) ? "#mPiles" : v.them.grave.some((c) => c.uid === uid) ? "#tPiles" : null);
+    let i = 0;
+    for (const [uid, b] of before) {
+      if (sentAway.has(uid)) continue;
+      const now = document.querySelector(`#game .card[data-uid="${uid}"]`);
+      if (now) {   // still on screen: moved from the stack or your hand to a Broadcast place or a graveyard's top
+        if (b.where !== "other" && !now.closest("#stack, #hand")) fly([now], b.box, { ms: MOVE_MS, scale: b.box.width / now.getBoundingClientRect().width, delay: i++ * MOVE_GAP });
+        continue;
+      }
+      const g = inGrave(uid);
+      if (b.where === "other" && g) continue;   // a graveyard's old top card, now under a newer one
+      if (g) ghost(b.el, b.box, graveOf(g), { delay: i++ * MOVE_GAP });   // into a graveyard, under another card going there too
+      else if (!v.me.hand.some((c) => c.uid === uid)) ghost(b.el, b.box, deckOf(uid), { delay: i++ * MOVE_GAP, flip: true });   // onto a deck: Rollback, Undelete
+    }
+    // the dummy's draws: face-down cards from its deck to its hand count
+    if (pv && tDeckBox && v.them.hand > pv.them.hand && v.them.deck < pv.them.deck)
+      for (let k = 0; k < Math.min(v.them.hand - pv.them.hand, pv.them.deck - v.them.deck); k++) ghost(mk("div", "card small down"), tDeckBox, $("tHand"), { delay: k * 150 });
     fit();
   }
   // shrink the whole screen to fit a short window, never grow it (tap-game's fit())
