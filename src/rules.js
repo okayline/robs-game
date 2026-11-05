@@ -1,16 +1,17 @@
 // Rob's Game rules: a blue-only card game (kura, Nov 4). Pure functions over a plain game object, so the Match Durable Object
 // (index.js), the dummy (dummy.js) and the tests all use the same rules.
 //
-// Each player has a 30-card deck: 5 Broadcast, 13 Wiretap, 2 Undelete, 6 Refute, 2 Rollback, 2 Paywall. Start with 5 cards.
+// Each player has a 30-card deck: 5 GPU, 5 Wiretap, 4 Spam, 2 Undelete, 6 Refute, 4 Remand, 2 Rollback, 2 Paywall. Start with 5 cards.
 // On your turn: your hand refills to 5 (kura, Nov 4), then cast at most one Enchantment or Sorcery, then pass.
-// Instants (Refute, Rollback, Paywall) are only cast in answer to a spell, and a Counter can be answered by another Counter:
+// Instants (Refute, Remand, Rollback, Paywall) are only cast in answer to a spell, and a Counter can be answered by another Counter:
 // the stack resolves from the top, each Counter countering the spell just below it.
-// You win when 3 of your Broadcasts have resolved. You lose when you must draw from an empty deck.
+// You win when 3 of your GPUs have resolved. You lose when you must draw from an empty deck.
+// The GPU's key in code is still "broadcast" (it was the Broadcast until v0.69), so old matches and the dummy's play keep working.
 //
 // A deck is an array with its top card at index 0.
 
 export const CARDS = {
-  broadcast: { name: "Broadcast", kind: "Enchantment", type: "neon", text: "Stays on your side when it resolves. With 3 on your side, you win the game." },
+  broadcast: { name: "GPU", kind: "Enchantment", text: "Broken until it resolves, then its temps are stable. A player with 3 stable GPUs wins." },
   wiretap: { name: "Wiretap", kind: "Sorcery", type: "construction", text: "Look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in their deck." },
   spam: { name: "Spam", kind: "Sorcery", type: "guestbook", text: "Put the top 2 cards of their deck into their graveyard." },
   undelete: { name: "Undelete", kind: "Sorcery", type: "construction", text: "Shuffle your graveyard into your deck." },
@@ -30,10 +31,6 @@ export const NAMES = { a: "you", b: "the Webmaster" };
 // Flavour lines: real lines from old personal web pages (kura, Nov 4), one picked per card when the decks are dealt. The same lines,
 // with where each was found, are in tap-game's page.html (by button type).
 export const FLAVOUR = {
-  broadcast: ["You have to really have a site that ROCKS to win this one.", "This award is hard to acquire.", "Awards This Site Has Won",
-    "Your page is spectacular....", "You are one of the best.....", "It's my honour to win this award.",
-    "I cannot express my happiness in words when I receive this award.", "Click HERE to vote for this page as a Starting Point Hot Site.",
-    "Your site has been awarded the .Cool Reality Award.", "My teacher just about kissed the screen.", "Absolutly mind bogglingly awesome site!"],
   wiretap: ["Lurker Lounge Lizard", "This site is still under construction", "I only sampled a bit of it but will return to view the rest when able.",
     "no time to scan it all but what I requested was interesting", "Some of these would look great on my home page."],
   // guestbook spam (tap-game page.html's guestbook lines: oocities.org/capecanaveral/lab/8803/geobook.html, 1998-2000, and oocities.org/mbreden/cats.html)
@@ -48,6 +45,33 @@ export const FLAVOUR = {
   paywall: ["No frames? Too bad! Continue at your own risk.", "Once you're here you're stuck.", "Any reproduction, duplication, or distribution in any form is expressly prohibited."],
 };
 
+// The GPUs (kura, Nov 5: "can Broadcasts be GPUs please", for Rob, who builds PCs). Each side gets 5 of these 10, all different. pic: the
+// picture in public/gpu/ (kura's own 88x31 pixel art); spin: public/gpu/<pic>-frames.png holds 24 frames of its fans turning, shown once it
+// has resolved (the other pictures stay still for now). gen: the chip generation, after "Enchantment —" on the big card. flav: a real
+// line from when the card was on sale (kura's pick, Nov 5; kura: capital first letter and proper punctuation), from:
+//   RTX 5090: NVIDIA's CES 2025 claim, pcgamer.com/hardware/graphics-cards/nvidia-announces-the-rtx-50-series-led-by-the-usd1-999-rtx-5090-with-twice-the-performance-of-the-4090
+//   RTX 5080: Jensen Huang at CES 2025, techpowerup.com/330611/nvidia-2025-international-ces-keynote-liveblog
+//   RTX 5070 Ti: NVIDIA's launch article title, nvidia.com/en-in/geforce/news/rtx-5070-ti-out-now/
+//   RTX 5070: Jensen Huang at CES 2025, pcgamer.com/hardware/graphics-cards/is-the-new-rtx-5070-really-as-fast-as-nvidias-previous-flagship-rtx-4090-gpu-turns-out-the-answer-is-yes-kinda
+//   RTX 4090: NVIDIA's launch article, nvidia.com/en-us/geforce/news/geforce-rtx-4090-out-now
+//   GTX 1080 Ti: NVIDIA's launch article, nvidia.com/en-us/geforce/news/nvidia-geforce-gtx-1080-ti
+//   Arc B580: Intel Arc's banner on asrock.com/Graphics-Card/Intel/Intel%20Arc%20B580%20Steel%20Legend%2012GB%20OC/index.jp.asp
+//   RX 9070 XT: David McAfee, AMD, at launch, techpowerup.com/333301/amd-rdna-4-and-radeon-rx-9070-series-unveiled-usd-549-usd-599
+//   RX 9070: AMD's RX 9000 Series line, amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070-gre.html
+//   Voodoo3 3000: a 1999 Voodoo3 print ad as an eBay seller describes it, ebay.com/itm/166305819875 (not confirmed elsewhere)
+export const GPUS = [
+  { model: "RTX 5090", pic: "rtx-5090", spin: true, gen: "Blackwell", flav: "Twice the performance of the 4090." },
+  { model: "RTX 5080", pic: "rtx-5080", gen: "Blackwell", flav: "AI is coming home to GeForce." },
+  { model: "RTX 5070 Ti", pic: "rtx-5070-ti", spin: true, gen: "Blackwell", flav: "Supercharge gaming and creating." },
+  { model: "RTX 5070", pic: "rtx-5070", gen: "Blackwell", flav: "RTX 4090 performance at $549." },
+  { model: "RTX 4090", pic: "rtx-4090", gen: "Ada Lovelace", flav: "Beyond fast." },
+  { model: "GTX 1080 Ti", pic: "gtx-1080-ti", gen: "Pascal", flav: "The world's fastest gaming GPU." },
+  { model: "Arc B580", pic: "arc-b580", spin: true, gen: "Battlemage", flav: "Modern tech, better graphics, better plays." },
+  { model: "RX 9070 XT", pic: "rx-9070-xt", gen: "RDNA 4", flav: "A significant leap forward in graphics performance." },
+  { model: "RX 9070", pic: "rx-9070", gen: "RDNA 4", flav: "Ultra-fast gaming, with next-level visuals and features." },
+  { model: "Voodoo3 3000", pic: "voodoo3-3000", gen: "Avenger", flav: "Can you tell me if your eyeball rolled?" },
+];
+
 export function shuffle(arr, rnd = Math.random) {
   for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
   return arr;
@@ -56,12 +80,21 @@ const pick = (arr, rnd) => arr[Math.floor(rnd() * arr.length)];
 
 // One deck from the deal pool (88x31's commons and uncommons: dungeon-items dealPool). Each card is a button of its card's type,
 // all different within a deck while the type has enough (construction has exactly 15 for 15 slots); both decks deal separately.
+// The GPUs come from GPUS instead, 5 different ones per deck.
 export function dealDeck(pool, side, rnd = Math.random) {
   const byType = {};
   for (const b of pool) if (!b.hidden) (byType[b.type] ??= []).push(b);
   const left = Object.fromEntries(Object.entries(byType).map(([t, l]) => [t, shuffle([...l], rnd)]));
-  const deck = [];
+  const deck = [], gpus = shuffle([...GPUS], rnd);
   for (const [card, n] of Object.entries(DECK)) {
+    if (card === "broadcast") {
+      for (let i = 0; i < n; i++) {
+        const g = gpus[i % gpus.length];
+        deck.push({ uid: `${side}${deck.length}`, card, id: 0, name: g.model, image: `/gpu/${g.pic}.png`, spin: g.spin ? `/gpu/${g.pic}-frames.png` : null,
+          gen: g.gen, series: null, rarity: "common", flav: g.flav });
+      }
+      continue;
+    }
     const t = CARDS[card].type;
     for (let i = 0; i < n; i++) {
       if (!left[t]?.length) left[t] = shuffle([...(byType[t] ?? [])], rnd);
@@ -159,7 +192,7 @@ function spell(g, c) {
   const me = g.sides[c.by], them = g.sides[other(c.by)];
   if (c.card === "broadcast") {
     me.field.push(strip(c));
-    say(g, `Broadcast resolves: ${NAMES[c.by]} ${c.by === "a" ? "have" : "has"} ${me.field.length} of ${WIN}.`);
+    say(g, `GPU resolves: ${NAMES[c.by]} ${c.by === "a" ? "have" : "has"} ${me.field.length} of ${WIN} stable.`);   // kura, Nov 5
     if (me.field.length >= WIN) { g.winner = c.by; say(g, `${cap(NAMES[c.by])} win${c.by === "a" ? "" : "s"}!`); }
     return;
   }

@@ -4,6 +4,14 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.69 "GPUs" · Thu Nov 5, 6:28 AM
+- Broadcasts are now GPUs: ten real graphics cards in pixel art, from a Voodoo3 3000 to an RTX 5090, and each deck gets 5 different ones. A GPU is broken until it resolves; resolve 3 to win. The rules are the same.
+- The card says "GPU · Stable temps once resolved." Its big card names the model, says "Enchantment — " and the chip generation (Blackwell, Ada Lovelace, Pascal, Battlemage, RDNA 4, Avenger), and quotes a line from when the card was on sale.
+- On the RTX 5090, RTX 5070 Ti and Arc B580, the fans spin once it has resolved; the rest stay still for now. A resolved GPU's bar says "GPU · ONLINE" with a green dot.
+- An empty place says "Temps: unstable" with a crossed-out thermometer, and the log says "GPU resolves: you have 2 of 3 stable."
+- How to play now starts "Resolve 3 GPUs to win!".
+- Removed: the Broadcasts' neon buttons and award lines, the "Broadcast: off" sign, and the on-air waves on a resolved card.
+
 ## v0.68 "How To Play" · Thu Nov 5, 4:07 AM
 - Before anyone has played, the middle panel shows how to play in a thin light-blue frame: "Resolve 3 Broadcasts to win!", "Spam and Wiretap are attacks", "Counters are great!", "Discard one to draw one". It's smaller on a phone, and it goes away with the first move. Removed: the empty middle panel at the start.
 
