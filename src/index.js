@@ -70,8 +70,9 @@ export class Match extends DurableObject {
       a.do === "pay" ? pay(g, "a", a.uid ?? null) :
       a.do === "pass" ? pass(g, "a") : "Unknown action.";
     if (err) return ws.send(JSON.stringify({ error: err }));
-    dummyRun(g);
+    const frames = [view(g, "a")];   // your move, then each of the dummy's moves: the page shows them one at a time
+    dummyRun(g, () => frames.push(view(g, "a")));
     await this.ctx.storage.put("g", g);
-    for (const s of this.ctx.getWebSockets()) s.send(JSON.stringify({ v: view(g, "a") }));
+    for (const s of this.ctx.getWebSockets()) s.send(JSON.stringify({ frames }));
   }
 }

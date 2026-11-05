@@ -117,7 +117,7 @@
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.10" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.11" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -132,7 +132,12 @@
   const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const ws = new WebSocket(location.href.replace(/^http/, "ws") + "/ws");
   const send = (o) => { $("err").textContent = ""; ws.send(JSON.stringify(o)); };
-  ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) draw(m.v); };
+  // after your move the match sends one board per move (yours, then each of the dummy's); they're shown STEP_MS apart, so you can
+  // follow what the dummy did (kura, Nov 4: "space out when they are displayed")
+  const STEP_MS = 800, queue = [];
+  let playing = null;
+  const play = () => { if (playing) return; const next = () => { if (!queue.length) { playing = null; return; } draw(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
+  ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) draw(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
   ws.onclose = () => { $("ask").textContent = "Disconnected. Reload the page to reconnect."; };
 
   // a card: name, picture, type line, effect and flavour (small: name, picture and the card's name)
