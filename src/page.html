@@ -100,16 +100,21 @@
   /* the log: a strip across the bottom of the middle panel, under the stack, so its lines are long and mostly one line each (kura,
      Nov 5: "a little bigger font size, and have a longer row that sits closer to the bottom of the panel ... less double lines"; it was
      a narrow column left of the stack, in 9px); 3 lines high, each older line fainter */
-  #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 15px/1.3 var(--body); overflow: hidden; color: var(--ink);
-         display: flex; flex-direction: column; justify-content: flex-end; gap: 3px;
-         -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.25), #000 34%); mask-image: linear-gradient(to bottom, rgba(0,0,0,.25), #000 34%); }
+  #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 15px/1.3 var(--body); overflow: hidden; color: var(--ink); display: flex; }
+  /* a C:\> on each row of the box, always there and still, like tap-game: only the lines beside them slide and fade (kura, Nov 5: "can the
+     C:\> always be persistent like in tap-game"; each line had its own, which slid and faded with it). The rows are 1.3em apart with no gap,
+     so a wrapped line's second row has its prompt too. */
+  #logPrompts, #logLines { display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+  #logPrompts { flex: none; white-space: pre; }
+  #logPrompts div:last-child { font-weight: 700; }
+  #logLines { flex: 1; min-width: 0;
+              -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.25), #000 34%); mask-image: linear-gradient(to bottom, rgba(0,0,0,.25), #000 34%); }
   /* the text fades towards the top: 25% at the box's top edge, whole by the end of its top line (kura, Nov 5; was each older line fainter) */
   /* no box of its own, and newest at the bottom: a new line slides the lines up (kura, Nov 5: "take the panel background away" and
      "newest messages appear on the bottom ... one line at a time scrolling up") */
   /* its last line says what to do now (kura, Nov 4: it was a line of its own above the stack) */
   #log .now { font-weight: 700; }
   #log .now.win { color: #2f9e6b; } #log .now.lose { color: #d4558c; }
-  #log div::before { content: "C:\\> "; }
   /* the card: blue frame, cream inside (tap-game's .gc) */
   .card { position: relative; width: var(--w); height: calc(var(--h) * var(--u)); border: 0; padding: 0; background: none; border-radius: calc(7 * var(--u)); text-align: left; color: var(--ink); flex: none; }
   .card.small { --w: var(--sw); --u: calc(var(--w) / 108); height: calc(var(--ph) * var(--u)); }
@@ -313,7 +318,7 @@
     <div id="turnno"></div>
     <div class="row" id="stack" data-empty=""></div>
     <div id="err"></div>
-    <div id="log"></div>
+    <div id="log"><div id="logPrompts"><div>C:\&gt; </div><div>C:\&gt; </div><div>C:\&gt; </div></div><div id="logLines"></div></div>
     <button id="help" type="button" aria-label="How to play">?</button>
     <div id="intro" hidden></div>
     <div id="helpbox" hidden></div>
@@ -325,7 +330,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.89" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.90" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -689,15 +694,15 @@
     const lines = v.log.slice(-3).map((l) => mk("div", "", l));
     const added = logN != null && v.log.length > logN; logN = v.log.length;
     if (!now && lines.length) lines[lines.length - 1].classList.add("now");   // no line of its own: the log's last line is the bold one
-    $("log").replaceChildren(...lines, ...(now ? [now] : []));
+    $("logLines").replaceChildren(...lines, ...(now ? [now] : []));
     // even with reduced motion asked for: a short slide of a few lines of text (kura, Nov 5, who has reduced motion on: "for the text, can it
     // smoothly scroll up instead of just appear. including the main line"); a bottom line that changed on its own rises into place too
-    const bottom = $("log").lastElementChild, bottomText = bottom?.textContent ?? null;
+    const bottom = $("logLines").lastElementChild, bottomText = bottom?.textContent ?? null;
     if (added && lines.length) {
-      const up = lines[lines.length - 1].offsetHeight + 3;   // the new line and the 3px gap above it
-      for (const d of $("log").children) d.animate([{ transform: `translateY(${up}px)` }, { transform: "none" }], { duration: 500, easing: "ease-in-out" });
+      const up = lines[lines.length - 1].offsetHeight;   // the new line's height
+      for (const d of $("logLines").children) d.animate([{ transform: `translateY(${up}px)` }, { transform: "none" }], { duration: 500, easing: "ease-in-out" });
     } else if (bottom && lastBottom != null && bottomText !== lastBottom)
-      bottom.animate([{ transform: `translateY(${bottom.offsetHeight + 3}px)` }, { transform: "none" }], { duration: 500, easing: "ease-in-out" });
+      bottom.animate([{ transform: `translateY(${bottom.offsetHeight}px)` }, { transform: "none" }], { duration: 500, easing: "ease-in-out" });
     lastBottom = bottomText;
     // the stack, full size so its text can be read (kura, Nov 4); a Wiretap being finished stays there, with the cards it looks at
     const cards = p?.kind === "wiretap" ? [p.card] : v.stack, from = [];

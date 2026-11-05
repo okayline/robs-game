@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.90 "Prompt" · Thu Nov 5, 8:51 AM
+- The log's C:\> prompts stay put on every row, like UN/TAP's: only the text beside them scrolls and fades. The bottom one is bold. Removed: a C:\> on each line that scrolled and faded with it.
+
 ## v0.89 "Five and Five" · Thu Nov 5, 8:44 AM
 - Each match splits the 10 GPUs between the two decks, 5 each, so you and the Student Athlete never have the same GPU. Removed: each deck picking its 5 GPUs on its own, which could share some.
 - While the Student Athlete decides, their line changes with each new line in the log. Removed: one line staying for a whole stack.
