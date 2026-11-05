@@ -148,6 +148,7 @@
      the same as un/tap"); every width below leaves 32px less room than before: 46px = two 6px gaps, the panel's 1px border and 4px
      padding each side, and four 6px gaps between cards */
   @media (max-width: 500px) {
+    html, body { height: auto; overflow: auto; }   /* the page scrolls on a phone; fit() doesn't shrink it there */
     :root { --w: calc((100vw - 46px) / 5); --sw: calc((100vw - 40px) / 6); }
     #game { padding: 8px 0; }
     .side, .mid, .bar, #log { margin: 0 6px; }
@@ -332,6 +333,8 @@
     };
     el.addEventListener("pointerenter", wait); el.addEventListener("pointermove", wait);
     el.addEventListener("pointerleave", (e) => { if (e.pointerType !== "mouse") return; clearTimeout(hover); if (open) addEventListener("pointermove", away); });
+    // clicking the card closes its big card: a cast card leaves the page, so its pointerleave never comes (kura, Nov 4: "it gets stuck there")
+    el.addEventListener("click", () => { clearTimeout(hover); if (bigBy === el) hideBig(); open = false; });
   }
 
   // a side's piles (kura, Nov 4): its deck face down, then its graveyard; at the right of the dummy's panel, the top left of yours
@@ -558,7 +561,9 @@
     fit();
   }
   // shrink the whole screen to fit a short window, never grow it (tap-game's fit())
-  const fit = () => { const g = $("game"); g.style.transform = `scale(${Math.min(1, innerHeight / g.offsetHeight)})`; };
+  // on a phone it doesn't shrink: the page scrolls instead, so the panels reach the screen's edges (kura, Nov 4)
+  const phone = matchMedia("(max-width: 500px)");
+  const fit = () => { const g = $("game"); g.style.transform = phone.matches ? "" : `scale(${Math.min(1, innerHeight / g.offsetHeight)})`; };
   addEventListener("resize", fit);
 </script>
 </body>

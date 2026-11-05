@@ -4,6 +4,12 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.48 "Edge to Edge" · Wed Nov 4, 11:44 PM
+- On a phone the page scrolls instead of shrinking to fit, so the panels reach 6px from the screen's edges, like UN/TAP. Removed: the whole page shrinking on phones (it pulled the panels 35px or more in from the edges).
+
+## v0.47 "Let Go" · Wed Nov 4, 11:44 PM
+- Fixed: on a PC, clicking a card while its big card was showing left the big card stuck on screen. Clicking a card now closes its big card. Removed: the stuck big card.
+
 ## v0.46 "Tap the Graveyard" · Wed Nov 4, 11:36 PM
 - To discard on your turn, tap your graveyard (it lights up), then tap the card to throw away; tap the graveyard again to cancel. Pass turn is the full-width pink bar again. Removed: Discard and Cancel in the pink bar.
 
