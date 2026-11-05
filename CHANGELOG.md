@@ -4,6 +4,14 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.55 "Deep Blue" · Thu Nov 5, 12:25 AM
+- The Webmaster's things are a darker blue: its cards' frames (on the stack, its side and the big card), its card backs (its deck and its face-down cards) and its panel's labels. The darker blue is clearly different from your blue for people with red-green colour blindness too. Removed: the Webmaster's cards, card backs and labels in your blue.
+- The "ROB'S GAME" title is blue, and the Resolve button is a pastel blue. Removed: the pink title and the pink Resolve button.
+- On a phone the panels have a little more room inside them (8px each side, was 4px), so a tappable graveyard's dashed outline isn't squeezed against the edge. The cards are a little narrower to make room. Removed: the 4px insides.
+- The Webmaster's card backs are checks instead of stripes: its deck, its face-down cards and its big card's back. Removed: the Webmaster's striped card backs.
+- On a phone the Webmaster's deck shows its count on its back in white, like your deck in your hand. Removed: the "deck" label under the Webmaster's deck on a phone.
+- On a phone each graveyard shows a gravestone and its count on the card (🪦 1). With no labels under them, the deck and graveyard are the same size as the Broadcast places, and every place in a row is one size: 5 across in the Webmaster's row, 4 in yours. Removed: the "graveyard" labels on a phone, and the smaller piles beside bigger Broadcast places.
+
 ## v0.54 "Plain Text" · Thu Nov 5, 12:13 AM
 - Like UN/TAP, cards have no flavour line, and their text is bigger (8.5, was 7.5). The big card still shows the flavour. Removed: the flavour line and the line above it on cards.
 - The log is a strip across the bottom of the middle panel, under the stack, in bigger text (11, 10 on a phone), so most lines fit on one line. Removed: the narrow 9-size log column left of the stack, which cards on the stack could cover.

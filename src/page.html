@@ -31,7 +31,8 @@
      background-attachment: fixed; the midnight blue shows until it loads */
   body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: var(--bg) url(/space.jpg) center / cover; }
   #game { max-width: 640px; margin: 0 auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; user-select: none; -webkit-user-select: none; transform-origin: top center; }
-  h1 { font: 800 22px/1 var(--title); letter-spacing: 2px; color: #d97aa6; margin: 0; display: flex; justify-content: space-between; align-items: baseline; }
+  h1 { font: 800 22px/1 var(--title); letter-spacing: 2px; color: var(--frame);   /* blue (kura, Nov 5; was pink) */
+       margin: 0; display: flex; justify-content: space-between; align-items: baseline; }
   h1 a { font: 600 12px/1 var(--title); letter-spacing: 1.5px; color: var(--blue); text-decoration: none; }
   .side { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
   .stat { font: 600 12px/1 var(--title); letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); display: flex; gap: 12px; flex-wrap: wrap; }
@@ -65,6 +66,7 @@
   .bar { display: flex; gap: 8px; height: 50px; flex: none; }
   .bar button { flex: 1; height: 50px; border-radius: 6px; border: 2px solid #fff; cursor: pointer; color: #3a2a4a; background: #f7b3cf;
                 font: 800 17px/1 var(--title); letter-spacing: 3px; text-transform: uppercase; }
+  .bar button.blue { background: #b3cdf7; }   /* Resolve: a pastel blue, the pink's twin (kura, Nov 5) */
   .bar button:disabled { cursor: default; }   /* still pink: it only says what's happening */
   .bar button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
@@ -89,6 +91,7 @@
   /* on a phone your deck stays in the 6th place however few cards you hold: empty places fill the hand up to 5 before it (kura, Nov 5:
      "sometimes my deck card moves to the left side of the row") */
   #hand .handpad { display: none; }
+  .back .deckn, .pile .gravn { display: none; }   /* a deck's count on its back: phones only, the Webmaster's (below) */
   /* a card face down: the card-back stripes over it (a Wiretap's cards going back on a deck, and the dummy's look at yours) */
   .card.down { background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
   .card.down .gc { visibility: hidden; }
@@ -108,6 +111,14 @@
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
   .card.gone { filter: grayscale(1); opacity: .75; }
   .gc-art canvas { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
+  /* the Webmaster's: its cards, card backs and panel are a darker blue, so you can tell whose card is whose on the stack (kura, Nov 5; lavender
+     before, but red-green colour blindness sees lavender and this blue as nearly the same; then mint, which "pops too much", then peach); its
+     labels darker still. Darker and lighter blue stay apart for colour blindness too: it keeps lightness */
+  .theirs, .them { --frame: #5679b6; }   /* a little lighter than #4a6fae (kura, Nov 5) */
+  .them { --blue: #34548c; }
+  /* its card backs are checks instead of your stripes (kura, Nov 5: picked "A checks" of four patterns): its deck, its face-down cards and
+     its big card's back; the squares are the stripes' two shades */
+  .them .back, .card.down.theirs, .zoom.theirs .zback { background: repeating-conic-gradient(var(--frame) 0 25%, color-mix(in srgb, var(--frame) 85%, #000) 0 50%) 0 0 / 10px 10px; }
   .gc { width: 100%; height: 100%; background: var(--frame); border-radius: calc(7 * var(--u)); padding: calc(5 * var(--u)); display: flex; flex-direction: column; }
   .gc-in { flex: 1; background: var(--cream); border-radius: calc(3 * var(--u)); padding: calc(4 * var(--u)); display: flex; flex-direction: column; gap: calc(4 * var(--u)); border: 1px solid var(--line); min-height: 0; }
   .gc-name { font: 600 calc(7.6 * var(--u))/1 var(--title); background: #ffe1ee; border: 1px solid #f0b8d0; border-radius: 2px; padding: 0 calc(4 * var(--u));
@@ -155,27 +166,43 @@
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
   /* on a phone your hand is two rows, 3 and then 2, so each card is about 1.7 times as wide (kura, Nov 4: "make the cards bigger on mobile",
      using the empty height); 66px = the page's 16px sides, the panel's 10px padding and 1px border each side, and two 6px gaps */
-  /* on a phone the panels sit 5px in from the screen's edges with 4px inside them (kura, Nov 5: "decrease to like 5px on each side";
-     was 14px); 44px = two 5px gaps, the panel's 1px border and 4px padding each side, and four 6px gaps between cards */
+  /* on a phone the panels sit 5px in from the screen's edges with 8px inside them (kura, Nov 5: "decrease to like 5px on each side";
+     was 14px); 52px = two 5px gaps, the panel's 1px border and 8px padding each side, and four 6px gaps between cards */
   @media (max-width: 500px) {
-    :root { --w: calc((100vw - 44px) / 5); --sw: calc((100vw - 38px) / 6); }
+    :root { --w: calc((100vw - 52px) / 5); --sw: calc((100vw - 46px) / 6); }
     #game { padding: 8px 0; }
     .side, .mid, .bar { margin: 0 5px; }
-    .side, .mid { padding-left: 4px; padding-right: 4px; }
+    .side, .mid { padding-left: 8px; padding-right: 8px; }   /* room for a tappable graveyard's dashed outline (kura, Nov 5: "a little more padding"; was 4px) */
     #log { font-size: 10px; }   /* a phone: a little smaller, so most lines still fit on one */
     h1 { margin: 0 5px; }
-    /* 32px: two 5px gaps, the panel's 1px border and 4px padding each side, and two 6px gaps between cards */
-    .mid { --stack-w: calc((100vw - 32px) / 3 + 17px); }
-    #hand { --w: calc((100vw - 32px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
-    /* each side's 3 Broadcast places share the room beside its piles, so the row fills the panel (kura, Nov 5: "make the broadcast off
-       squares fit the size of the panel"): 12px = the two 6px gaps between them; the row's height follows them */
+    /* 40px: two 5px gaps, the panel's 1px border and 8px padding each side, and two 6px gaps between cards */
+    .mid { --stack-w: calc((100vw - 40px) / 3 + 17px); }
+    #hand { --w: calc((100vw - 40px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
+    /* each side's row fills the panel (kura, Nov 5: "make the broadcast off squares fit the size of the panel"); its height follows them */
     .zone { height: auto; }
-    #tField, #mField { container-type: inline-size; --sw: calc((100cqw - 12px) / 3); min-height: 0; align-items: flex-start; }
+    #tField, #mField { min-height: 0; align-items: flex-start; }
+    /* with no labels under the piles, the deck and graveyard are the Broadcast places' size, and every place in the row is one size
+       (kura, Nov 5: "make the cards match the other broadcast off squares"): 5 in the Webmaster's row (3 places, deck, graveyard), 4 in
+       yours (your deck is in your hand); 6px between them */
+    .side .zone { container-type: inline-size; gap: 6px; --sw: calc((100cqw - 18px) / 4); }
+    .side.them .zone { --sw: calc((100cqw - 24px) / 5); }
+    .piles { gap: 6px; }
     /* your deck moves from the piles into the hand's last place, face down at card size (kura, Nov 4: "last space can be the player's
        deck, face down cards") */
     #mPiles .pile:first-child { display: none; }
     /* its count in the middle of the card back, no label under it (kura, Nov 4: "just put a 20 in the middle of the back of the card") */
     #hand .handpad { display: block; }
+    /* the Webmaster's deck shows its count on its back, like your deck in your hand, in dark ink, with no label under it (kura, Nov 5:
+       "the number on top of the deck itself like the player does") */
+    .them .back { display: flex; align-items: center; justify-content: center; }
+    .them .back .deckn { display: block; font: 800 calc(var(--sw) * 22 / 108)/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }   /* white, like your deck's (kura, Nov 5: was dark ink, which the darker blue hid) */
+    .them .pile:first-child > span { display: none; }
+    /* the graveyard's count on its card, with a gravestone, instead of the "graveyard" label (kura, Nov 5); dark ink with a white glow,
+       since a graveyard card is greyed out and light (white didn't show on it) */
+    .pile:has(.gravn) > span { display: none; }
+    .pile { position: relative; }
+    .pile .gravn { display: flex; position: absolute; inset: 0; align-items: center; justify-content: center; pointer-events: none;
+                   font: 800 calc(var(--sw) * 20 / 108)/1 var(--title); color: var(--ink); text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
     #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
                       font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
@@ -200,7 +227,7 @@
 <body>
 <div id="game">
   <h1>ROB'S GAME <a href="/">new match</a></h1>
-  <div class="side">
+  <div class="side them">
     <div class="stat">The Webmaster <span>hand <b id="tHand">0</b></span></div>
     <div class="zone"><div class="row" id="tField"></div><div class="piles" id="tPiles"></div></div>
   </div>
@@ -216,7 +243,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.54" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.55" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -284,6 +311,7 @@
     gc.append(inn); el.append(gc);
     if (click) el.onclick = click;
     el.dataset.uid = c.uid;
+    if (c.uid?.[0] === "b") el.classList.add("theirs");   // seat b is always the Webmaster
     if (zoom) zoomable(el, () => c);
     return el;
   }
@@ -302,7 +330,7 @@
     const gc = card(c, { zoom: false, live }).querySelector(".gc"), box = mk("div", "zbox");
     bigFlip = mk("div", "zflip"); bigFlip.append(gc, mk("div", "zback"));
     for (let k = 0; k < ZEDGE; k++) { const e = mk("div", "zedge"); e.style.setProperty("--k", (k + 0.5) / ZEDGE); bigFlip.append(e); }
-    box.append(bigFlip); bigCard = mk("div", "zoom"); bigCard.append(box); document.body.append(bigCard);
+    box.append(bigFlip); bigCard = mk("div", c.uid?.[0] === "b" ? "zoom theirs" : "zoom"); bigCard.append(box); document.body.append(bigCard);
   }
   function hideBig() { bigCard?.remove(); bigCard = null; bigFlip = null; bigBy = null; }
   // turning the open big card: a finger turns it by how far it has moved sideways since the press; a mouse by how far it has moved
@@ -358,9 +386,12 @@
     const back = mk("div", side.deck ? "back" : "slot");
     const k = Math.min(4, Math.ceil(side.deck / 8));   // a thicker stack for a fuller deck
     back.style.boxShadow = Array.from({ length: k }, (_, i) => `${i + 1}px ${i + 1}px 0 color-mix(in srgb, var(--frame) ${70 - i * 10}%, #000)`).join(",") || "none";
+    if (side.deck) back.append(mk("b", "deckn", side.deck));   // the count on the back itself: the Webmaster's deck on a phone (CSS)
     out.push(pile(back, "deck", side.deck));
     const grave = side.grave.filter((c) => c.uid !== onStack), top = grave[grave.length - 1];
-    out.push(pile(top ? card(top, { small: true, gone: true }) : mk("div", "slot"), "graveyard", grave.length));
+    const g = pile(top ? card(top, { small: true, gone: true }) : mk("div", "slot"), "graveyard", grave.length);
+    g.append(mk("b", "gravn", `🪦 ${grave.length}`));   // the count on the card itself, on a phone (CSS)
+    out.push(g);
     return out;
   }
 
@@ -453,7 +484,7 @@
       const top = v.stack[v.stack.length - 1];
       ask = `The Webmaster cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
       playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
-      acts.push(["Resolve", () => send({ do: "let" })]);
+      acts.push(["Resolve", () => send({ do: "let" }), "blue"]);
     } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to go under the other.";
     else if (p?.kind === "paywall" && p.mine) {
       ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
@@ -535,7 +566,7 @@
       acts[0] = ["Passing…", null];
     }
     if (!acts.length) acts.push([v.winner ? (v.winner === "me" ? "You win" : "The Webmaster wins") : p?.kind === "wiretap" && p.mine ? "Pick a card" : v.turn === "them" ? "Webmaster's turn" : "Webmaster's answering", null]);
-    $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); if (f) b.onclick = f; else b.disabled = true; return b; }));
+    $("acts").replaceChildren(...acts.map(([t, f, cls = ""]) => { const b = mk("button", cls, t); if (f) b.onclick = f; else b.disabled = true; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining
     // cards stay in the same place")
     const held = new Map(v.me.hand.map((c) => [c.uid, c]));
