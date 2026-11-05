@@ -6,9 +6,19 @@ import { dealDeck, newGame, cast, letIt, pass, pay } from "../src/rules.js";
 const pool = ["neon", "construction", "counter"].flatMap((type, t) => Array.from({ length: 15 }, (_, i) => ({ id: t * 100 + i, name: `${type} ${i}`, type, image: null })));
 const c = (uid, card, by) => ({ uid, card, id: 1, name: "x", image: null, flav: "" });
 
-test("a deck is 30 cards: 5 Broadcast, 13 Wiretap, 2 Undelete, 6 Refute, 2 Rollback, 2 Paywall", () => {
+test("a deck is 30 cards: 5 Broadcast, 9 Wiretap, 4 Spam, 2 Undelete, 6 Refute, 2 Rollback, 2 Paywall", () => {
   const d = dealDeck(pool, "a"), n = (k) => d.filter((x) => x.card === k).length;
-  assert.deepEqual([d.length, n("broadcast"), n("wiretap"), n("undelete"), n("refute"), n("rollback"), n("paywall")], [30, 5, 13, 2, 6, 2, 2]);
+  assert.deepEqual([d.length, n("broadcast"), n("wiretap"), n("spam"), n("undelete"), n("refute"), n("rollback"), n("paywall")], [30, 5, 9, 4, 2, 6, 2, 2]);
+});
+
+test("Spam puts the top 2 cards of their deck in their graveyard", () => {
+  const g = newGame(dealDeck(pool, "a"), dealDeck(pool, "b"));
+  g.turn = "a"; g.sides.a.hand = [c("a1", "spam")]; g.sides.b.hand = [];
+  const top2 = g.sides.b.deck.slice(0, 2).map((x) => x.uid), left = g.sides.b.deck.length;
+  assert.equal(cast(g, "a", "a1"), null);
+  assert.equal(letIt(g, "b"), null);
+  assert.deepEqual(g.sides.b.grave.map((x) => x.uid), top2);
+  assert.equal(g.sides.b.deck.length, left - 2);
 });
 
 test("a counter fight: the last counter wins, so a countered Refute lets the Broadcast resolve", () => {

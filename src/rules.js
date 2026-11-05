@@ -12,12 +12,14 @@
 export const CARDS = {
   broadcast: { name: "Broadcast", kind: "Enchantment", type: "neon", text: "stays on your side when it resolves." },
   wiretap: { name: "Wiretap", kind: "Sorcery", type: "construction", text: "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in any order." },
+  spam: { name: "Spam", kind: "Sorcery", type: "guestbook", text: "put the top 2 cards of their deck into their graveyard." },
   undelete: { name: "Undelete", kind: "Sorcery", type: "construction", text: "shuffle your graveyard into your deck." },
   refute: { name: "Refute", kind: "Instant", type: "counter", text: "counter target spell." },
   rollback: { name: "Rollback", kind: "Instant", type: "counter", text: "counter target spell. Put it on top of its caster's deck." },
   paywall: { name: "Paywall", kind: "Instant", type: "counter", text: "counter target spell unless its caster discards a card." },
 };
-export const DECK = { broadcast: 5, wiretap: 13, undelete: 2, refute: 6, rollback: 2, paywall: 2 };
+// kura, Nov 4: "too many Wiretap"; 4 of them are Spam (was 13 Wiretap)
+export const DECK = { broadcast: 5, wiretap: 9, spam: 4, undelete: 2, refute: 6, rollback: 2, paywall: 2 };
 export const HAND = 5, WIN = 3;
 export const isCounter = (c) => CARDS[c.card].kind === "Instant";
 export const other = (s) => (s === "a" ? "b" : "a");
@@ -32,6 +34,8 @@ export const FLAVOUR = {
     "Your site has been awarded the .Cool Reality Award.", "My teacher just about kissed the screen.", "Absolutly mind bogglingly awesome site!"],
   wiretap: ["Lurker Lounge Lizard", "This site is still under construction", "I only sampled a bit of it but will return to view the rest when able.",
     "no time to scan it all but what I requested was interesting", "Some of these would look great on my home page."],
+  // guestbook spam (tap-game page.html's guestbook lines: oocities.org/capecanaveral/lab/8803/geobook.html, 1998-2000, and oocities.org/mbreden/cats.html)
+  spam: ["Wicked site one of the best I've seen! Visit my site.....", "Please sign my guest book.", "Good Site!!!", "New to internet, so you are first hit."],
   undelete: ["I am carrying out a major upgrade on my homepage", "Don't worry, I'm pretty sure I've got everything on back-up in case something happens...",
     "...come back next week when the other stuff's been recovered..."],
   refute: ["Stop! Think! Do you really want to do this?", "Please ask me before using these pictures", "Please do NOT link these graphics to my server",
@@ -157,6 +161,11 @@ function spell(g, c) {
   if (c.card === "undelete") {
     me.deck = shuffle(me.deck.concat(me.grave)); me.grave = [];
     say(g, `Undelete: ${NAMES[c.by]} shuffle${c.by === "a" ? "" : "s"} the graveyard back in (${me.deck.length} cards in the deck).`);
+  } else if (c.card === "spam") {   // a blind mill: no look, no choice (kura, Nov 4: another way to mill than Wiretap)
+    const n = Math.min(2, them.deck.length);
+    if (!n) { say(g, "Spam: their deck is empty, nothing to put in the graveyard."); return; }
+    them.grave.push(...them.deck.splice(0, n));
+    say(g, `Spam puts the top ${n === 1 ? "card" : `${n} cards`} of ${c.by === "a" ? "the dummy's" : "your"} deck in ${c.by === "a" ? "its" : "your"} graveyard.`);
   } else if (c.card === "wiretap") {
     const n = Math.min(3, them.deck.length);
     if (!n) { say(g, "Wiretap: their deck is empty, nothing to look at."); return; }

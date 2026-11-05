@@ -198,11 +198,12 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.39" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.40" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
     broadcast: ["Broadcast", "Enchantment", "stays on your side when it resolves."],
+    spam: ["Spam", "Sorcery", "put the top 2 cards of their deck into their graveyard."],
     wiretap: ["Wiretap", "Sorcery", "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in any order."],
     undelete: ["Undelete", "Sorcery", "shuffle your graveyard into your deck."],
     refute: ["Refute", "Instant", "counter target spell."],
@@ -400,7 +401,7 @@
     const before = new Map([...document.querySelectorAll("#game .card[data-uid]")].map((el) =>
       [el.dataset.uid, { el, box: el.getBoundingClientRect(), where: el.closest("#stack") ? "stack" : el.closest("#hand") ? "hand" : "other" }]));
     const pv = lastV; lastV = v;
-    const tDeckBox = $("tPiles").querySelector(".back, .slot")?.getBoundingClientRect();
+    const tDeckBox = $("tPiles").querySelector(".back, .slot")?.getBoundingClientRect(), mDeckBox = myDeck()?.getBoundingClientRect();
     $("tHand").textContent = v.them.hand;
     const onStack = v.pending?.kind === "wiretap" ? v.pending.card.uid : null;
     $("tPiles").replaceChildren(...piles(v.them, onStack)); $("mPiles").replaceChildren(...piles(v.me, onStack));
@@ -492,7 +493,7 @@
     deal(dealt);
     for (const f of later) f();
     // the rule: cards that left the stack, your hand or a graveyard's top fly to where they went
-    const graveOf = (id) => $(id).querySelectorAll(".pile")[1]?.firstElementChild;
+    const graveOf = (sel) => document.querySelector(sel)?.querySelectorAll(".pile")[1]?.firstElementChild;   // sel: "#mPiles" or "#tPiles"
     const deckOf = (uid) => (uid[0] === "a" ? myDeck() : $("tPiles").querySelector(".back, .slot"));   // seat a is always you
     const inGrave = (uid) => (v.me.grave.some((c) => c.uid === uid) ? "#mPiles" : v.them.grave.some((c) => c.uid === uid) ? "#tPiles" : null);
     let i = 0;
@@ -508,6 +509,13 @@
       if (g) ghost(b.el, b.box, graveOf(g), { delay: i++ * MOVE_GAP });   // into a graveyard, under another card going there too
       else if (!v.me.hand.some((c) => c.uid === uid)) ghost(b.el, b.box, deckOf(uid), { delay: i++ * MOVE_GAP, flip: true });   // onto a deck: Rollback, Undelete
     }
+    // a card milled straight off a deck (Spam) flies from the deck to the graveyard (a Wiretap's milled card has its own flight, above)
+    if (pv && pv.pending?.kind !== "wiretap" && v.pending?.kind !== "wiretap")
+      for (const [side, id, box] of [["me", "#mPiles", mDeckBox], ["them", "#tPiles", tDeckBox]]) {
+        const top = graveOf(id);
+        if (box && top?.dataset.uid && !before.has(top.dataset.uid) && v[side].deck < pv[side].deck)
+          fly([top], box, { ms: MOVE_MS, scale: box.width / top.getBoundingClientRect().width, delay: i++ * MOVE_GAP });
+      }
     // the dummy's draws: face-down cards from its deck to its hand count
     if (pv && tDeckBox && v.them.hand > pv.them.hand && v.them.deck < pv.them.deck)
       for (let k = 0; k < Math.min(v.them.hand - pv.them.hand, pv.them.deck - v.them.deck); k++) ghost(mk("div", "card small down"), tDeckBox, $("tHand"), { delay: k * 150 });

@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.40 "Spam" · Wed Nov 4, 11:08 PM
+- A new Sorcery, Spam: "put the top 2 cards of their deck into their graveyard" (kura: "let's add sorcery, spam"), a blind mill with no look and no choice. Its picture is a Guestbook button and its flavour lines are real guestbook lines (from tap-game's list). Each deck is 9 Wiretap and 4 Spam. The dummy casts Spam before a Wiretap, and counters your Spam as it does your Wiretap (only while it holds 3 or more counters). The card Spam mills flies from the deck to the graveyard. In 400 simulated games (the dummy's rules playing both sides): 19.2 turns a match on average (was 23.5), 159 won by 3 Broadcasts (was 72), 240 by decking (was 328), 1 left unfinished after 400 moves (was 0). Removed: 4 of the 13 Wiretaps.
+- Fixed: the page threw an error, and stopped drawing the rest of that board, when a card went to a graveyard under another card going there in the same step (graveOf() looked the graveyard up by the wrong kind of name, since v0.33). Spam does this every time. Removed: the wrong lookup.
+
 ## v0.39 "To the Graveyard" · Wed Nov 4, 10:56 PM
 - A finished Wiretap flies from the stack to its caster's graveyard, as a resolved sorcery goes to the graveyard in Magic (kura: "after the wiretap, the main card just disappeared, could it go to the graveyard"). The match puts it in the graveyard as soon as it starts resolving, so the page showed it on the stack and on top of the graveyard at once, and it had nowhere to fly; the graveyard now leaves it out (and doesn't count it) until it leaves the stack. Removed: the Wiretap vanishing from the stack.
 
