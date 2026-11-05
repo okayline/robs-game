@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.80 "Triple Fan" · Thu Nov 5, 7:21 AM
+- The RX 9070's three fans spin once it has resolved, like the RTX 5090, RTX 5080, RTX 5070 Ti, RTX 5070, RTX 4090 and Arc B580. Its picture now has round hubs. Removed: the diagonal silver hubs and two grey pixels at the fans' edges.
+
 ## v0.79 "Forty Ninety" · Thu Nov 5, 7:12 AM
 - The RTX 4090's fan spins once it has resolved, like the RTX 5090, RTX 5080, RTX 5070 Ti, RTX 5070 and Arc B580. Its picture now has a round hub and a clean dark edge around the fan. Removed: the diagonal silver hub and a few grey pixels around the fan's edge.
 

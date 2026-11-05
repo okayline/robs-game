@@ -55,7 +55,14 @@
 #                (a diagonal hub streak like the 5070's, but all of it inside the painted-over area. The gap_px are every pixel just
 #                outside R that stayed still at brightness 10-100, found by listing them from the frames, the kind kura marked on the
 #                5070 (row 1, the top rail's shading, left still on purpose). kura took it on the first look.)
-# Still to do: rx-9070 and rx-9070-xt (three fans), gtx-1080-ti (a blower);
+#   rx-9070      {"fans": [[23.5, 14], [46.5, 14], [69.5, 14]], "R": 10.0, "Rin": 10.0, "Y0": 5, "Y1": 22, "HUB": 3.3,
+#                 "gap_px": [[14, 9], [37, 9]]}
+#                (no X frame: each fan sits in a grey ring that stays still. The middles are the rings' middles, not the diagonal hub
+#                streaks', which looked off-centre. Brightness by distance from the middle: a dark gap at about 10, the ring from
+#                10.5, so R 10; the ring is closer at the top and bottom (rows 4 and 23), so only rows 5-22 turn. The flags "just
+#                outside R" are the rings' own diagonal corners. The two gap_px are grey pixels poking in from the ring at 10 o'clock
+#                that kura marked.)
+# Still to do: rx-9070-xt (three fans), gtx-1080-ti (a blower);
 # the voodoo3-3000's fan is under the 3dfx logo, so it would turn the logo too (kura hasn't decided).
 import json, math, os, sys, tempfile
 from PIL import Image
