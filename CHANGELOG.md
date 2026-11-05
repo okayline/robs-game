@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.73 "Centered" · Thu Nov 5, 6:45 AM
+- How to play at the start sits in the middle of the panel, exactly where the "?" shows it. Removed: the start's box sitting higher up, in the cards' row.
+
 ## v0.72 "Help" · Thu Nov 5, 6:42 AM
 - A small "?" at the bottom right of the middle panel shows how to play again, in the same light-blue box as at the start. Rest the mouse on it to see it, or click or tap it to keep it open; click or tap again to close it. The log's lines now stop short of the "?". Removed: nothing.
 
