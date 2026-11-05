@@ -63,7 +63,7 @@ export const GPUS = [
   { model: "RTX 5090", pic: "rtx-5090", spin: true, gen: "Blackwell", flav: "Twice the performance of the 4090." },
   { model: "RTX 5080", pic: "rtx-5080", spin: true, gen: "Blackwell", flav: "AI is coming home to GeForce." },
   { model: "RTX 5070 Ti", pic: "rtx-5070-ti", spin: true, gen: "Blackwell", flav: "Supercharge gaming and creating." },
-  { model: "RTX 5070", pic: "rtx-5070", gen: "Blackwell", flav: "RTX 4090 performance at $549." },
+  { model: "RTX 5070", pic: "rtx-5070", spin: true, gen: "Blackwell", flav: "RTX 4090 performance at $549." },
   { model: "RTX 4090", pic: "rtx-4090", gen: "Ada Lovelace", flav: "Beyond fast." },
   { model: "GTX 1080 Ti", pic: "gtx-1080-ti", gen: "Pascal", flav: "The world's fastest gaming GPU." },
   { model: "Arc B580", pic: "arc-b580", spin: true, gen: "Battlemage", flav: "Modern tech, better graphics, better plays." },
