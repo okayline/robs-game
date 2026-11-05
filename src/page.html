@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rob's Game</title>
+<!-- fonts served from this Worker (public/fonts, copied from tap-game: latin only, from npm's @fontsource; SIL Open Font License) -->
+<link rel="preload" href="/fonts/cinzel-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/eb-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face { font-family: Cinzel; font-weight: 600; font-display: swap; src: url(/fonts/cinzel-latin-600-normal.woff2) format("woff2"); }
+  @font-face { font-family: Cinzel; font-weight: 800; font-display: swap; src: url(/fonts/cinzel-latin-800-normal.woff2) format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 500; font-display: swap; src: url(/fonts/eb-garamond-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 700; font-display: swap; src: url(/fonts/eb-garamond-latin-700-normal.woff2) format("woff2"); }
+  @font-face { font-family: "EB Garamond"; font-weight: 500; font-style: italic; font-display: swap; src: url(/fonts/eb-garamond-latin-500-italic.woff2) format("woff2"); }
+  /* UN/TAP's "Grimoire Pastel" cards (tap-game src/page.html), with Rob's Game's text and no power/toughness box (kura, Nov 4) */
+  :root {
+    --bg: #1d2742; --panel: #f7fbff; --line: #b9d0ea; --frame: #8fb6de; --cream: #fffaf2;
+    --ink: #3a4a6b; --mute: #5a6a8a; --pink: #e98ab3; --blue: #6d8fd0;
+    --title: Cinzel, Georgia, serif; --body: "EB Garamond", Georgia, serif;
+    --w: min(150px, calc((100vw - 64px) / 3)); --u: calc(var(--w) / 108); --h: 150;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font: 15px/1.35 var(--body); }
+  #game { max-width: 640px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; user-select: none; -webkit-user-select: none; }
+  h1 { font: 800 22px/1 var(--title); letter-spacing: 2px; color: #d97aa6; margin: 0; display: flex; justify-content: space-between; align-items: baseline; }
+  h1 a { font: 600 12px/1 var(--title); letter-spacing: 1.5px; color: var(--blue); text-decoration: none; }
+  .side { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .stat { font: 600 12px/1 var(--title); letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); display: flex; gap: 12px; flex-wrap: wrap; }
+  .stat b { color: var(--ink); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; min-height: calc(var(--h) * var(--u)); align-items: center; }
+  .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
+  .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  #ask { font: 600 14px/1.3 var(--title); color: var(--ink); }
+  #ask.win { color: #2f9e6b; } #ask.lose { color: #d4558c; }
+  .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .acts button { font: 600 13px/1 var(--title); letter-spacing: 1px; padding: 9px 14px; border-radius: 6px; border: 1px solid #f0b8d0; background: #ffe1ee; color: var(--ink); cursor: pointer; }
+  .acts button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+  #err { color: #d4558c; font-size: 13px; min-height: 1em; }
+  #log { font: 13px/1.35 ui-monospace, Consolas, monospace; color: var(--mute); }
+  #log div::before { content: "C:\\> "; }
+  /* the card: blue frame, cream inside (tap-game's .gc) */
+  .card { position: relative; width: var(--w); height: calc(var(--h) * var(--u)); border: 0; padding: 0; background: none; border-radius: calc(7 * var(--u)); text-align: left; color: var(--ink); flex: none; }
+  .card.small { --w: min(96px, calc((100vw - 64px) / 5)); --u: calc(var(--w) / 108); }
+  .card.can { cursor: pointer; filter: drop-shadow(0 0 6px var(--pink)); }
+  .card.dim { opacity: .55; }
+  .gc { width: 100%; height: 100%; background: var(--frame); border-radius: calc(7 * var(--u)); padding: calc(5 * var(--u)); display: flex; flex-direction: column; }
+  .gc-in { flex: 1; background: var(--cream); border-radius: calc(3 * var(--u)); padding: calc(4 * var(--u)); display: flex; flex-direction: column; gap: calc(4 * var(--u)); border: 1px solid var(--line); min-height: 0; }
+  .gc-name { font: 600 calc(7.6 * var(--u))/1 var(--title); background: #ffe1ee; border: 1px solid #f0b8d0; border-radius: 2px; padding: 0 calc(4 * var(--u));
+             height: calc(12 * var(--u)); display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  .gc-art { height: calc(31 * var(--u)); display: flex; align-items: center; justify-content: center; }
+  .gc-art img { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
+  .gc-type { font: 500 calc(6.4 * var(--u))/1 var(--body); background: #e2f0ff; border: 1px solid var(--line); border-radius: 2px; padding: 0 calc(4 * var(--u));
+             height: calc(15 * var(--u)); display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  /* a Broadcast (a game point): its type line is inverted (kura, Nov 4) */
+  .broadcast .gc-type { background: var(--ink); color: #e2f0ff; border-color: var(--ink); }
+  .gc-txt { flex: 1; min-height: 0; overflow: hidden; background: #fffdf8; border: 1px solid var(--line); border-radius: 2px; padding: calc(4 * var(--u));
+            font: 500 calc(7.5 * var(--u))/1.12 var(--body); display: flex; flex-direction: column; gap: calc(2 * var(--u)); }
+  .gc-txt b { font-weight: 700; }
+  .rule { margin-block: calc(1.5 * var(--u)) calc(.75 * var(--u)); width: 60%; height: 1px; background: #d9c9a8; align-self: center; flex: none; }
+  .flav { font: italic 500 calc(5.8 * var(--u))/1.1 var(--body); color: var(--mute); }
+  /* small cards (fields, the stack, the dummy's looks) show only the name, picture and card name */
+  .card.small .gc-txt { display: none; }
+  .card.small .gc-type { flex: 1; align-items: flex-start; padding-top: calc(3 * var(--u)); font-size: calc(9 * var(--u)); }
+  .by { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font: 600 10px/1 var(--title); background: var(--ink); color: #fff; padding: 3px 6px; border-radius: 8px; white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div id="game">
+  <h1>ROB'S GAME <a href="/">new match</a></h1>
+  <div class="side">
+    <div class="stat">The dummy <span>hand <b id="tHand">0</b></span><span>deck <b id="tDeck">0</b></span><span>graveyard <b id="tGrave">0</b></span></div>
+    <div class="row" id="tField" data-empty="No Broadcasts yet."></div>
+  </div>
+  <div class="mid">
+    <div id="ask">Connecting…</div>
+    <div class="row" id="stack" data-empty=""></div>
+    <div class="acts" id="acts"></div>
+    <div id="err"></div>
+    <div id="log"></div>
+  </div>
+  <div class="side">
+    <div class="row" id="mField" data-empty="No Broadcasts yet."></div>
+    <div class="stat">You <span>deck <b id="mDeck">0</b></span><span>graveyard <b id="mGrave">0</b></span></div>
+    <div class="row" id="hand" data-empty="No cards in hand."></div>
+  </div>
+</div>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.1" data-copy="no"></script>
+<script>
+  // the same card text as rules.js CARDS
+  const CARDS = {
+    broadcast: ["Broadcast", "Enchantment", "stays on your side when it resolves."],
+    wiretap: ["Wiretap", "Sorcery", "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in any order."],
+    undelete: ["Undelete", "Sorcery", "shuffle your graveyard into your deck."],
+    refute: ["Refute", "Instant", "counter target spell."],
+    rollback: ["Rollback", "Instant", "counter target spell. Put it on top of its caster's deck."],
+    paywall: ["Paywall", "Instant", "counter target spell unless its caster discards a card."],
+  };
+  const $ = (id) => document.getElementById(id);
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const ws = new WebSocket(location.href.replace(/^http/, "ws") + "/ws");
+  const send = (o) => { $("err").textContent = ""; ws.send(JSON.stringify(o)); };
+  ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) draw(m.v); };
+  ws.onclose = () => { $("ask").textContent = "Disconnected. Reload the page to reconnect."; };
+
+  // a card: name, picture, type line, effect and flavour (small: name, picture and the card's name)
+  function card(c, { small = false, click = null, tag = null } = {}) {
+    const [name, kind, text] = CARDS[c.card];
+    const el = mk(click ? "button" : "div", `card ${c.card}${small ? " small" : ""}${click ? " can" : ""}`);
+    const gc = mk("div", "gc"), inn = mk("div", "gc-in"), art = mk("div", "gc-art");
+    if (c.image) { const img = mk("img"); img.src = c.image; img.alt = ""; art.append(img); }
+    const txt = mk("div", "gc-txt"), fx = mk("div");
+    fx.append(mk("b", "", name), ` · ${text}`);
+    txt.append(fx, mk("div", "rule"), mk("div", "flav", `“${c.flav}”`));
+    inn.append(mk("div", "gc-name", c.name), art, mk("div", "gc-type", small ? name : kind), txt);
+    gc.append(inn); el.append(gc);
+    if (tag) el.append(mk("span", "by", tag));
+    if (click) el.onclick = click;
+    el.title = `${name} · ${text}`;
+    return el;
+  }
+
+  function draw(v) {
+    $("tHand").textContent = v.them.hand; $("tDeck").textContent = v.them.deck; $("tGrave").textContent = v.them.grave.length;
+    $("mDeck").textContent = v.me.deck; $("mGrave").textContent = v.me.grave.length;
+    $("tField").replaceChildren(...v.them.field.map((c) => card(c, { small: true })));
+    $("mField").replaceChildren(...v.me.field.map((c) => card(c, { small: true })));
+    const p = v.pending, mine = v.waiting, acts = [];
+    let ask, playable = () => null;
+    if (v.winner) ask = v.winner === "me" ? "You win!" : "The dummy wins.";
+    else if (p?.kind === "answer" && p.mine) {
+      const top = v.stack[v.stack.length - 1];
+      ask = `The dummy cast ${CARDS[top.card][0]}. Answer it with a counter, or let it resolve.`;
+      playable = (c) => (CARDS[c.card][1] === "Instant" ? () => send({ do: "cast", uid: c.uid }) : null);
+      acts.push(["Let it resolve", () => send({ do: "let" })]);
+    } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to put on top of their deck.";
+    else if (p?.kind === "paywall" && p.mine) {
+      ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
+      playable = (c) => () => send({ do: "pay", uid: c.uid });
+      acts.push(["Don't pay", () => send({ do: "pay", uid: null })]);
+    } else if (mine && v.turn === "me") {
+      ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, or pass.";
+      if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? () => send({ do: "cast", uid: c.uid }) : null);
+      acts.push(["Pass turn", () => send({ do: "pass" })]);
+    } else ask = "The dummy is thinking…";
+    $("ask").textContent = ask;
+    $("ask").className = v.winner ? (v.winner === "me" ? "win" : "lose") : "";
+    if (p?.kind === "wiretap" && p.mine) $("stack").replaceChildren(...p.look.map((c) => card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) })));
+    else $("stack").replaceChildren(...v.stack.map((c) => card(c, { small: true, tag: c.by === "me" ? "you" : "dummy" })));
+    $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
+    $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); return el; }));
+    $("log").replaceChildren(...v.log.slice(-6).map((l) => mk("div", "", l)));
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+// Rob's Game: one Worker, one Durable Object per match, dealt from dungeon-items (deploy dungeon-items first).
+{
+  "name": "robs-game",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "durable_objects": { "bindings": [{ "name": "MATCH", "class_name": "Match" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Match"] }],
+  "services": [{ "binding": "REGISTRY", "service": "dungeon-items", "entrypoint": "Registry" }],
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
+  "assets": { "directory": "./public" }
+}
