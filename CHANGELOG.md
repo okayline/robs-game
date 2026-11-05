@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.79 "Forty Ninety" · Thu Nov 5, 7:12 AM
+- The RTX 4090's fan spins once it has resolved, like the RTX 5090, RTX 5080, RTX 5070 Ti, RTX 5070 and Arc B580. Its picture now has a round hub and a clean dark edge around the fan. Removed: the diagonal silver hub and a few grey pixels around the fan's edge.
+
 ## v0.78 "Five Seventy" · Thu Nov 5, 7:10 AM
 - The RTX 5070's fan spins once it has resolved, like the RTX 5090, RTX 5080, RTX 5070 Ti and Arc B580. Its picture now has a round hub and a clean dark edge on the fan's left side. Removed: the diagonal silver hub and a few grey pixels around the fan's left edge.
 

@@ -49,7 +49,13 @@
 #                white dot. (61, 5) is a blade tip past R that made the blade's edge count as frame. The rest are grey or dark pixels
 #                just outside R, at 7 to 10 o'clock, that stayed still beside the turning blades; kura marked them on screenshots.
 #                Painting the grey housing band inside R as well (x 59-60) made that side too dark: kura went back to these.)
-# Still to do: rtx-4090 (one fan, X frame: like the 5080 and 5070), rx-9070 and rx-9070-xt (three fans), gtx-1080-ti (a blower);
+#   rtx-4090     {"fans": [[68.5, 13.5]], "R": 12.5, "Rin": 12.5, "Y0": 3, "Y1": 24, "HUB": 3.3, "connected": true,
+#                 "gap_px": [[59, 4], [56, 17], [56, 18], [57, 21], [58, 22], [59, 23], [62, 24], [77, 4], [80, 17], [76, 23], [77, 23],
+#                 [74, 24], [75, 24], [76, 24]]}
+#                (a diagonal hub streak like the 5070's, but all of it inside the painted-over area. The gap_px are every pixel just
+#                outside R that stayed still at brightness 10-100, found by listing them from the frames, the kind kura marked on the
+#                5070 (row 1, the top rail's shading, left still on purpose). kura took it on the first look.)
+# Still to do: rx-9070 and rx-9070-xt (three fans), gtx-1080-ti (a blower);
 # the voodoo3-3000's fan is under the 3dfx logo, so it would turn the logo too (kura hasn't decided).
 import json, math, os, sys, tempfile
 from PIL import Image
