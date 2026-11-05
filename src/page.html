@@ -34,7 +34,16 @@
   /* your hand stays one row: it scrolls sideways when it's wider than the screen */
   /* the stack: the cards being cast, full size, in the middle of the screen */
   #stack { justify-content: center; align-items: flex-end; flex-wrap: nowrap; }
-  #stack:empty { min-height: 0; }
+  /* every panel keeps one height whatever is in it, so nothing on the screen moves up or down (kura, Nov 4) */
+  #ask { height: 2.7em; overflow: hidden; }
+  #stack { height: calc(var(--h) * var(--u) + 36px); overflow: hidden; }
+  #err { height: 1.2em; overflow: hidden; }
+  #log { height: calc(3 * 1.35em); overflow: hidden; }
+  .zone { height: max(calc(var(--sw) * 76 / 108 + 16px), 84px); }
+  .zone .row { flex-wrap: nowrap; overflow: hidden; }
+  #hand { height: calc(var(--h) * var(--u) + 4px); }
+  /* the shared footer (dungeon-items footer.js), drawn into #ddfoot under the screen, a little in from the right (as in tap-game) */
+  .ddfoot { margin: 1px 0 0 !important; padding: 0 12px !important; }
   #hand { flex-wrap: nowrap; overflow-x: auto; min-height: calc(var(--h) * var(--u)); padding-top: 2px; }
   .row:empty::after { content: attr(data-empty); font-style: italic; color: var(--mute); }
   .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
@@ -116,8 +125,9 @@
     <div class="stat">You <span>deck <b id="mDeck">0</b></span></div>
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
+  <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.11" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.12" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {

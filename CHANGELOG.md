@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.12 "Holds Still" · Wed Nov 4, 8:40 PM
+- Every panel keeps one height whatever is in it (the prompt, the stack, the error line, the log, the piles and Broadcast rows, your hand), so nothing on the screen moves up or down. The shared footer is drawn in its own spot under the screen, a little in from the right, as in UN/TAP. kura: "fixed height and never move up and down" and "move the footer left a little". Removed: panels that grew and shrank with their cards, the stack row collapsing when empty, and the footer drawn at the page's right edge.
+
 ## v0.11 "One at a Time" · Wed Nov 4, 8:37 PM
 - The dummy's moves show one at a time, 0.8 s apart: after your move the match sends a board for each move (yours, then each of the dummy's), and the page plays them in order. kura: "space out when they are displayed". Removed: jumping straight to the board after all of the dummy's moves.
 
