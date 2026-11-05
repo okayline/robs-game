@@ -108,7 +108,7 @@
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.8" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.9" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -180,9 +180,9 @@
     if (v.winner) ask = v.winner === "me" ? "You win!" : "The dummy wins.";
     else if (p?.kind === "answer" && p.mine) {
       const top = v.stack[v.stack.length - 1];
-      ask = `The dummy cast ${CARDS[top.card][0]}. Answer it with a counter, or let it resolve.`;
+      ask = `The dummy cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
       playable = (c) => (CARDS[c.card][1] === "Instant" ? () => send({ do: "cast", uid: c.uid }) : null);
-      acts.push(["Let it resolve", () => send({ do: "let" })]);
+      acts.push(["Resolve", () => send({ do: "let" })]);
     } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to put on top of their deck.";
     else if (p?.kind === "paywall" && p.mine) {
       ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
