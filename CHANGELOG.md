@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.39 "To the Graveyard" · Wed Nov 4, 10:56 PM
+- A finished Wiretap flies from the stack to its caster's graveyard, as a resolved sorcery goes to the graveyard in Magic (kura: "after the wiretap, the main card just disappeared, could it go to the graveyard"). The match puts it in the graveyard as soon as it starts resolving, so the page showed it on the stack and on top of the graveyard at once, and it had nowhere to fly; the graveyard now leaves it out (and doesn't count it) until it leaves the stack. Removed: the Wiretap vanishing from the stack.
+
 ## v0.38 "Under" · Wed Nov 4, 10:28 PM
 - A Wiretap's second pick is the card that goes back under the other one, so the other card ends up on top (kura: "can the card the player picks be the one that goes on bottom"). The dummy still leaves the order as it is (it now picks the second card). The log asks: "Wiretap: pick the card to go under the other." Removed: the second pick being the card that goes on top.
 - The dummy's cards on the stack have no label under them (kura: "can we remove DUMMY text"); yours still say "you". Removed: the "dummy" label.
