@@ -38,6 +38,10 @@
   .side { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
   .stat { font: 600 12px/1 var(--title); letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); display: flex; gap: 12px; flex-wrap: wrap; }
   .stat b { color: var(--ink); }
+  /* the opponent's line (kura, Nov 5: "rename THE WEBMASTER to "STUDENT ATHLETE #832"" and put it "left-justified, underneath the
+     opponents deck cards, on the same line as "Deck 25""): under its three places at the left, where the deck's label was */
+  .zone { position: relative; }
+  .zone .stat { position: absolute; left: 0; top: calc(var(--sw) * 76 / 108 + 5px); white-space: nowrap; }
   .row { display: flex; gap: 6px; flex-wrap: wrap; min-height: calc(var(--sw) * 76 / 108); align-items: center; }
   /* your hand stays one row: it scrolls sideways when it's wider than the screen */
   /* the stack: the cards being cast, full size, in the middle of the screen */
@@ -52,6 +56,7 @@
   @media (min-width: 501px) {
     .side .zone { --sw: var(--w); display: grid; grid-template-columns: repeat(5, var(--w)); gap: 6px; align-items: start; }
     .zone .row, .zone .piles { display: contents; }
+    .side:not(.them) .zone { height: calc(var(--sw) * 76 / 108 + 4px); }   /* no labels under your piles: just the deck's 4px stack */
   }
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
   #hand { height: calc(var(--h) * var(--u) + 4px); }
@@ -112,7 +117,11 @@
   /* on a phone your deck stays in the 6th place however few cards you hold: empty places fill the hand up to 5 before it (kura, Nov 5:
      "sometimes my deck card moves to the left side of the row") */
   #hand .handpad { display: none; }
-  .back .deckn { display: none; }   /* a deck's count on its back: phones only, the Webmaster's (below) */
+  /* a deck's count on its back, big and white, with no label under it, on every screen and for both decks (kura, Nov 5: "the deck card
+     #'s on top of the deck, in big white numbers ... with no "deck #" below"; it was phones only, the Webmaster's deck) */
+  .pile .back { display: flex; align-items: center; justify-content: center; }
+  .back .deckn { display: block; font: 800 calc(var(--sw) * 22 / 108)/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+  .pile:first-child > span { display: none; }
   /* the graveyard's count on its card, with a gravestone, instead of the "graveyard" label, on every screen (kura, Nov 5; phones only at first): white on a small black box in
      the middle, with the card showing around it (kura, Nov 5: "no glow ... a black background for just the emoji and the number") */
   .pile:has(.gravn) > span { display: none; }
@@ -209,7 +218,10 @@
      (kura, Nov 5: "can we have the graveyard outline there persistent all the time"; it used to fly in on the new card) */
   .pile { position: relative; }
   #mPiles .pile:last-child::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%); pointer-events: none;
-    width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); outline: 2px dotted #9aa3b8; outline-offset: 2px; }
+    width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); outline: 2px dotted #9aa3b8; outline-offset: -2px; }
+  /* the outline just inside the place, like the GPU places' dotted borders, so the five are evenly spaced (kura, Nov 5: "space all 5
+     out evenly across the width and make it look nice and work with the dotted line"; it was 2px outside) */
+  #mPiles .pile:last-child > .slot { border-color: transparent; }   /* the outline is its border: no dashed line under it */
   #mPiles .pile.tapme.on:last-child::before { outline: 2px solid var(--pink); }
   .pile.tapme.on span { color: var(--pink); }
   .back { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
@@ -252,11 +264,8 @@
     #mPiles .pile:first-child { display: none; }
     /* its count in the middle of the card back, no label under it (kura, Nov 4: "just put a 20 in the middle of the back of the card") */
     #hand .handpad { display: block; }
-    /* the Webmaster's deck shows its count on its back, like your deck in your hand, in dark ink, with no label under it (kura, Nov 5:
-       "the number on top of the deck itself like the player does") */
-    .them .back { display: flex; align-items: center; justify-content: center; }
-    .them .back .deckn { display: block; font: 800 calc(var(--sw) * 22 / 108)/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }   /* white, like your deck's (kura, Nov 5: was dark ink, which the darker blue hid) */
-    .them .pile:first-child > span { display: none; }
+    .side.them .zone { flex-wrap: wrap; }   /* a phone's places fill the row: the opponent's line goes on a line of its own under them */
+    .zone .stat { position: static; flex: 0 0 100%; }
     #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
                       font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
@@ -283,8 +292,8 @@
 <div id="game">
   <h1>ROB'S GAME <a href="/">new match</a></h1>
   <div class="side them">
-    <div class="stat">The Webmaster <span>hand <b id="tHand" data-count="t-hand">0</b></span></div>
-    <div class="zone"><div class="row" id="tField"></div><div class="piles" id="tPiles"></div></div>
+    <div class="zone"><div class="row" id="tField"></div><div class="piles" id="tPiles"></div>
+      <div class="stat">Student Athlete #832 <span>hand <b id="tHand" data-count="t-hand">0</b></span></div></div>
   </div>
   <div class="mid">
     <div id="turnno"></div>
@@ -302,7 +311,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.82" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.83" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -511,8 +520,9 @@
     const out = [];
     const back = mk("div", side.deck ? "back" : "slot");
     const k = Math.min(4, Math.ceil(side.deck / 8));   // a thicker stack for a fuller deck
-    back.style.boxShadow = Array.from({ length: k }, (_, i) => `${i + 1}px ${i + 1}px 0 color-mix(in srgb, var(--frame) ${70 - i * 10}%, #000)`).join(",") || "none";
-    if (side.deck) back.append(num("deckn", "deckn", side.deck));   // the count on the back itself: the Webmaster's deck on a phone (CSS)
+    // straight down, so the stack stays in its own column and doesn't crowd the graveyard beside it (kura, Nov 5: "the overlap")
+    back.style.boxShadow = Array.from({ length: k }, (_, i) => `0 ${i + 1}px 0 color-mix(in srgb, var(--frame) ${70 - i * 10}%, #000)`).join(",") || "none";
+    if (side.deck) back.append(num("deckn", "deckn", side.deck));   // the count on the back itself (CSS)
     out.push(pile(back, "deck", side.deck));
     const grave = side.grave.filter((c) => c.uid !== onStack), top = grave[grave.length - 1];
     const g = pile(top ? card(top, { small: true, gone: true }) : mk("div", "slot"), "graveyard", grave.length);

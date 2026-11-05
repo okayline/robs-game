@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.83 "Student Athlete" · Thu Nov 5, 7:52 AM
+- The opponent is "Student Athlete #832". Its line (with its hand count) is under its three places at the left, where the deck's label was; on a phone, on a line of its own under its cards. Removed: "The Webmaster" and its line above the opponent's cards.
+- Both decks show their count on their back in big white numbers on every screen, as they already did on a phone. Removed: the "Deck 25" labels under the decks on PC, and the empty space under your cards they left.
+- A deck's stack thickness shows straight down, so it no longer crowds the graveyard beside it, and all five places in each panel are evenly spaced. Your graveyard's dotted outline is just inside its place, like the GPU places' borders. Removed: the diagonal stack edge, the outline outside the place, and the dashed line under it.
+
 ## v0.82 "Blower" · Thu Nov 5, 7:33 AM
 - The GTX 1080 Ti's blower fan spins once it has resolved: its whole silver wheel turns inside the ring. Nine of the ten GPUs now spin; the Voodoo3 3000 stays still. Removed: nothing.
 - `tools/spin.py` can keep a picture's own middle and turn it with the fan (for blower wheels). Removed: nothing.
