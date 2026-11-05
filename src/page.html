@@ -125,7 +125,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.19" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.20" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -210,6 +210,17 @@
         { duration: ms, delay: i * gap, easing: "ease-out", fill: "backwards" });
     });
   }
+  // cards flying off to a spot on the screen and fading there (the reverse of fly): a Wiretap's unpicked cards back to the dummy's deck
+  function away(els, to) {
+    if (!els.length || !to || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1, d = to.getBoundingClientRect();
+    els.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k;
+      el.animate([{ transform: "none", opacity: 1 }, { transform: `translate(${dx}px, ${dy}px) scale(.6)`, opacity: 0 }],
+        { duration: 800, delay: 300 + i * 200, easing: "ease-in", fill: "forwards" });
+    });
+  }
   // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
   let played = null, looked = new Set();   // looked: the Wiretap look cards on screen
   const play1 = (c, msg) => (e) => { played = { uid: c.uid, box: e.currentTarget.getBoundingClientRect() }; send(msg); };
@@ -250,13 +261,15 @@
     });
     // a Wiretap's look: the cards come off the top of the dummy's deck one by one, slowly (kura, Nov 4: they appeared too fast), and
     // sit a little higher than the bottom of the stack row
-    const look = p?.kind === "wiretap" && p.mine ? p.look.map((c) => { const el = card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) }); el.classList.add("look"); return el; }) : [];
+    const back = p?.step === "back";   // the cards not picked going back on top of the dummy's deck: not clickable, and they fly there
+    const look = p?.kind === "wiretap" && p.mine ? p.look.map((c) => { const el = card(c, { small: true, click: back ? null : () => send({ do: "tap", uid: c.uid }) }); el.classList.add("look"); return el; }) : [];
     const newLook = look.filter((el, i) => !looked.has(p.look[i].uid));
     looked = new Set(look.length ? p.look.map((c) => c.uid) : []);
     els.push(...look);
     $("stack").replaceChildren(...els);
     for (const [el, src] of from) fly([el], src);
     fly(newLook, $("tPiles").querySelector(".back, .slot"), { gap: 400, ms: 900, scale: .6 });
+    if (back) away(look, $("tPiles").querySelector(".back, .slot"));
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining

@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.20 "Back on Top" · Wed Nov 4, 9:02 PM
+- After a Wiretap's picks, its unpicked cards fly back onto the dummy's deck while the Wiretap stays on the stack, with a log line ("Wiretap puts the rest back on top of the dummy's deck"); the next board takes the Wiretap to the graveyard. kura: the card and the rest vanished at once. Removed: the Wiretap and its last cards disappearing the moment the last pick was made.
+
 ## v0.19 "From Your Hand" · Wed Nov 4, 8:59 PM
 - A card you play flies onto the stack from where it was in your hand. A Wiretap's three cards come off the top of the dummy's deck one by one, more slowly (0.9 s each, 0.4 s apart), and sit a little higher. Fixed: after you picked a card for the graveyard, a fourth card flashed into its place for a moment (the log line's board was taken before the look shrank). kura's notes on the last match. Removed: cards you play starting from the middle of your hand, the look cards appearing at once at the bottom of the row, and the flash.
 

@@ -179,6 +179,10 @@ export function tap(g, s, uid) {
   } else {
     deck.unshift(...deck.splice(i, 1));
   }
+  if (p.n) {   // one board with the rest going back on top, the Wiretap still shown (kura, Nov 4: they vanished at once)
+    p.step = "back";
+    say(g, `Wiretap puts ${p.n === 1 ? "the other card" : "the rest"} back on top of ${s === "a" ? "the dummy's" : "your"} deck.`);
+  }
   g.pending = null;
   resolve(g);
   return null;
