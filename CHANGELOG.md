@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.74 "Tips" · Thu Nov 5, 6:46 AM
+- How to play has bullet points under its title, and a new tip: "Hold or hover over a card to see it up close". Removed: nothing.
+
 ## v0.73 "Centered" · Thu Nov 5, 6:45 AM
 - How to play at the start sits in the middle of the panel, exactly where the "?" shows it. Removed: the start's box sitting higher up, in the cards' row.
 
