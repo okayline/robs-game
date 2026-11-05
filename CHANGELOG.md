@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.68 "How To Play" · Thu Nov 5, 4:07 AM
+- Before anyone has played, the middle panel shows how to play in a thin light-blue frame: "Resolve 3 Broadcasts to win!", "Spam and Wiretap are attacks", "Counters are great!", "Discard one to draw one". It's smaller on a phone, and it goes away with the first move. Removed: the empty middle panel at the start.
+
 ## v0.67 "No Flash" · Thu Nov 5, 3:32 AM
 - A new match's page comes straight back from the site's main address, so the address bar stays on "/" the whole time. Removed: the redirect to /m/… that flashed the long address for a moment.
 
