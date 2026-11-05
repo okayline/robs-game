@@ -314,7 +314,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.85" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.86" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -443,7 +443,7 @@
   // card still for HOLD_MS (or rest the mouse on it without moving for HOVER_MS) to see it whole; letting go (or moving off) closes it. A
   // hold doesn't also cast: the click after it is swallowed. With its big card open, the mouse can go sideways until the card has turned a
   // half turn (TURN_OFF), and up or down HOVER_PAD px past the card. No big card from a mouse while the boards after a move are playing.
-  const HOLD_MS = 450, HOVER_MS = 1200, HOVER_PAD = 16, TURN_OFF = 180;
+  const HOLD_MS = 450, HOVER_MS = 1000, HOVER_PAD = 16, TURN_OFF = 180;   // HOVER_MS 1000 (kura, Nov 5: "can we do 1000ms please"; was 1200)
   let bigCard = null, bigFlip = null, bigBy = null, held = false;   // bigBy: the card a mouse opened the big card from
   const ZEDGE = 8;   // layers that make the big card's edge (its thickness, .zedge)
   const fighting = () => !!playing;
@@ -560,8 +560,10 @@
     for (const e of changed) e.textContent = old.get(e.dataset.count);
     countTimer = setTimeout(() => { countTimer = null; for (const [e, t] of fresh) if (e.isConnected) e.textContent = t; }, wait);
   }
-  function fly(els, from, { gap = 150, ms = 600, scale = .45, delay = 0 } = {}) {
-    if (!els.length || !from || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // force: moves even with reduced motion asked for: only the end of a Wiretap (kura, Nov 5, who has reduced motion on: "can we have the
+  // players card go down and the opponents cards go up? i think they just disappear on mobile for me"); every other flight stays still
+  function fly(els, from, { gap = 150, ms = 600, scale = .45, delay = 0, force = false } = {}) {
+    if (!els.length || !from || (!force && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
     busy(delay + (els.length - 1) * gap + ms);
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1;   // fit()'s scale
     const d = from.getBoundingClientRect ? from.getBoundingClientRect() : from;
@@ -580,8 +582,8 @@
   // kura, Nov 4, "not have disappearing animations"): a Wiretap's unpicked cards back onto the dummy's deck, in the order they go
   // back, so the card on top lands last
   // flip: each card turns face down halfway there, the way a card put back on a deck goes face down (kura, Nov 4)
-  function away(els, to, { flip = false } = {}) {
-    if (!els.length || !to || matchMedia("(prefers-reduced-motion: reduce)").matches) { if (flip) els.forEach((el) => el.classList.add("down")); return; }
+  function away(els, to, { flip = false, force = false } = {}) {
+    if (!els.length || !to || (!force && matchMedia("(prefers-reduced-motion: reduce)").matches)) { if (flip) els.forEach((el) => el.classList.add("down")); return; }
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1, d = to.getBoundingClientRect();
     busy(300 + (els.length - 1) * 500 + 700);   // the last card's delay and flight, below
     els.forEach((el, i) => {
@@ -599,8 +601,8 @@
   // graveyard or a Broadcast place, turning face down halfway to a deck. A card still on screen flies from its old box to its new one;
   // one that's now out of sight (in a deck, or under a graveyard's top card) is copied, and the copy flies onto the pile.
   const MOVE_GAP = 400, MOVE_MS = 700, UNDELETE_SHOWN = 4;
-  function ghost(src, box, to, { delay = 0, flip = false } = {}) {
-    if (!to || !box.width || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  function ghost(src, box, to, { delay = 0, flip = false, force = false } = {}) {
+    if (!to || !box.width || (!force && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
     busy(delay + MOVE_MS);
     const d = to.getBoundingClientRect(), g = src.cloneNode(true);
     g.classList.remove("dim", "can"); g.style.cssText = "";
@@ -707,12 +709,12 @@
     fly(newLook, $("tPiles").querySelector(".back, .slot"), { gap: 400, ms: 900, scale: .6 });
     if (back && look.length) {
       const byUid = new Map(look.map((el) => [el.dataset.uid, el]));
-      away([...p.look].reverse().map((c) => byUid.get(c.uid)), $("tPiles").querySelector(".back, .slot"), { flip: true });   // p.look[0]: the new top card
+      away([...p.look].reverse().map((c) => byUid.get(c.uid)), $("tPiles").querySelector(".back, .slot"), { flip: true, force: true });   // p.look[0]: the new top card
       for (const c of p.look) sentAway.add(c.uid);
     }
     if (n && !back && n > prevDown) later.push(() => fly(down.slice(prevDown), myDeck(), { gap: 400, ms: 900, scale: .6 }));
-    if (n && !back && n < prevDown && prevBoxes.length) later.push(() => fly([$("mPiles").querySelectorAll(".pile")[1]?.firstChild].filter(Boolean), prevBoxes[prevBoxes.length - 1], { ms: 700, scale: 1 }));
-    if (n && back) later.push(() => away([...down].reverse(), myDeck()));
+    if (n && !back && n < prevDown && prevBoxes.length) later.push(() => fly([$("mPiles").querySelectorAll(".pile")[1]?.firstChild].filter(Boolean), prevBoxes[prevBoxes.length - 1], { ms: 700, scale: 1, force: true }));
+    if (n && back) later.push(() => away([...down].reverse(), myDeck(), { force: true }));
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     // the pink button is always there (kura, Nov 4: "could we always see the pink button"): with nothing for you to press, it says why
     // and can't be pressed
@@ -762,12 +764,12 @@
       const now = document.querySelector(`#game .card[data-uid="${uid}"]`);
       if (now) {   // still on screen: moved from the stack or your hand to a Broadcast place or a graveyard's top
         if (b.where === "stack" && now.closest("#hand")) { fly([now], b.box, { ms: MOVE_MS, scale: b.box.width / now.getBoundingClientRect().width, delay: i++ * MOVE_GAP }); continue; }
-        if (b.where !== "other" && !now.closest("#stack, #hand")) fly([now], b.box, { ms: MOVE_MS, scale: b.box.width / now.getBoundingClientRect().width, delay: i++ * MOVE_GAP });
+        if (b.where !== "other" && !now.closest("#stack, #hand")) fly([now], b.box, { ms: MOVE_MS, scale: b.box.width / now.getBoundingClientRect().width, delay: i++ * MOVE_GAP, force: b.el.classList.contains("look") || (b.where === "stack" && b.el.classList.contains("wiretap")) });
         continue;
       }
       const g = inGrave(uid);
       if (b.where === "other" && g) continue;   // a graveyard's old top card, now under a newer one
-      if (g) ghost(b.el, b.box, graveOf(g), { delay: i++ * MOVE_GAP });   // into a graveyard, under another card going there too
+      if (g) ghost(b.el, b.box, graveOf(g), { delay: i++ * MOVE_GAP, force: b.where === "stack" && b.el.classList.contains("wiretap") });   // into a graveyard, under another card going there too
       else if (!v.me.hand.some((c) => c.uid === uid)) ghost(b.el, b.box, deckOf(uid), { delay: i++ * MOVE_GAP, flip: true });   // onto a deck: Rollback, Undelete
     }
     // cards milled straight off a deck (Spam) fly from the deck to the graveyard one after another, the new top card last (kura, Nov 5: "two

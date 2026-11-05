@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.86 "Wiretap Ending" · Thu Nov 5, 8:12 AM
+- With reduced motion turned on, the end of a Wiretap still moves: the card picked flies up into the opponent's graveyard, the rest turn face down and fly up onto their deck, and your Wiretap goes down to your graveyard (the opponent's Wiretap the other way round). Everything else stays still with reduced motion. Removed: the Wiretap's cards vanishing at its end with reduced motion.
+- Resting the mouse on a card shows it up close after 1 second (was 1.2). Removed: nothing.
+
 ## v0.85 "Slow Spin" · Thu Nov 5, 8:05 AM
 - With reduced motion turned on, an ONLINE GPU's fans turn slowly, about once every 2 seconds. Removed: the fans standing still with reduced motion.
 - How to play's text is bigger (18, was 15; 16 on a phone, was 13), and its second tip says "Counter a counter!". Removed: "Counters are great!".
