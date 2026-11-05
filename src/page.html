@@ -73,7 +73,7 @@
   /* the log: a strip across the bottom of the middle panel, under the stack, so its lines are long and mostly one line each (kura,
      Nov 5: "a little bigger font size, and have a longer row that sits closer to the bottom of the panel ... less double lines"; it was
      a narrow column left of the stack, in 9px); 3 lines high, each older line fainter */
-  #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 11px/1.3 var(--body); overflow: hidden; color: var(--ink);
+  #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 13px/1.3 var(--body); overflow: hidden; color: var(--ink);
          display: flex; flex-direction: column; justify-content: flex-end; gap: 3px; }
   /* no box of its own, and newest at the bottom: a new line slides the lines up (kura, Nov 5: "take the panel background away" and
      "newest messages appear on the bottom ... one line at a time scrolling up") */
@@ -173,7 +173,7 @@
     #game { padding: 8px 0; }
     .side, .mid, .bar { margin: 0 5px; }
     .side, .mid { padding-left: 8px; padding-right: 8px; }   /* room for a tappable graveyard's dashed outline (kura, Nov 5: "a little more padding"; was 4px) */
-    #log { font-size: 10px; }   /* a phone: a little smaller, so most lines still fit on one */
+    #log { font-size: 12px; }   /* a phone: a little smaller, so most lines still fit on one */
     h1 { margin: 0 5px; }
     /* 40px: two 5px gaps, the panel's 1px border and 8px padding each side, and two 6px gaps between cards */
     .mid { --stack-w: calc((100vw - 40px) / 3 + 17px); }
@@ -197,12 +197,12 @@
     .them .back { display: flex; align-items: center; justify-content: center; }
     .them .back .deckn { display: block; font: 800 calc(var(--sw) * 22 / 108)/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }   /* white, like your deck's (kura, Nov 5: was dark ink, which the darker blue hid) */
     .them .pile:first-child > span { display: none; }
-    /* the graveyard's count on its card, with a gravestone, instead of the "graveyard" label (kura, Nov 5); dark ink with a white glow,
-       since a graveyard card is greyed out and light (white didn't show on it) */
+    /* the graveyard's count on its card, with a gravestone, instead of the "graveyard" label (kura, Nov 5): white on a small black box in
+       the middle, with the card showing around it (kura, Nov 5: "no glow ... a black background for just the emoji and the number") */
     .pile:has(.gravn) > span { display: none; }
     .pile { position: relative; }
-    .pile .gravn { display: flex; position: absolute; inset: 0; align-items: center; justify-content: center; pointer-events: none;
-                   font: 800 calc(var(--sw) * 20 / 108)/1 var(--title); color: var(--ink); text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+    .pile .gravn { display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap;
+                   font: 800 10px/1 var(--title); color: #fff; background: #000; border-radius: 3px; padding: 2px 4px; }   /* 10px (kura, Nov 5) */
     #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
                       font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
@@ -243,7 +243,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.55" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.56" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {

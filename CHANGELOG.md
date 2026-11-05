@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.56 "Big Print" · Thu Nov 5, 12:31 AM
+- The log's text is bigger: 13 on PC, 12 on a phone. Removed: the 11 (PC) and 10 (phone) log text.
+- On a phone the graveyard's 🪦 and count are white, 10px, on a small black box in the middle of the card, with the card showing around it. Removed: the dark count with a white glow.
+
 ## v0.55 "Deep Blue" · Thu Nov 5, 12:25 AM
 - The Webmaster's things are a darker blue: its cards' frames (on the stack, its side and the big card), its card backs (its deck and its face-down cards) and its panel's labels. The darker blue is clearly different from your blue for people with red-green colour blindness too. Removed: the Webmaster's cards, card backs and labels in your blue.
 - The "ROB'S GAME" title is blue, and the Resolve button is a pastel blue. Removed: the pink title and the pink Resolve button.
