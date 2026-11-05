@@ -112,7 +112,7 @@
   <h1>ROB'S GAME <a href="/">new match</a></h1>
   <div class="side">
     <div class="stat">The dummy <span>hand <b id="tHand">0</b></span></div>
-    <div class="zone"><div class="piles" id="tPiles"></div><div class="row" id="tField" data-empty="No Broadcasts yet."></div></div>
+    <div class="zone"><div class="row" id="tField" data-empty="No Broadcasts yet."></div><div class="piles" id="tPiles"></div></div>
   </div>
   <div class="mid">
     <div id="ask">Connecting…</div>
@@ -121,13 +121,13 @@
     <div id="log"></div>
   </div>
   <div class="side">
-    <div class="zone"><div class="piles" id="mPiles"></div><div class="row" id="mField" data-empty="No Broadcasts yet."></div><div class="acts" id="acts"></div></div>
-    <div class="stat">You <span>deck <b id="mDeck">0</b></span></div>
+    <div class="zone"><div class="row" id="mField" data-empty="No Broadcasts yet."></div><div class="piles" id="mPiles"></div><div class="acts" id="acts"></div></div>
+    <div class="stat">You</div>
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.14" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.15" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -179,16 +179,14 @@
     const box = mk("div", "tagged"); box.append(el, mk("span", "by", tag)); return box;
   }
 
-  // a side's piles: the dummy's deck (face down) and graveyard; your graveyard (your deck's count stays on your stat line)
-  function piles(side, deck) {
+  // a side's piles, at the right of its panel (kura, Nov 4): its deck face down, then its graveyard
+  function piles(side) {
     const pile = (el, label, n) => { const p = mk("div", "pile"); const t = mk("span", "", `${label} `); t.append(mk("b", "", n)); p.append(el, t); return p; };
     const out = [];
-    if (deck) {
-      const back = mk("div", side.deck ? "back" : "slot");
-      const k = Math.min(4, Math.ceil(side.deck / 8));   // a thicker stack for a fuller deck
-      back.style.boxShadow = Array.from({ length: k }, (_, i) => `${i + 1}px ${i + 1}px 0 color-mix(in srgb, var(--frame) ${70 - i * 10}%, #000)`).join(",") || "none";
-      out.push(pile(back, "deck", side.deck));
-    }
+    const back = mk("div", side.deck ? "back" : "slot");
+    const k = Math.min(4, Math.ceil(side.deck / 8));   // a thicker stack for a fuller deck
+    back.style.boxShadow = Array.from({ length: k }, (_, i) => `${i + 1}px ${i + 1}px 0 color-mix(in srgb, var(--frame) ${70 - i * 10}%, #000)`).join(",") || "none";
+    out.push(pile(back, "deck", side.deck));
     const top = side.grave[side.grave.length - 1];
     out.push(pile(top ? card(top, { small: true, gone: true }) : mk("div", "slot"), "graveyard", side.grave.length));
     return out;
@@ -196,11 +194,27 @@
 
   // the cards on the stack and the fields at the last draw: only a card that wasn't there animates in
   let shown = new Set();
+  // your hand at the last draw: a card that wasn't in it is dealt, flying from your deck to its place (kura, Nov 4: "auto deal"),
+  // one after another when there are several (the opening five)
+  let inHand = new Set();
+  function deal(els) {
+    if (!els.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const from = $("mPiles").querySelector(".back, .slot");
+    if (!from) return;
+    const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1;   // fit()'s scale
+    const d = from.getBoundingClientRect();
+    els.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k;
+      el.animate([{ transform: `translate(${dx}px, ${dy}px) scale(.45)`, opacity: .4 }, { transform: "none", opacity: 1 }],
+        { duration: 600, delay: i * 150, easing: "ease-out", fill: "backwards" });
+    });
+  }
   const fresh = (el, c, cls) => { if (!shown.has(c.uid)) el.classList.add(cls); return el; };
 
   function draw(v) {
-    $("tHand").textContent = v.them.hand; $("mDeck").textContent = v.me.deck;
-    $("tPiles").replaceChildren(...piles(v.them, true)); $("mPiles").replaceChildren(...piles(v.me, false));
+    $("tHand").textContent = v.them.hand;
+    $("tPiles").replaceChildren(...piles(v.them)); $("mPiles").replaceChildren(...piles(v.me));
     $("tField").replaceChildren(...v.them.field.map((c) => fresh(card(c, { small: true }), c, "enter-land")));
     $("mField").replaceChildren(...v.me.field.map((c) => fresh(card(c, { small: true }), c, "enter-land")));
     const p = v.pending, mine = v.waiting, acts = [];
@@ -232,7 +246,10 @@
     }));
     shown = new Set([...v.stack, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
-    $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); return el; }));
+    const dealt = [];
+    $("hand").replaceChildren(...v.me.hand.map((c) => { const f = v.winner ? null : playable(c); const el = card(c, { click: f }); if (!f && !v.winner) el.classList.add("dim"); if (!inHand.has(c.uid)) dealt.push(el); return el; }));
+    inHand = new Set(v.me.hand.map((c) => c.uid));
+    deal(dealt);
     $("log").replaceChildren(...v.log.slice(-3).map((l) => mk("div", "", l)));
     fit();
   }

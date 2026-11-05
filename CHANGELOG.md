@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.15 "Deal" · Wed Nov 4, 8:45 PM
+- Cards are dealt: each card that comes into your hand flies there from your deck (the opening five one after another), so you can see draws happen. Your deck now has a face-down pile too, and both sides' piles (deck, then graveyard) are at the right of their panels; your buttons stay at the far right. kura: "no way for the cards to get from the deck to my hand", "the graveyard can be on the right more", "a picture of the player's deck". Removed: cards appearing in your hand with no movement, your deck count on your stat line (the pile shows it), and the piles at the left.
+
 ## v0.14 "Line by Line" · Wed Nov 4, 8:43 PM
 - Every action shows on its own, 1.5 s apart, with its log line: a cast, a counter, each step of a counter fight resolving, a Wiretap, a draw, a pass. The match sends one board per log line (rules.js hooks.say), yours and the dummy's. kura: actions and the log showed up all at once. Removed: one board per dummy move, which bunched several actions and log lines together.
 
