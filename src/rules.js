@@ -61,7 +61,7 @@ export const FLAVOUR = {
 //   Voodoo3 3000: a 1999 Voodoo3 print ad as an eBay seller describes it, ebay.com/itm/166305819875 (not confirmed elsewhere)
 export const GPUS = [
   { model: "RTX 5090", pic: "rtx-5090", spin: true, gen: "Blackwell", flav: "Twice the performance of the 4090." },
-  { model: "RTX 5080", pic: "rtx-5080", gen: "Blackwell", flav: "AI is coming home to GeForce." },
+  { model: "RTX 5080", pic: "rtx-5080", spin: true, gen: "Blackwell", flav: "AI is coming home to GeForce." },
   { model: "RTX 5070 Ti", pic: "rtx-5070-ti", spin: true, gen: "Blackwell", flav: "Supercharge gaming and creating." },
   { model: "RTX 5070", pic: "rtx-5070", gen: "Blackwell", flav: "RTX 4090 performance at $549." },
   { model: "RTX 4090", pic: "rtx-4090", gen: "Ada Lovelace", flav: "Beyond fast." },

@@ -302,7 +302,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.76" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.77" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -320,7 +320,7 @@
   const WIN = 3;   // GPUs to win (rules.js WIN)
   // kura's words, Nov 5; the first line is the title, the rest are bullets (kura, Nov 5: "can we add bullet points", and a line about the
   // big card: "Hover to zoom on card!", reworded)
-  const HOW_TO = [`Resolve ${WIN} GPUs to win!`, "Spam and Wiretap are attacks", "Counters are great!", "Discard one to draw one", "Hold or hover to see a card up close!"];
+  const HOW_TO = [`Resolve ${WIN} GPUs to win!`, "Spam and Wiretap are attacks", "Counters are great!", "Discard one to draw one", "Hold or hover to see a card up close"];
   const howTo = () => { const box = mk("div", "howto"), list = mk("ul"); list.append(...HOW_TO.slice(1).map((t) => mk("li", "", t))); box.append(mk("div", "", HOW_TO[0]), list); return box; };
   // an empty GPU place: a thermometer with a line through it, and "Temps: unstable" (kura, Nov 5)
   const NO_TEMP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13.5V5a2 2 0 0 1 4 0v8.5a4 4 0 1 1-4 0Z"/><path d="M12 9v7"/><path d="M3 3l18 18"/></svg>';

@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.77 "Fan Tools" · Thu Nov 5, 6:55 AM
+- The RTX 5080's fan spins once it has resolved, like the RTX 5090, RTX 5070 Ti and Arc B580.
+- The last tip in how to play has no exclamation mark: "Hold or hover to see a card up close". Removed: the "!".
+- `tools/spin.py` makes a GPU's spinning fans, with notes at the top on how to use it and the settings for each finished card. Removed: nothing.
+
 ## v0.76 "Up Close" · Thu Nov 5, 6:49 AM
 - How to play's last tip says "Hold or hover to see a card up close!". Removed: "Hold or hover over a card to see it up close".
 
