@@ -179,7 +179,9 @@ export function tap(g, s, uid) {
     say(g, `Wiretap puts ${cardName(c)} in ${s === "a" ? "the dummy's" : "your"} graveyard.`);
     if (p.n >= 2) return null;
   } else {
-    deck.unshift(...deck.splice(i, 1));
+    // the card picked goes under the others going back (kura, Nov 4: "the card the player picks be the one that goes on bottom")
+    const [c] = deck.splice(i, 1);
+    deck.splice(p.n - 1, 0, c);
   }
   if (p.n) {   // one board with the rest going back on top, the Wiretap still shown (kura, Nov 4: they vanished at once)
     p.step = "back";

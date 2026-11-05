@@ -22,7 +22,7 @@ export function dummyMove(g) {
   if (p?.kind === "wiretap") {
     const look = g.sides.a.deck.slice(0, p.n);
     const best = [...look].sort((x, y) => MILL.indexOf(x.card) - MILL.indexOf(y.card))[0];
-    return !tap(g, "b", p.step === "mill" ? best.uid : look[0].uid);
+    return !tap(g, "b", p.step === "mill" ? best.uid : look[look.length - 1].uid);   // the last card stays last: the order as it is
   }
   if (p?.kind === "paywall") {
     const target = g.stack[g.stack.length - 1], spare = me.hand.find((c) => c.card !== "broadcast");

@@ -198,7 +198,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.37" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.38" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -254,7 +254,7 @@
     if (click) el.onclick = click;
     el.dataset.uid = c.uid;
     if (zoom) zoomable(el, () => c);
-    if (!tag) return el;
+    if (tag == null) return el;
     const box = mk("div", "tagged"); box.append(el, mk("span", "by", tag)); return box;
   }
 
@@ -413,7 +413,7 @@
       ask = `The dummy cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
       playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Resolve", () => send({ do: "let" })]);
-    } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to put on top of their deck.";
+    } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to go under the other.";
     else if (p?.kind === "paywall" && p.mine) {
       ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
       playable = (c) => () => send({ do: "pay", uid: c.uid });
@@ -429,7 +429,7 @@
     // the stack, full size so its text can be read (kura, Nov 4); a Wiretap being finished stays there, with the cards it looks at
     const cards = p?.kind === "wiretap" ? [p.card] : v.stack, from = [];
     const els = cards.map((c, i) => {
-      const el = card(c, { tag: c.by === "me" ? "you" : "dummy" });
+      const el = card(c, { tag: c.by === "me" ? "you" : "" });   // the dummy's cards have no label (kura, Nov 4: "remove DUMMY text")
       el.style.marginBottom = `${i * 10}px`;   // each later card sits a little higher
       if (!shown.has(c.uid)) from.push([el.firstChild, played?.uid === c.uid ? played.box : c.by === "me" ? $("hand") : $("tHand")]);
       return el;

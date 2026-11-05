@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.38 "Under" · Wed Nov 4, 10:28 PM
+- A Wiretap's second pick is the card that goes back under the other one, so the other card ends up on top (kura: "can the card the player picks be the one that goes on bottom"). The dummy still leaves the order as it is (it now picks the second card). The log asks: "Wiretap: pick the card to go under the other." Removed: the second pick being the card that goes on top.
+- The dummy's cards on the stack have no label under them (kura: "can we remove DUMMY text"); yours still say "you". Removed: the "dummy" label.
+
 ## v0.37 "Big Stack" · Wed Nov 4, 10:41 PM
 - The card being played on the stack is big (kura: "make the main card being played on the game field a lot bigger, not smaller"): 1.45 times a hand card on a wide screen (162px instead of 112px), as wide as a hand card on a phone (about 119px instead of 69px). The middle panel is that much taller, so on a phone the screen shrinks to fit a little more. Removed: the stack cards at hand-card size (desktop) and one fifth of the screen (phone).
 - A Wiretap's look cards are stacked down the right of the stack (kura: "3 buttons stacked vertically on the right"), as big as fit there: about 118px on a wide screen, 54px on a phone. Removed: the three side by side, and their lift above the stack's bottom.
