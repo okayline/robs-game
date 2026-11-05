@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.36 "Edge to Edge" · Wed Nov 4, 10:36 PM
+- On a phone the panels, the pink bar and the log sit 6px in from the screen's edges with 4px inside the panels, like UN/TAP's (kura: "make the phone width the same as un/tap"); every card is that much wider (your hand cards about 11px each on a 390px phone). Removed: the phone's 16px page sides and 10px panel sides.
+- No glow (kura: "no glow please"): cards you can click keep their pointer, and the ones you can't play stay dimmed. Removed: the pink glow around cards you can click.
+
 ## v0.35 "Stays Put" · Wed Nov 4, 10:32 PM
 - The stack's cards stay in the middle, and a Wiretap's look cards (yours, and the dummy's face-down ones) come in to their right, sized to fit there (kura: "can the main card stay where it is and the buttons come in to the right of it"): about 70px wide on a desktop, 40px on a phone (hold one to see it whole). Removed: the stack re-centering when the look cards came in, which jumped the Wiretap left.
 - Fixed: after a Wiretap's first pick, the next click was lost (kura: "the next click is a dropped click"). The last board of a move is usually the same as the one before it (2,133 of 2,327 simulated moves, every first Wiretap pick); the page redrew it 1.5 s later, replacing the cards under your finger. A board the same as the one on screen is now skipped. Removed: that redraw, and the 1.5 s pause before it.

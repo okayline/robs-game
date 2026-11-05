@@ -80,7 +80,7 @@
   /* the card: blue frame, cream inside (tap-game's .gc) */
   .card { position: relative; width: var(--w); height: calc(var(--h) * var(--u)); border: 0; padding: 0; background: none; border-radius: calc(7 * var(--u)); text-align: left; color: var(--ink); flex: none; }
   .card.small { --w: var(--sw); --u: calc(var(--w) / 108); height: calc(76 * var(--u)); }
-  .card.can { cursor: pointer; filter: drop-shadow(0 0 6px var(--pink)); }
+  .card.can { cursor: pointer; }   /* no glow (kura, Nov 4: "no glow please"); the cards you can't play are dimmed */
   .card.dim { opacity: .55; }
   .card.gap { visibility: hidden; }
   #hand .handdeck { display: none; }   /* your deck in the hand's last place: phones only (below) */
@@ -135,8 +135,17 @@
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
   /* on a phone your hand is two rows, 3 and then 2, so each card is about 1.7 times as wide (kura, Nov 4: "make the cards bigger on mobile",
      using the empty height); 66px = the page's 16px sides, the panel's 10px padding and 1px border each side, and two 6px gaps */
+  /* on a phone the panels sit 6px in from the screen's edges with 4px inside them, like UN/TAP's (kura, Nov 4: "make the phone width
+     the same as un/tap"); every width below leaves 32px less room than before: 46px = two 6px gaps, the panel's 1px border and 4px
+     padding each side, and four 6px gaps between cards */
   @media (max-width: 500px) {
-    #hand { --w: calc((100vw - 66px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
+    :root { --w: calc((100vw - 46px) / 5); --sw: calc((100vw - 40px) / 6); }
+    #game { padding: 8px 0; }
+    .side, .mid, .bar, #log { margin: 0 6px; }
+    .side, .mid { padding-left: 4px; padding-right: 4px; }
+    h1 { margin: 0 6px; }
+    /* 34px: two 6px gaps, the panel's 1px border and 4px padding each side, and two 6px gaps between cards */
+    #hand { --w: calc((100vw - 34px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
     /* your 3 Broadcast places at the right edge, with space between them and your graveyard (kura, Nov 4: "for phones only") */
     #mField { justify-content: flex-end; }
     /* your deck moves from the piles into the hand's last place, face down at card size (kura, Nov 4: "last space can be the player's
@@ -184,7 +193,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.35" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.36" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
