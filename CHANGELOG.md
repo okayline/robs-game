@@ -4,6 +4,15 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.51 "Back in the Middle" · Wed Nov 4, 11:55 PM
+- The log is in the middle panel again, on the left of the stack, as tall as the stack, in smaller text (12, and 11 on a phone). Still 3 lines, newest on top. Removed: the log's own panel under yours, and its bigger text (15).
+
+## v0.50 "Webmaster" · Wed Nov 4, 11:48 PM
+- Your opponent is now called the Webmaster, on its panel, in the log and on the buttons. Removed: the name "the dummy".
+
+## v0.49 "Overhead" · Wed Nov 4, 11:47 PM
+- Fixed: a card flying from your hand to the stack passed under a Broadcast on your side. Flying cards now pass over everything. Removed: cards flying under Broadcasts.
+
 ## v0.48 "Edge to Edge" · Wed Nov 4, 11:44 PM
 - On a phone the page scrolls instead of shrinking to fit, so the panels reach 6px from the screen's edges, like UN/TAP. Removed: the whole page shrinking on phones (it pulled the panels 35px or more in from the edges).
 

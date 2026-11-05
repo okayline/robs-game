@@ -69,10 +69,13 @@
   .bar button:disabled { cursor: default; }   /* still pink: it only says what's happening */
   .bar button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
-  /* the log: a panel of its own under yours, like UN/TAP's (kura, Nov 4: "take the log out of the game panel ... like in un/tap"):
-     newest at the top, next to your panel, each older line fainter; 3 lines (kura, Nov 4: "only have it show three lines"), one height whatever is in it */
-  #log { white-space: pre-wrap; font: italic 500 15px/1.5 var(--body); height: calc(3 * 1.5em + 20px); overflow: hidden; background: var(--cream);
-         border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; color: var(--ink); }
+  /* the log: in the middle panel again, on the left of the stack, in smaller text (kura, Nov 4: "move the log feed to the main game panel
+     again ... making the font smaller will help ... lefthand side of the panel"): as tall as the stack row and as wide as the room left
+     of its middle card, less a 6px gap; newest at the top, each older line fainter, 3 lines (kura, Nov 4: "only have it show three lines") */
+  .mid { position: relative; }
+  #log { position: absolute; left: 10px; top: 8px; width: calc((100% - 20px) / 2 - var(--stack-w) / 2 - 6px); height: calc(var(--stack-w) * var(--h) / 108 + 12px);
+         box-sizing: border-box; white-space: pre-wrap; font: italic 500 12px/1.35 var(--body); overflow: hidden; background: var(--cream);
+         border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; color: var(--ink); display: flex; flex-direction: column; gap: 4px; }
   /* its top line says what to do now (kura, Nov 4: it was a line of its own above the stack) */
   #log .now { font-weight: 700; }
   #log .now.win { color: #2f9e6b; } #log .now.lose { color: #d4558c; }
@@ -91,7 +94,8 @@
      main card stay where it is and the buttons come in to the right of it"); 24px: a 6px gap before them and between them */
   /* the card being played is big (kura, Nov 4: "a lot bigger, not smaller"): --stack-w, about 1.45 times a hand card on a wide screen,
      as wide as a hand card on a phone */
-  #stack { container-type: inline-size; --stack-w: calc(var(--w) * 1.45 + 17px); }   /* + the room the "you" label took (kura, Nov 4: "bigger") */
+  #stack { container-type: inline-size; }
+  .mid { --stack-w: calc(var(--w) * 1.45 + 17px); }   /* + the room the "you" label took (kura, Nov 4: "bigger") */
   #stack .mid-stack .card { --w: var(--stack-w); --u: calc(var(--w) / 108); }
   #stack > .mid-stack { flex: none; display: flex; align-items: flex-end; }
   #stack > .stack-side { flex: 1 1 0; min-width: 0; align-self: stretch; display: flex; gap: 6px; align-items: center; }
@@ -151,11 +155,12 @@
     html, body { height: auto; overflow: auto; }   /* the page scrolls on a phone; fit() doesn't shrink it there */
     :root { --w: calc((100vw - 46px) / 5); --sw: calc((100vw - 40px) / 6); }
     #game { padding: 8px 0; }
-    .side, .mid, .bar, #log { margin: 0 6px; }
+    .side, .mid, .bar { margin: 0 6px; }
     .side, .mid { padding-left: 4px; padding-right: 4px; }
+    #log { left: 4px; width: calc((100% - 8px) / 2 - var(--stack-w) / 2 - 6px); font-size: 11px; line-height: 1.25; padding: 5px 6px; gap: 3px; }   /* narrow there: smaller still */
     h1 { margin: 0 6px; }
     /* 34px: two 6px gaps, the panel's 1px border and 4px padding each side, and two 6px gaps between cards */
-    #stack { --stack-w: calc((100vw - 34px) / 3 + 17px); }
+    .mid { --stack-w: calc((100vw - 34px) / 3 + 17px); }
     #hand { --w: calc((100vw - 34px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
     /* your 3 Broadcast places at the right edge, with space between them and your graveyard (kura, Nov 4: "for phones only") */
     #mField { justify-content: flex-end; }
@@ -188,12 +193,13 @@
 <div id="game">
   <h1>ROB'S GAME <a href="/">new match</a></h1>
   <div class="side">
-    <div class="stat">The dummy <span>hand <b id="tHand">0</b></span></div>
+    <div class="stat">The Webmaster <span>hand <b id="tHand">0</b></span></div>
     <div class="zone"><div class="row" id="tField"></div><div class="piles" id="tPiles"></div></div>
   </div>
   <div class="mid">
     <div class="row" id="stack" data-empty=""></div>
     <div id="err"></div>
+    <div id="log"></div>
   </div>
   <div class="bar" id="acts"></div>
   <div class="side">
@@ -201,10 +207,9 @@
     <div class="stat mine">Player</div>
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
-  <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.46" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.51" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -370,8 +375,12 @@
     els.forEach((el, i) => {
       const r = el.getBoundingClientRect();
       const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k;
-      el.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: .4 }, { transform: "none", opacity: 1 }],
+      // above everything while it flies: a Broadcast on a field comes later in the page and would be drawn over it (kura, Nov 4: "it goes
+      // under the broadcast card")
+      el.style.zIndex = 5;
+      const a = el.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: .4 }, { transform: "none", opacity: 1 }],
         { duration: ms, delay: delay + i * gap, easing: "ease-out", fill: "backwards" });
+      a.onfinish = a.oncancel = () => { el.style.zIndex = ""; };
     });
   }
   // cards flying off to a spot on the screen and staying there, at its size, until the next board (the reverse of fly; nothing fades:
@@ -431,10 +440,10 @@
     $("mField").replaceChildren(...field(v.me.field));
     const p = v.pending, mine = v.waiting, acts = [];
     let ask, playable = () => null;
-    if (v.winner) ask = v.winner === "me" ? "You win!" : "The dummy wins.";
+    if (v.winner) ask = v.winner === "me" ? "You win!" : "The Webmaster wins.";
     else if (p?.kind === "answer" && p.mine) {
       const top = v.stack[v.stack.length - 1];
-      ask = `The dummy cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
+      ask = `The Webmaster cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
       playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Resolve", () => send({ do: "let" })]);
     } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to go under the other.";
@@ -450,7 +459,7 @@
       ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, tap your graveyard to discard a card and draw one, or pass.";
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
-    } else ask = "The dummy is thinking…";
+    } else ask = "The Webmaster is thinking…";
     const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
     // newest at the top: what to do now, then the log's newest lines, each fainter (as in UN/TAP's renderLog())
     $("log").replaceChildren(now, ...v.log.slice(-2).reverse().map((l, k) => { const d = mk("div", "", l); d.style.opacity = 1 - (k + 1) * 0.125; return d; }));
@@ -510,7 +519,7 @@
       autoAct = acts[0][1];
       acts[0] = ["Passing…", null];
     }
-    if (!acts.length) acts.push([v.winner ? (v.winner === "me" ? "You win" : "The dummy wins") : p?.kind === "wiretap" && p.mine ? "Pick a card" : v.turn === "them" ? "Dummy's turn" : "Dummy's answering", null]);
+    if (!acts.length) acts.push([v.winner ? (v.winner === "me" ? "You win" : "The Webmaster wins") : p?.kind === "wiretap" && p.mine ? "Pick a card" : v.turn === "them" ? "Webmaster's turn" : "Webmaster's answering", null]);
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); if (f) b.onclick = f; else b.disabled = true; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining
     // cards stay in the same place")
