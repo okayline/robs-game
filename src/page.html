@@ -68,8 +68,8 @@
   .flav { font: italic 500 calc(5.8 * var(--u))/1.1 var(--body); color: var(--mute); }
   /* small cards (fields, the stack, the dummy's looks) show only the name, picture and card name */
   .card.small .gc-txt { display: none; }
-  .card.small .gc-name { font-size: calc(9 * var(--u)); }
-  .card.small .gc-type { font-size: calc(9 * var(--u)); }
+  .card.small .gc-name { font-size: calc(7 * var(--u)); }   /* fits the 12-high name bar (kura, Nov 4: 9 overlapped it) */
+  .card.small .gc-type { font-size: calc(8 * var(--u)); }
   /* the piles: a deck face down (tap-game's card-back stripes, thicker the more cards are left) and a graveyard's top card face up */
   .zone { display: flex; gap: 10px; align-items: flex-start; }
   .zone .row { flex: 1; min-width: 0; }
@@ -105,7 +105,7 @@
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.5" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.6" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
