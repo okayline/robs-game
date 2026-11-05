@@ -4,6 +4,12 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.64 "Smooth Scroll" · Thu Nov 5, 1:26 AM
+- The log scrolls up smoothly: the top line slides out of the top of the box instead of vanishing, and the slide is a little slower and eases in and out (0.5 s, was 0.35 s). Removed: the top line disappearing before the slide.
+- The log's text fades towards the top: 25% at the box's top edge, whole by the end of the top line. Removed: each older line being a step fainter.
+- When several cards move at once, they go one after another: each card a Spam mills flies from the deck to the graveyard in turn (the new top card last), and an Undelete's cards fly back onto the deck in turn (up to 5 shown). Removed: only the top card moving for a Spam or an Undelete.
+- On PC too, each graveyard shows 🪦 and its count on the card, and your graveyard is the DISCARD switch on your turn, as on a phone. Removed: the "graveyard" labels on PC.
+
 ## v0.63 "Step Down" · Thu Nov 5, 1:19 AM
 - The type line on cards (Instant, Sorcery, Enchantment) is one size smaller (11, was 12), with a slightly shorter bar. Removed: the 12-size type line.
 - A Broadcast's big card has the same dark Enchantment bar as on the board. Removed: the light bar on Broadcast's big card.

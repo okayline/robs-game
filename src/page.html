@@ -75,7 +75,9 @@
      Nov 5: "a little bigger font size, and have a longer row that sits closer to the bottom of the panel ... less double lines"; it was
      a narrow column left of the stack, in 9px); 3 lines high, each older line fainter */
   #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 15px/1.3 var(--body); overflow: hidden; color: var(--ink);
-         display: flex; flex-direction: column; justify-content: flex-end; gap: 3px; }
+         display: flex; flex-direction: column; justify-content: flex-end; gap: 3px;
+         -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.25), #000 34%); mask-image: linear-gradient(to bottom, rgba(0,0,0,.25), #000 34%); }
+  /* the text fades towards the top: 25% at the box's top edge, whole by the end of its top line (kura, Nov 5; was each older line fainter) */
   /* no box of its own, and newest at the bottom: a new line slides the lines up (kura, Nov 5: "take the panel background away" and
      "newest messages appear on the bottom ... one line at a time scrolling up") */
   /* its last line says what to do now (kura, Nov 4: it was a line of its own above the stack) */
@@ -92,7 +94,17 @@
   /* on a phone your deck stays in the 6th place however few cards you hold: empty places fill the hand up to 5 before it (kura, Nov 5:
      "sometimes my deck card moves to the left side of the row") */
   #hand .handpad { display: none; }
-  .back .deckn, .pile .gravn { display: none; }   /* a deck's count on its back: phones only, the Webmaster's (below) */
+  .back .deckn { display: none; }   /* a deck's count on its back: phones only, the Webmaster's (below) */
+  /* the graveyard's count on its card, with a gravestone, instead of the "graveyard" label, on every screen (kura, Nov 5; phones only at first): white on a small black box in
+     the middle, with the card showing around it (kura, Nov 5: "no glow ... a black background for just the emoji and the number") */
+  .pile:has(.gravn) > span { display: none; }
+  .pile .gravn { display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap;
+                 font: 800 calc(var(--sw) * 20 / 108)/1 var(--title); color: #fff; background: #000; border-radius: 3px;
+                 padding: calc(var(--sw) * 3 / 108) calc(var(--sw) * 6 / 108); }   /* sized with the card again (kura, Nov 5: "bigger again like it was before"; 10px for a moment) */
+  /* on your turn your graveyard's box says DISCARD: off (grey on black) until tapped, then pink like its outline (kura, Nov 5: "the
+     button is turned off ... click it to turn on, DISCARD maybe lights up pink like the border"); smaller, so the word fits the card */
+  .pile.tapme .gravn { font-size: calc(var(--sw) * 13 / 108); letter-spacing: 1px; color: #9aa3b8; }
+  .pile.tapme.on .gravn { background: var(--pink); color: #fff; }
   /* a card face down: the card-back stripes over it (a Wiretap's cards going back on a deck, and the dummy's look at yours) */
   .card.down { background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
   .card.down .gc { visibility: hidden; }
@@ -218,16 +230,6 @@
     .them .back { display: flex; align-items: center; justify-content: center; }
     .them .back .deckn { display: block; font: 800 calc(var(--sw) * 22 / 108)/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }   /* white, like your deck's (kura, Nov 5: was dark ink, which the darker blue hid) */
     .them .pile:first-child > span { display: none; }
-    /* the graveyard's count on its card, with a gravestone, instead of the "graveyard" label (kura, Nov 5): white on a small black box in
-       the middle, with the card showing around it (kura, Nov 5: "no glow ... a black background for just the emoji and the number") */
-    .pile:has(.gravn) > span { display: none; }
-    .pile .gravn { display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap;
-                   font: 800 calc(var(--sw) * 20 / 108)/1 var(--title); color: #fff; background: #000; border-radius: 3px;
-                   padding: calc(var(--sw) * 3 / 108) calc(var(--sw) * 6 / 108); }   /* sized with the card again (kura, Nov 5: "bigger again like it was before"; 10px for a moment) */
-    /* on your turn your graveyard's box says DISCARD: off (grey on black) until tapped, then pink like its outline (kura, Nov 5: "the
-       button is turned off ... click it to turn on, DISCARD maybe lights up pink like the border"); smaller, so the word fits the card */
-    .pile.tapme .gravn { font-size: calc(var(--sw) * 13 / 108); letter-spacing: 1px; color: #9aa3b8; }
-    .pile.tapme.on .gravn { background: var(--pink); color: #fff; }
     #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
                       font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
@@ -269,7 +271,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.63" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.64" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -440,7 +442,7 @@
     out.push(pile(back, "deck", side.deck));
     const grave = side.grave.filter((c) => c.uid !== onStack), top = grave[grave.length - 1];
     const g = pile(top ? card(top, { small: true, gone: true }) : mk("div", "slot"), "graveyard", grave.length);
-    g.append(mk("b", "gravn", `🪦 ${grave.length}`));   // the count on the card itself, on a phone (CSS)
+    g.append(mk("b", "gravn", `🪦 ${grave.length}`));   // the count on the card itself
     out.push(g);
     return out;
   }
@@ -493,7 +495,7 @@
   // kura, Nov 4 (the rule): every card that leaves a spot flies to where it went, one after another (MOVE_GAP apart): face up to a
   // graveyard or a Broadcast place, turning face down halfway to a deck. A card still on screen flies from its old box to its new one;
   // one that's now out of sight (in a deck, or under a graveyard's top card) is copied, and the copy flies onto the pile.
-  const MOVE_GAP = 400, MOVE_MS = 700;
+  const MOVE_GAP = 400, MOVE_MS = 700, UNDELETE_SHOWN = 4;
   function ghost(src, box, to, { delay = 0, flip = false } = {}) {
     if (!to || !box.width || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const d = to.getBoundingClientRect(), g = src.cloneNode(true);
@@ -550,14 +552,15 @@
       acts.push(["Pass turn", () => send({ do: "pass" })]);
     } else ask = "The Webmaster is thinking…";
     const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
-    // oldest at the top, each older line fainter, and what to do now at the bottom (kura, Nov 5); when a line is added, the lines start
-    // one new line lower and slide up into place
-    const lines = v.log.slice(-2).map((l, k, a) => { const d = mk("div", "", l); d.style.opacity = 1 - (a.length - k) * 0.125; return d; });
+    // oldest at the top, fading towards the top (CSS), and what to do now at the bottom (kura, Nov 5); when a line is added, the lines start
+    // one new line lower and slide smoothly up into place (kura, Nov 5: "smoothly scroll up"): one more line than shows sits above the
+    // box's top edge, so the top line slides out of sight instead of vanishing
+    const lines = v.log.slice(-3).map((l) => mk("div", "", l));
     const added = logN != null && v.log.length > logN; logN = v.log.length;
     $("log").replaceChildren(...lines, now);
     if (added && lines.length && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const up = lines[lines.length - 1].offsetHeight + 3;   // the new line and the 3px gap above it
-      for (const d of $("log").children) d.animate([{ transform: `translateY(${up}px)` }, { transform: "none" }], { duration: 350, easing: "ease-out" });
+      for (const d of $("log").children) d.animate([{ transform: `translateY(${up}px)` }, { transform: "none" }], { duration: 500, easing: "ease-in-out" });
     }
     // the stack, full size so its text can be read (kura, Nov 4); a Wiretap being finished stays there, with the cards it looks at
     const cards = p?.kind === "wiretap" ? [p.card] : v.stack, from = [];
@@ -654,13 +657,24 @@
       if (g) ghost(b.el, b.box, graveOf(g), { delay: i++ * MOVE_GAP });   // into a graveyard, under another card going there too
       else if (!v.me.hand.some((c) => c.uid === uid)) ghost(b.el, b.box, deckOf(uid), { delay: i++ * MOVE_GAP, flip: true });   // onto a deck: Rollback, Undelete
     }
-    // a card milled straight off a deck (Spam) flies from the deck to the graveyard (a Wiretap's milled card has its own flight, above)
+    // cards milled straight off a deck (Spam) fly from the deck to the graveyard one after another, the new top card last (kura, Nov 5: "two
+    // cards ... it looks like just one moves"; a Wiretap's milled card has its own flight, above)
     if (pv && pv.pending?.kind !== "wiretap" && v.pending?.kind !== "wiretap")
       for (const [side, id, box] of [["me", "#mPiles", mDeckBox], ["them", "#tPiles", tDeckBox]]) {
-        const top = graveOf(id);
-        if (box && top?.dataset.uid && !before.has(top.dataset.uid) && v[side].deck < pv[side].deck)
-          fly([top], box, { ms: MOVE_MS, scale: box.width / top.getBoundingClientRect().width, delay: i++ * MOVE_GAP });
+        const top = graveOf(id), had = new Set(pv[side].grave.map((c) => c.uid));
+        if (!box || !top?.dataset.uid || v[side].deck >= pv[side].deck) continue;
+        for (const c of v[side].grave.filter((c) => !had.has(c.uid) && !before.has(c.uid))) {
+          if (c.uid === top.dataset.uid) fly([top], box, { ms: MOVE_MS, scale: box.width / top.getBoundingClientRect().width, delay: i++ * MOVE_GAP });
+          else ghost(card(c, { small: true, gone: true, zoom: false }), box, top, { delay: i++ * MOVE_GAP });
+        }
       }
+    // Undelete: the graveyard's other cards follow its top card back onto the deck, one after another (at most UNDELETE_SHOWN of them)
+    if (pv) for (const [side, id] of [["me", "#mPiles"], ["them", "#tPiles"]]) {
+      const was = pv[side].grave, topB = was.length && before.get(was[was.length - 1].uid);
+      if (!topB || v[side].grave.length || v[side].deck <= pv[side].deck) continue;
+      const to = side === "me" ? myDeck() : $("tPiles").querySelector(".back, .slot");
+      for (const c of was.slice(0, -1).reverse().slice(0, UNDELETE_SHOWN)) ghost(card(c, { small: true, gone: true, zoom: false }), topB.box, to, { delay: i++ * MOVE_GAP, flip: true });
+    }
     // the dummy's draws: face-down cards from its deck to its hand count
     if (pv && tDeckBox && v.them.hand > pv.them.hand && v.them.deck < pv.them.deck)
       for (let k = 0; k < Math.min(v.them.hand - pv.them.hand, pv.them.deck - v.them.deck); k++) ghost(mk("div", "card small down"), tDeckBox, $("tHand"), { delay: k * 150 });
