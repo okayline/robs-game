@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.29 "Three Places" · Wed Nov 4, 10:10 PM
+- Each side's Broadcasts fill three dotted places, one for each Broadcast needed to win (kura: "blank areas for the 3 broadcast cards, dotted lines, and then they can show there"). Removed: the "No Broadcasts yet." text.
+- Your button (Pass turn, Resolve, Don't pay) is a pink bar of its own above your panel, like UN/TAP's (kura: "let's have the pass turn line be it's own panel like in un/tap"); the bar keeps its height when there's no button. This also makes room for your three places on a phone. Removed: the small pink button at the right of your panel, and the 88px height it kept your row of piles at.
+
 ## v0.28 "Big Card" · Wed Nov 4, 10:05 PM
 - UN/TAP's big card, copied from tap-game (kura: "copy the big card hover thing from un/tap exactly please, its perfect there"): hold any card (your hand, the stack, the Broadcasts, a graveyard's top card, a Wiretap's look) for 0.45 s, or rest the mouse on it for 1.2 s, to see it whole over a dimmed screen; it turns with your finger or mouse, shows the striped back past a quarter turn, and has UN/TAP's thin edge. A hold doesn't also cast the card, and a long press opens no menu. No big card from a mouse while the boards after a move are playing. Removed: the browser's own hover tooltip on every card (its name and effect).
 
