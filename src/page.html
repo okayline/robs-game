@@ -145,8 +145,8 @@
   #stack { container-type: inline-size; }
   /* how to play (before the first move, and from the "?"): all light blue, in a thin frame (kura, Nov 5) */
   #helpbox > .howto, #intro > .howto { align-self: center; max-width: 520px; border: 1px solid var(--frame); border-radius: 8px; padding: 10px 14px; color: var(--blue);
-                    font: 500 15px/1.35 var(--body); display: flex; flex-direction: column; gap: 4px; }
-  #helpbox > .howto div:first-child, #intro > .howto div:first-child { font: 600 14px/1.3 var(--title); letter-spacing: 1px; }
+                    font: 500 18px/1.35 var(--body); display: flex; flex-direction: column; gap: 4px; }   /* bigger (kura, Nov 5: was 15px, title 14px) */
+  #helpbox > .howto div:first-child, #intro > .howto div:first-child { font: 600 17px/1.3 var(--title); letter-spacing: 1px; }
   .howto ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; }
   .mid { --stack-w: calc(var(--w) * 1.45 + 17px); }   /* + the room the "you" label took (kura, Nov 4: "bigger") */
   #stack .mid-stack .card { --w: var(--stack-w); --u: calc(var(--w) / 108); }
@@ -247,7 +247,7 @@
     #game { padding: 8px 0; }
     .side, .mid, .bar { margin: 0 5px; }
     .side, .mid { padding-left: 8px; padding-right: 8px; }   /* room for a tappable graveyard's dashed outline (kura, Nov 5: "a little more padding"; was 4px) */
-    #helpbox > .howto, #intro > .howto { font-size: 13px; padding: 8px 12px; } #helpbox > .howto div:first-child, #intro > .howto div:first-child { font-size: 12px; }   /* smaller on a phone (kura, Nov 5) */
+    #helpbox > .howto, #intro > .howto { font-size: 16px; padding: 8px 12px; } #helpbox > .howto div:first-child, #intro > .howto div:first-child { font-size: 15px; }   /* smaller on a phone (kura, Nov 5; 16 and 15 since "bigger", were 13 and 12) */
     #log { font-size: 14px; }   /* a phone: a little smaller, so most lines still fit on one (kura, Nov 5: bigger; was 12) */
     h1 { margin: 0 5px; }
     /* 40px: two 5px gaps, the panel's 1px border and 8px padding each side, and two 6px gaps between cards */
@@ -314,7 +314,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.84" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.85" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -332,7 +332,7 @@
   const WIN = 3;   // GPUs to win (rules.js WIN)
   // kura's words, Nov 5; the first line is the title, the rest are bullets (kura, Nov 5: "can we add bullet points", and a line about the
   // big card: "Hover to zoom on card!", reworded)
-  const HOW_TO = [`Resolve ${WIN} GPUs to win!`, "Spam and Wiretap are attacks", "Counters are great!", "Discard one to draw one", "Hold or hover to see a card up close"];
+  const HOW_TO = [`Resolve ${WIN} GPUs to win!`, "Spam and Wiretap are attacks", "Counter a counter!", "Discard one to draw one", "Hold or hover to see a card up close"];
   const howTo = () => { const box = mk("div", "howto"), list = mk("ul"); list.append(...HOW_TO.slice(1).map((t) => mk("li", "", t))); box.append(mk("div", "", HOW_TO[0]), list); return box; };
   // an empty GPU place: a thermometer with a line through it, and "Temps: unstable" (kura, Nov 5)
   const NO_TEMP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13.5V5a2 2 0 0 1 4 0v8.5a4 4 0 1 1-4 0Z"/><path d="M12 9v7"/><path d="M3 3l18 18"/></svg>';
@@ -389,12 +389,12 @@
   }
   // a GPU's fans turning once it has resolved (kura, Nov 5): its frames picture holds 24 frames side by side (88 wide each), drawn one
   // after another every SPIN_MS, a whole turn in about half a second (kura: "make them spin faster"); one timer for every spinning card,
-  // and a canvas taken off the page is dropped from it. With reduced motion asked for, the first frame stays.
+  // and a canvas taken off the page is dropped from it. With reduced motion asked for, they turn slowly, a quarter as fast (kura, Nov 5:
+  // "can we try the slow spin"; the first frame used to stay still).
   const SPIN_FRAMES = 24, SPIN_MS = 20, spinning = new Set();
   let spinTick = 0, spinTimer = null;
   function spin(src) {
     const cv = still(src);   // the first frame (still() draws the strip's left end, 88x31)
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return cv;
     spinning.add({ cv, im: pics.get(src) });
     spinTimer ??= setInterval(() => {
       spinTick = (spinTick + 1) % SPIN_FRAMES;
@@ -404,7 +404,7 @@
         const ctx = s.cv.getContext("2d"); ctx.clearRect(0, 0, 88, 31); ctx.drawImage(s.im, spinTick * 88, 0, 88, 31, 0, 0, 88, 31);
       }
       if (!spinning.size) { clearInterval(spinTimer); spinTimer = null; }
-    }, SPIN_MS);
+    }, matchMedia("(prefers-reduced-motion: reduce)").matches ? SPIN_MS * 4 : SPIN_MS);
     return cv;
   }
 

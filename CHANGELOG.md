@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.85 "Slow Spin" · Thu Nov 5, 8:05 AM
+- With reduced motion turned on, an ONLINE GPU's fans turn slowly, about once every 2 seconds. Removed: the fans standing still with reduced motion.
+- How to play's text is bigger (18, was 15; 16 on a phone, was 13), and its second tip says "Counter a counter!". Removed: "Counters are great!".
+
 ## v0.84 "Room" · Thu Nov 5, 8:01 AM
 - Fixed: with reduced motion turned on, an ONLINE GPU showed its fans' whole strip of frames squeezed into its picture; it now shows its fans standing still. Removed: nothing.
 - The middle panel keeps no empty line under the card being played: a message (a refused move, a lost connection) now shows over the log's last line until your next move. On a phone the page is a little shorter, so it fills more of the screen's width. Removed: the always-empty line for messages.
