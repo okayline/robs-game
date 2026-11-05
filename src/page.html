@@ -127,6 +127,10 @@
   .piles { display: flex; gap: 8px; flex: none; }
   .pile { display: flex; flex-direction: column; align-items: center; gap: 7px; font: 600 10px/1 var(--title); letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
   .pile b { color: var(--ink); }
+  .pile.tapme { cursor: pointer; }
+  .pile.tapme > :first-child { outline: 2px dashed var(--pink); outline-offset: 2px; }
+  .pile.tapme.on > :first-child { outline-style: solid; }
+  .pile.tapme.on span { color: var(--pink); }
   .back { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
           background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
   .slot.spot { border-style: dotted; }   /* a Broadcast's empty place: dotted (kura, Nov 4) */
@@ -199,7 +203,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.45" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.46" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -435,15 +439,13 @@
       ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
       playable = (c) => () => send({ do: "pay", uid: c.uid });
       acts.push(["Don't pay", () => send({ do: "pay", uid: null })]);
-    } else if (mine && v.turn === "me" && discarding && !v.cast) {   // after pressing Discard: any card in your hand
-      ask = "Discard: pick a card to throw away. You draw one.";
+    } else if (mine && v.turn === "me" && discarding && !v.cast) {   // discard mode (your graveyard tapped): any card in your hand
+      ask = "Discard: pick a card to throw away. You draw one. Tap your graveyard to cancel.";
       playable = (c) => () => { discarding = false; send({ do: "discard", uid: c.uid }); };
-      acts.push(["Cancel", () => { discarding = false; draw(lastV); }]);
+      acts.push(["Pass turn", () => { discarding = false; send({ do: "pass" }); }]);
     } else if (mine && v.turn === "me") {
-      ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, discard a card to draw one, or pass.";
+      ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, tap your graveyard to discard a card and draw one, or pass.";
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
-      // instead of a spell: Discard, then pick the card (kura, Nov 4: a discard mechanic; two taps, so a stray tap throws nothing away)
-      if (!v.cast && v.me.hand.length) acts.push(["Discard", () => { discarding = true; draw(lastV); }]);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
     } else ask = "The dummy is thinking…";
     const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
@@ -491,8 +493,17 @@
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     // the pink button is always there (kura, Nov 4: "could we always see the pink button"): with nothing for you to press, it says why
     // and can't be pressed
+    // discard by tapping your graveyard (kura, Nov 4: "tap graveyard to toggle"; no new button, no dragging): while you could discard
+    // instead of casting it has a dashed pink outline; tapped, a solid one (discard mode), and a card you tap goes there; tap again to leave
+    const canDiscard = !!mine && v.turn === "me" && !p && !v.cast && !v.winner && v.me.hand.length > 0;
+    if (!canDiscard) discarding = false;
+    const myGrave = $("mPiles").querySelectorAll(".pile")[1];
+    if (myGrave && canDiscard) {
+      myGrave.classList.add("tapme"); myGrave.classList.toggle("on", discarding);
+      myGrave.onclick = () => { discarding = !discarding; draw(lastV); };
+    }
     autoAct = null;
-    if (acts.length === 1 && acts[0][0] === "Pass turn" && !v.winner && !v.me.hand.some((c) => playable(c))) {   // nothing else to do: it passes by itself
+    if (acts.length === 1 && acts[0][0] === "Pass turn" && !canDiscard && !v.winner && !v.me.hand.some((c) => playable(c))) {   // nothing else to do: it passes by itself
       autoAct = acts[0][1];
       acts[0] = ["Passing…", null];
     }

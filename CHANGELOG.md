@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.46 "Tap the Graveyard" · Wed Nov 4, 11:36 PM
+- Discard by tapping your graveyard (kura: "tap graveyard to toggle is genius!!"): on your turn, while you could discard instead of casting, your graveyard has a dashed pink outline; tap it (solid outline: discard mode) and tap a card in your hand to throw it away and draw one; tap the graveyard again to leave. The log says so. The pink bar is full width with just Pass turn (kura: "i really dont like the split pink bar haha"). Removed: Discard and Cancel in the pink bar.
+
 ## v0.45 "Turned On" · Wed Nov 4, 11:28 PM
 - A Broadcast's picture is still (its first frame) in hands, on the stack and in graveyards, and moves once it has resolved and sits in its place (kura: "can the gifs be stopped until they get turned on by getting resolved"), on the big card too. Other cards' pictures are unchanged. Removed: Broadcasts moving before they resolved.
 
