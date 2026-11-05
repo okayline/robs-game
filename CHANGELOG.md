@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.57 "Nameless" · Thu Nov 5, 12:37 AM
+- Cards have no pink name bar, and they're shorter by its height (134 units tall, was 150), so the page shrinks less to fit a phone. The big card still shows the button's name, at the old height. Removed: the name bar on cards and the 150-unit card height.
+- A graveyard you can tap for a discard has a grey dotted outline, and a solid pink one once tapped (on a graveyard with a card in it, the outline was greyed out with the card). Removed: the pink dashed outline before tapping.
+- While you're picking a card to discard, the pink bar says DISCARD. Tap your graveyard again to cancel and get Pass turn back. Removed: Pass turn during a discard.
+
 ## v0.56 "Big Print" · Thu Nov 5, 12:31 AM
 - The log's text is bigger: 13 on PC, 12 on a phone. Removed: the 11 (PC) and 10 (phone) log text.
 - On a phone the graveyard's 🪦 and count are white, 10px, on a small black box in the middle of the card, with the card showing around it. Removed: the dark count with a white glow.

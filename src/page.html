@@ -20,7 +20,7 @@
     --title: Cinzel, Georgia, serif; --body: "EB Garamond", Georgia, serif;
     /* five across: 78px = the page's 16px sides, the panel's 10px padding and 1px border each side, and four 6px gaps (was 72: 6px too
        wide on a phone, so the hand scrolled sideways) */
-    --w: min(112px, calc((100vw - 78px) / 5)); --u: calc(var(--w) / 108); --h: 150;
+    --w: min(112px, calc((100vw - 78px) / 5)); --u: calc(var(--w) / 108); --h: 134;   /* 16 shorter than 150: the name bar's 12 and its 4 gap (kura, Nov 5: "make the cards shorter") */
     --sw: min(100px, calc((100vw - 72px) / 6));   /* small cards (fields, the stack, a Wiretap's look): name, picture and card name only */
   }
   * { box-sizing: border-box; }
@@ -109,7 +109,7 @@
   #stack > .stack-side.right { padding-left: 6px; flex-direction: column; justify-content: center; align-items: flex-start; }
   #stack .stack-side .look { --sw: min(calc(50cqw - var(--stack-w) / 2 - 12px), calc((var(--stack-w) * var(--h) / 108) * 108 / 228)); }
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
-  .card.gone { filter: grayscale(1); opacity: .75; }
+  .card.gone > .gc { filter: grayscale(1); opacity: .75; }   /* the face only, so a tappable graveyard's outline stays pink (kura, Nov 5) */
   .gc-art canvas { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
   /* the Webmaster's: its cards, card backs and panel are a darker blue, so you can tell whose card is whose on the stack (kura, Nov 5; lavender
      before, but red-green colour blindness sees lavender and this blue as nearly the same; then mint, which "pops too much", then peach); its
@@ -123,6 +123,8 @@
   .gc-in { flex: 1; background: var(--cream); border-radius: calc(3 * var(--u)); padding: calc(4 * var(--u)); display: flex; flex-direction: column; gap: calc(4 * var(--u)); border: 1px solid var(--line); min-height: 0; }
   .gc-name { font: 600 calc(7.6 * var(--u))/1 var(--title); background: #ffe1ee; border: 1px solid #f0b8d0; border-radius: 2px; padding: 0 calc(4 * var(--u));
              height: calc(12 * var(--u)); display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  /* no name bar on the cards, only on the big card (kura, Nov 5: "remove the pink header from the cards ... remove the whole bar") */
+  .card .gc-name { display: none; }
   .gc-art { height: calc(31 * var(--u)); display: flex; align-items: center; justify-content: center; }
   .gc-art img { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
   .gc-type { font: 500 calc(6.4 * var(--u))/1 var(--body); background: #e2f0ff; border: 1px solid var(--line); border-radius: 2px; padding: 0 calc(4 * var(--u));
@@ -141,7 +143,6 @@
   .zoom .gc-txt { font-size: calc(7.5 * var(--u)); }
   /* small cards (fields, the stack, the dummy's looks) show only the name, picture and card name */
   .card.small .gc-txt { display: none; }
-  .card.small .gc-name { font-size: calc(7 * var(--u)); }   /* fits the 12-high name bar (kura, Nov 4: 9 overlapped it) */
   .card.small .gc-type { font-size: calc(8 * var(--u)); }
   /* the piles: a deck face down (tap-game's card-back stripes, thicker the more cards are left) and a graveyard's top card face up */
   .zone { display: flex; gap: 10px; align-items: flex-start; }
@@ -150,8 +151,9 @@
   .pile { display: flex; flex-direction: column; align-items: center; gap: 7px; font: 600 10px/1 var(--title); letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
   .pile b { color: var(--ink); }
   .pile.tapme { cursor: pointer; }
-  .pile.tapme > :first-child { outline: 2px dashed var(--pink); outline-offset: 2px; }
-  .pile.tapme.on > :first-child { outline-style: solid; }
+  /* a graveyard you can tap: a grey dotted outline, then solid pink once tapped (kura, Nov 5) */
+  .pile.tapme > :first-child { outline: 2px dotted #9aa3b8; outline-offset: 2px; }
+  .pile.tapme.on > :first-child { outline: 2px solid var(--pink); }
   .pile.tapme.on span { color: var(--pink); }
   .back { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
           background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
@@ -209,7 +211,8 @@
   /* the big card, copied from UN/TAP (tap-game src/page.html, kura, Nov 4: "copy the big card hover thing from un/tap exactly"): hold a
      card (hover with a mouse) to see it whole; --u is set again here so the whole card scales */
   .zoom { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; background: rgba(20, 26, 48, .45); pointer-events: none; }
-  .zoom .zbox { --w: min(78vw, 300px); --u: calc(var(--w) / 108); width: var(--w); height: calc(var(--h) * var(--u)); position: relative; filter: drop-shadow(0 8px 24px rgba(0,0,0,.45)); perspective: calc(600 * var(--u)); }
+  .zoom .zbox { --w: min(78vw, 300px); --u: calc(var(--w) / 108); --h: 150;   /* the big card keeps its name bar, so its height */
+                 width: var(--w); height: calc(var(--h) * var(--u)); position: relative; filter: drop-shadow(0 8px 24px rgba(0,0,0,.45)); perspective: calc(600 * var(--u)); }
   /* it turns with your finger or mouse, and past a quarter turn shows its back (UN/TAP's: 88x31 club's face-down stripes in the frame blue) */
   .zflip { position: absolute; inset: 0; transform-style: preserve-3d; }
   /* a finger sliding sideways on a card turns the big card, so the browser mustn't take the slide as a pan (that would cancel the hold) */
@@ -243,7 +246,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.56" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.57" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -493,7 +496,7 @@
     } else if (mine && v.turn === "me" && discarding && !v.cast) {   // discard mode (your graveyard tapped): any card in your hand
       ask = "Discard: pick a card to throw away. You draw one. Tap your graveyard to cancel.";
       playable = (c) => () => { discarding = false; send({ do: "discard", uid: c.uid }); };
-      acts.push(["Pass turn", () => { discarding = false; send({ do: "pass" }); }]);
+      acts.push(["Discard", null]);   // the bar says what you're doing (kura, Nov 5); tap your graveyard to cancel
     } else if (mine && v.turn === "me") {
       ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, tap your graveyard to discard a card and draw one, or pass.";
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
