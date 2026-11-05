@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.13 "Slower" · Wed Nov 4, 8:41 PM
+- Slower: the dummy's moves show 1.5 s apart, and a card arriving takes 0.6 s to slide or pop in. Removed: the 0.8 s gap between moves and the 0.35–0.4 s card animations.
+
 ## v0.12 "Holds Still" · Wed Nov 4, 8:40 PM
 - Every panel keeps one height whatever is in it (the prompt, the stack, the error line, the log, the piles and Broadcast rows, your hand), so nothing on the screen moves up or down. The shared footer is drawn in its own spot under the screen, a little in from the right, as in UN/TAP. kura: "fixed height and never move up and down" and "move the footer left a little". Removed: panels that grew and shrank with their cards, the stack row collapsing when empty, and the footer drawn at the page's right edge.
 

@@ -101,9 +101,9 @@
   @keyframes fromMe { from { transform: translateY(60px) scale(.85); opacity: 0; } }
   @keyframes fromThem { from { transform: translateY(-60px) scale(.85); opacity: 0; } }
   @keyframes land { from { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.12); } }
-  .enter-me { animation: fromMe .35s ease-out; }
-  .enter-them { animation: fromThem .35s ease-out; }
-  .enter-land { animation: land .4s ease-out; }
+  .enter-me { animation: fromMe .6s ease-out; }
+  .enter-them { animation: fromThem .6s ease-out; }
+  .enter-land { animation: land .6s ease-out; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -127,7 +127,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.12" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.13" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -144,7 +144,7 @@
   const send = (o) => { $("err").textContent = ""; ws.send(JSON.stringify(o)); };
   // after your move the match sends one board per move (yours, then each of the dummy's); they're shown STEP_MS apart, so you can
   // follow what the dummy did (kura, Nov 4: "space out when they are displayed")
-  const STEP_MS = 800, queue = [];
+  const STEP_MS = 1500, queue = [];   // (kura, Nov 4: slower; was 800)
   let playing = null;
   const play = () => { if (playing) return; const next = () => { if (!queue.length) { playing = null; return; } draw(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };
   ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.error) $("err").textContent = m.error; if (m.v) draw(m.v); if (m.frames) { queue.push(...m.frames); play(); } };
