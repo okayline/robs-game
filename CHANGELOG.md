@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.37 "Big Stack" · Wed Nov 4, 10:41 PM
+- The card being played on the stack is big (kura: "make the main card being played on the game field a lot bigger, not smaller"): 1.45 times a hand card on a wide screen (162px instead of 112px), as wide as a hand card on a phone (about 119px instead of 69px). The middle panel is that much taller, so on a phone the screen shrinks to fit a little more. Removed: the stack cards at hand-card size (desktop) and one fifth of the screen (phone).
+- A Wiretap's look cards are stacked down the right of the stack (kura: "3 buttons stacked vertically on the right"), as big as fit there: about 118px on a wide screen, 54px on a phone. Removed: the three side by side, and their lift above the stack's bottom.
+
 ## v0.36 "Edge to Edge" · Wed Nov 4, 10:36 PM
 - On a phone the panels, the pink bar and the log sit 6px in from the screen's edges with 4px inside the panels, like UN/TAP's (kura: "make the phone width the same as un/tap"); every card is that much wider (your hand cards about 11px each on a 390px phone). Removed: the phone's 16px page sides and 10px panel sides.
 - No glow (kura: "no glow please"): cards you can click keep their pointer, and the ones you can't play stay dimmed. Removed: the pink glow around cards you can click.
