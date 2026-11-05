@@ -81,13 +81,14 @@
   #help { position: absolute; right: 10px; bottom: 8px; width: 22px; height: 22px; padding: 0; border: 1px solid var(--frame); border-radius: 6px;
           background: #f0f6ff; color: var(--blue); font: 600 13px/1 var(--title); cursor: pointer; z-index: 7; }   /* above the how-to it opens, so a click closes it */
   #log { padding-right: 30px; }   /* the log's lines stop short of the "?" */
-  #helpbox { position: absolute; inset: 0; z-index: 6; display: flex; align-items: center; justify-content: center; padding: 10px;
+  #helpbox { position: absolute; inset: 0; z-index: 6; display: flex; align-items: center; justify-content: center; padding: 10px 10px 50px;
              background: #f0f6ff; border-radius: 10px; pointer-events: none; }
   #helpbox[hidden] { display: none; }
   /* the opening's how-to box, centred on the whole panel exactly where the "?" shows it, with nothing hidden under it (kura, Nov 5: "move
      the intro screen/left box down to match") */
-  #intro { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 10px; pointer-events: none; }
+  #intro { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 10px 10px 50px; pointer-events: none; }
   #intro[hidden] { display: none; }
+  /* both boxes sit 20px above the panel's middle: 40px more room below them than above (kura, Nov 5: "move the box up just a bit on all screens") */
   /* the log: a strip across the bottom of the middle panel, under the stack, so its lines are long and mostly one line each (kura,
      Nov 5: "a little bigger font size, and have a longer row that sits closer to the bottom of the panel ... less double lines"; it was
      a narrow column left of the stack, in 9px); 3 lines high, each older line fainter */
@@ -301,7 +302,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.74" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.75" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
