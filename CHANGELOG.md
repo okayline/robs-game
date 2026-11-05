@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.89 "Five and Five" · Thu Nov 5, 8:44 AM
+- Each match splits the 10 GPUs between the two decks, 5 each, so you and the Student Athlete never have the same GPU. Removed: each deck picking its 5 GPUs on its own, which could share some.
+- While the Student Athlete decides, their line changes with each new line in the log. Removed: one line staying for a whole stack.
+
 ## v0.88 "Once" · Thu Nov 5, 8:30 AM
 - When the Student Athlete casts a spell, the log says so once, in bold. Removed: the second "The Student Athlete cast X." line under it.
 - The log's text scrolls up smoothly, with reduced motion turned on too, and the bold bottom line rises into place when it changes on its own. Removed: lines just appearing with reduced motion, and the bottom line swapping without moving.

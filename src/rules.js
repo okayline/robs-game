@@ -80,12 +80,12 @@ const pick = (arr, rnd) => arr[Math.floor(rnd() * arr.length)];
 
 // One deck from the deal pool (88x31's commons and uncommons: dungeon-items dealPool). Each card is a button of its card's type,
 // all different within a deck while the type has enough (construction has exactly 15 for 15 slots); both decks deal separately.
-// The GPUs come from GPUS instead, 5 different ones per deck.
-export function dealDeck(pool, side, rnd = Math.random) {
+// The GPUs come from GPUS instead: gpus, the deck's 5 (dealDecks gives each deck its own; alone, 5 different ones at random).
+export function dealDeck(pool, side, rnd = Math.random, gpus = shuffle([...GPUS], rnd).slice(0, DECK.broadcast)) {
   const byType = {};
   for (const b of pool) if (!b.hidden) (byType[b.type] ??= []).push(b);
   const left = Object.fromEntries(Object.entries(byType).map(([t, l]) => [t, shuffle([...l], rnd)]));
-  const deck = [], gpus = shuffle([...GPUS], rnd);
+  const deck = [];
   for (const [card, n] of Object.entries(DECK)) {
     if (card === "broadcast") {
       for (let i = 0; i < n; i++) {
@@ -103,6 +103,13 @@ export function dealDeck(pool, side, rnd = Math.random) {
     }
   }
   return shuffle(deck, rnd);
+}
+
+// A match's two decks: the 10 GPUs shuffled once, 5 to each deck, so the decks never share a GPU (kura, Nov 5: "5 and 5 with no overlap
+// and no sharing"; each deck used to pick its 5 on its own)
+export function dealDecks(pool, rnd = Math.random) {
+  const gpus = shuffle([...GPUS], rnd);
+  return [dealDeck(pool, "a", rnd, gpus.slice(0, DECK.broadcast)), dealDeck(pool, "b", rnd, gpus.slice(DECK.broadcast, 2 * DECK.broadcast))];
 }
 
 export function newGame(deckA, deckB, rnd = Math.random) {

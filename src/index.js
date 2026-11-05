@@ -4,7 +4,7 @@
 //   GET /img/<n>     88x31 button n's GIF, from this site (img(), below)
 // Built like UN/TAP (okayline/tap-game), and dealt from the same 88x31 buttons.
 import { DurableObject } from "cloudflare:workers";
-import { newGame, dealDeck, cast, letIt, tap, pay, pass, discard, view, hooks } from "./rules.js";
+import { newGame, dealDecks, cast, letIt, tap, pay, pass, discard, view, hooks } from "./rules.js";
 import { dummyRun } from "./dummy.js";
 import PAGE from "./page.html";
 
@@ -47,7 +47,7 @@ async function img(n, req, ctx) {
 // come back hidden and are left out (rules.js dealDeck).
 export class Match extends DurableObject {
   async setup(pool) {
-    const g = newGame(dealDeck(pool, "a"), dealDeck(pool, "b"));
+    const g = newGame(...dealDecks(pool));
     dummyRun(g);
     await this.ctx.storage.put("g", g);
   }

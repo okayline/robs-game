@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { dealDeck, newGame, cast, letIt, pass, pay, discard } from "../src/rules.js";
+import { dealDeck, dealDecks, newGame, cast, letIt, pass, pay, discard } from "../src/rules.js";
 
 // a hand-made pool: 15 buttons of each of the three types
 const pool = ["neon", "construction", "counter"].flatMap((type, t) => Array.from({ length: 15 }, (_, i) => ({ id: t * 100 + i, name: `${type} ${i}`, type, image: null })));
@@ -15,6 +15,14 @@ test("a deck's 5 GPUs are 5 different models, each with its picture and generati
   const g = dealDeck(pool, "a").filter((x) => x.card === "broadcast");
   assert.equal(new Set(g.map((x) => x.name)).size, 5);
   assert.ok(g.every((x) => x.image.startsWith("/gpu/") && x.gen && x.flav));
+});
+
+test("a match's two decks have 5 GPUs each and never share one", () => {
+  for (let k = 0; k < 50; k++) {
+    const [a, b] = dealDecks(pool).map((d) => d.filter((x) => x.card === "broadcast").map((x) => x.name));
+    assert.equal(new Set(a).size, 5); assert.equal(new Set(b).size, 5);
+    assert.ok(!a.some((m) => b.includes(m)));
+  }
 });
 
 test("Remand counters a spell and returns it to its caster's hand", () => {

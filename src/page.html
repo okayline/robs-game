@@ -325,7 +325,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.88" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.89" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -656,6 +656,7 @@
     $("mField").replaceChildren(...field(v.me.field));
     const p = v.pending, mine = v.waiting, acts = [];
     let ask, playable = () => null;
+    const grew = logN != null && v.log.length > logN;   // a new log line on this board
     if (v.winner) ask = v.winner === "me" ? "You win!" : "The Student Athlete wins.";
     else if (p?.kind === "answer" && p.mine) {
       ask = null;   // the log's own last line already says it, so it isn't said twice (kura, Nov 5: "could it only say it once"; it added "The Student Athlete cast X.")
@@ -674,8 +675,9 @@
       ask = "Your turn.";
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
-    } else {   // the opponent deciding: one line picked when it starts, kept until it's done, never the same twice in a row
-      if (thinking == null) { let i; do i = Math.floor(Math.random() * THINK.length); while (i === lastThink && THINK.length > 1); lastThink = i; thinking = THINK[i]; }
+    } else {   // the opponent deciding: a new line each time the log grows (kura, Nov 5: one stack showed "cramming for a midterm" 3 or 4
+      // times in a row; it was kept until they were done), never the same twice in a row
+      if (thinking == null || grew) { let i; do i = Math.floor(Math.random() * THINK.length); while (i === lastThink && THINK.length > 1); lastThink = i; thinking = THINK[i]; }
       ask = thinking;
     }
     if (ask !== thinking) thinking = null;
