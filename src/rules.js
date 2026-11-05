@@ -67,7 +67,7 @@ export const GPUS = [
   { model: "RTX 4090", pic: "rtx-4090", spin: true, gen: "Ada Lovelace", flav: "Beyond fast." },
   { model: "GTX 1080 Ti", pic: "gtx-1080-ti", gen: "Pascal", flav: "The world's fastest gaming GPU." },
   { model: "Arc B580", pic: "arc-b580", spin: true, gen: "Battlemage", flav: "Modern tech, better graphics, better plays." },
-  { model: "RX 9070 XT", pic: "rx-9070-xt", gen: "RDNA 4", flav: "A significant leap forward in graphics performance." },
+  { model: "RX 9070 XT", pic: "rx-9070-xt", spin: true, gen: "RDNA 4", flav: "A significant leap forward in graphics performance." },
   { model: "RX 9070", pic: "rx-9070", spin: true, gen: "RDNA 4", flav: "Ultra-fast gaming, with next-level visuals and features." },
   { model: "Voodoo3 3000", pic: "voodoo3-3000", gen: "Avenger", flav: "Can you tell me if your eyeball rolled?" },
 ];

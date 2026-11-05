@@ -62,7 +62,13 @@
 #                10.5, so R 10; the ring is closer at the top and bottom (rows 4 and 23), so only rows 5-22 turn. The flags "just
 #                outside R" are the rings' own diagonal corners. The two gap_px are grey pixels poking in from the ring at 10 o'clock
 #                that kura marked.)
-# Still to do: rx-9070-xt (three fans), gtx-1080-ti (a blower);
+#   rx-9070-xt   {"fans": [[25, 14], [48.5, 14], [71, 14]], "R": 10.0, "Rin": 10.0, "Y0": 6, "Y1": 21, "HUB": 3.3,
+#                 "gap_px": [[34, 10], [34, 17], [80, 10], [80, 17], [80, 18], [68, 22], [69, 22], [70, 22]]}
+#                (like the 9070, but its fans sit 1-2 pixels further right and its rings are flatter (about 11 across, 7.5 up
+#                and down), so no circle fits them. The middles are the rings' middles, from the walls and dividers (x 13, 36-37, 59,
+#                82); rows 6-21 turn, the rings' tops and bottoms (rows 3-5, 22-24) stay still. The gap_px are grey or faint pixels
+#                beside the turning blades that kura marked, at 3 and 9 o'clock and in row 22 under fan 3.)
+# Still to do: gtx-1080-ti (a blower);
 # the voodoo3-3000's fan is under the 3dfx logo, so it would turn the logo too (kura hasn't decided).
 import json, math, os, sys, tempfile
 from PIL import Image
