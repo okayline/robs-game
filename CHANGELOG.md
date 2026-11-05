@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.8 "Still Grey" · Wed Nov 4, 8:34 PM
+- A graveyard's top card is grey, and its picture is a still frame instead of a moving GIF (drawn once on a canvas, like UN/TAP's knocked-out buttons). Removed: the graveyard card in full colour with its animation.
+
 ## v0.7 "Your Buttons" · Wed Nov 4, 8:31 PM
 - Your buttons (Let it resolve, Pass turn, Don't pay) are in the upper right of your panel, and the game log's text is smaller (13 → 11). Removed: the buttons in the middle panel.
 

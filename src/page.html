@@ -52,6 +52,9 @@
   .card.small { --w: var(--sw); --u: calc(var(--w) / 108); height: calc(76 * var(--u)); }
   .card.can { cursor: pointer; filter: drop-shadow(0 0 6px var(--pink)); }
   .card.dim { opacity: .55; }
+  /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
+  .card.gone { filter: grayscale(1); opacity: .75; }
+  .gc-art canvas { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
   .gc { width: 100%; height: 100%; background: var(--frame); border-radius: calc(7 * var(--u)); padding: calc(5 * var(--u)); display: flex; flex-direction: column; }
   .gc-in { flex: 1; background: var(--cream); border-radius: calc(3 * var(--u)); padding: calc(4 * var(--u)); display: flex; flex-direction: column; gap: calc(4 * var(--u)); border: 1px solid var(--line); min-height: 0; }
   .gc-name { font: 600 calc(7.6 * var(--u))/1 var(--title); background: #ffe1ee; border: 1px solid #f0b8d0; border-radius: 2px; padding: 0 calc(4 * var(--u));
@@ -105,7 +108,7 @@
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.7" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.8" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -124,11 +127,23 @@
   ws.onclose = () => { $("ask").textContent = "Disconnected. Reload the page to reconnect."; };
 
   // a card: name, picture, type line, effect and flavour (small: name, picture and the card's name)
-  function card(c, { small = false, click = null, tag = null } = {}) {
+  // a picture as one still frame on a canvas (like tap-game's still()); the loaded picture is kept per address, so a redraw is instant
+  const pics = new Map();
+  function still(src) {
+    const cv = mk("canvas"); cv.width = 88; cv.height = 31;
+    let im = pics.get(src);
+    if (!im) { im = new Image(); im.src = src; pics.set(src, im); }
+    const put = () => cv.getContext("2d").drawImage(im, 0, 0, 88, 31);
+    if (im.complete && im.naturalWidth) put(); else im.addEventListener("load", put, { once: true });
+    return cv;
+  }
+
+  function card(c, { small = false, click = null, tag = null, gone = false } = {}) {
     const [name, kind, text] = CARDS[c.card];
-    const el = mk(click ? "button" : "div", `card ${c.card}${small ? " small" : ""}${click ? " can" : ""}`);
+    const el = mk(click ? "button" : "div", `card ${c.card}${small ? " small" : ""}${click ? " can" : ""}${gone ? " gone" : ""}`);
     const gc = mk("div", "gc"), inn = mk("div", "gc-in"), art = mk("div", "gc-art");
-    if (c.image) { const img = mk("img"); img.src = c.image; img.alt = ""; art.append(img); }
+    if (c.image && gone) art.append(still(c.image));
+    else if (c.image) { const img = mk("img"); img.src = c.image; img.alt = ""; art.append(img); }
     const txt = mk("div", "gc-txt"), fx = mk("div");
     fx.append(mk("b", "", name), ` · ${text}`);
     txt.append(fx, mk("div", "rule"), mk("div", "flav", `“${c.flav}”`));
@@ -151,7 +166,7 @@
       out.push(pile(back, "deck", side.deck));
     }
     const top = side.grave[side.grave.length - 1];
-    out.push(pile(top ? card(top, { small: true }) : mk("div", "slot"), "graveyard", side.grave.length));
+    out.push(pile(top ? card(top, { small: true, gone: true }) : mk("div", "slot"), "graveyard", side.grave.length));
     return out;
   }
 
