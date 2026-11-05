@@ -116,10 +116,11 @@
   @media (max-width: 500px) {
     #hand { --w: calc((100vw - 66px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
     /* your deck moves from the piles into the hand's last place, face down at card size (kura, Nov 4: "last space can be the player's
-       deck, face down cards"); its count stays under it, and the card back is that much shorter so the row keeps its height */
+       deck, face down cards") */
     #mPiles .pile:first-child { display: none; }
-    #hand .handdeck { display: flex; }
-    #hand .handdeck .back, #hand .handdeck .slot { width: var(--w); height: calc(var(--h) * var(--u) - 17px); border-radius: calc(7 * var(--u)); }
+    /* its count in the middle of the card back, no label under it (kura, Nov 4: "just put a 20 in the middle of the back of the card") */
+    #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
+                      font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -143,7 +144,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.24" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.25" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -214,7 +215,7 @@
   // one after another when there are several (the opening five)
   let inHand = new Set(), slots = [];   // slots: your hand's places, a card's uid or null for a gap
   // from your deck: the one in your hand's last place on a phone, else the one in your piles (whichever is showing)
-  const deal = (els) => fly(els, [$("hand").querySelector(".handdeck .back, .handdeck .slot"), $("mPiles").querySelector(".back, .slot")].find((e) => e && e.offsetParent));
+  const deal = (els) => fly(els, [$("hand").querySelector(".handdeck"), $("mPiles").querySelector(".back, .slot")].find((e) => e && e.offsetParent));
   // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
   // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
   // from: an element, or a box already measured (a card you played, measured when you clicked it); gap: ms between cards
@@ -301,7 +302,7 @@
     for (const c of v.me.hand) if (!slots.includes(c.uid)) { const i = slots.indexOf(null); if (i < 0) slots.push(c.uid); else slots[i] = c.uid; }
     while (slots.length && slots[slots.length - 1] === null) slots.pop();
     const dealt = [];
-    const deck = piles(v.me)[0]; deck.classList.add("handdeck");   // your deck again, for a phone's hand (CSS shows one of the two)
+    const deck = mk("div", `handdeck ${v.me.deck ? "back" : "slot"}`, v.me.deck);   // your deck again, for a phone's hand (CSS shows one of the two)
     $("hand").replaceChildren(...slots.map((u) => {
       if (u === null) return mk("div", "card gap");
       const c = held.get(u), f = v.winner ? null : playable(c), el = card(c, { click: f });

@@ -66,7 +66,10 @@ export class Match extends DurableObject {
     // one board per log line, yours and the dummy's: the page shows them one at a time (kura, Nov 4: actions and the log showed up
     // all at once). Everything up to the storage write below runs without waiting, so no other match's lines can land in here.
     const frames = [];
-    hooks.say = () => frames.push(view(g, "a"));
+    // each board is copied as it stands when its line is written: view() hands out the game's own lists (hands, fields, graveyards,
+    // the log), which would otherwise all show the end of the dummy's turn by the time they're sent (kura, Nov 4: the hand refilled
+    // before the round was over)
+    hooks.say = () => frames.push(structuredClone(view(g, "a")));
     const err =
       a.do === "cast" ? cast(g, "a", a.uid) :
       a.do === "let" ? letIt(g, "a") :

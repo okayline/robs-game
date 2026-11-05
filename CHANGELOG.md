@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.25 "In Order" · Wed Nov 4, 9:50 PM
+- Fixed: after your move, the boards the page plays one at a time all showed the end of the round for your hand, both fields, both graveyards and the log, so your hand refilled before the round was over (kura: "the cards refill from the deck before the round is over"). The match now copies each board when its log line is written. Removed: the boards sharing the game's own lists, which kept changing until they were sent.
+- On a phone, the deck in your hand's last place shows its count in the middle of the card back (kura: "just put a 20 in the middle of the back of the card"). Removed: the "deck 20" label under it.
+
 ## v0.24 "Two Rows" · Wed Nov 4, 9:47 PM
 - On a phone (500px wide or less) your hand is two rows of 3, so each card is about 1.7 times as wide (108px instead of 63px on a 390px screen), and your deck sits face down at card size in the last place, with its count under it. kura: "is there a way to make the cards bigger on mobile??" and "last space can be the player's deck, face down cards". Dealt cards fly from whichever deck is showing. Fixed: the hand was 6px too wide on every phone and scrolled sideways (the card width left 72px for padding and gaps; it needs 78px). Removed: the phone hand's single row of 5 and its sideways scrollbar, and on a phone, the deck in the piles at the top of your panel (the graveyard stays there).
 
