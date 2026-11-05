@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.42 "No Labels" · Wed Nov 4, 11:12 PM
+- No label under the cards on the stack (kura: "get rid of YOU under the card in the play area"), and the room it took goes to the cards (kura: "make the cards in the play area bigger"): 179px wide on a wide screen (was 162), about 136px on a 390px phone (was 119), with the middle panel the same height. A Wiretap's look cards grow a little with them. Removed: the "you" label and its 24px, and card()'s tag option (its last use).
+
 ## v0.41 "Off Air" · Wed Nov 4, 11:12 PM
 - Each empty Broadcast place shows a crossed-out signal and "Broadcast: off" (kura: "could we put like Broadcast: OFF and have some sort of no signal sign"), in small grey capitals sized to the place (about 8px on a wide screen, 6px on a phone; kura: "can the text be smaller"). Removed: the empty dotted places with nothing in them.
 

@@ -41,7 +41,7 @@
   /* the stack: the cards being cast, full size, in the middle of the screen */
   #stack { justify-content: center; align-items: flex-end; flex-wrap: nowrap; }
   /* every panel keeps one height whatever is in it, so nothing on the screen moves up or down (kura, Nov 4) */
-  #stack { height: calc(var(--stack-w) * var(--h) / 108 + 36px); }   /* not clipped, so a card flying in shows all the way (kura, Nov 4) */
+  #stack { height: calc(var(--stack-w) * var(--h) / 108 + 12px); }   /* not clipped, so a card flying in shows all the way (kura, Nov 4) */
   #err { height: 1.2em; overflow: hidden; }
   /* a row of piles and Broadcasts: a small card and its label (kura, Nov 4: no empty space under the piles) */
   .zone { height: calc(var(--sw) * 76 / 108 + 20px); }
@@ -91,14 +91,14 @@
      main card stay where it is and the buttons come in to the right of it"); 24px: a 6px gap before them and between them */
   /* the card being played is big (kura, Nov 4: "a lot bigger, not smaller"): --stack-w, about 1.45 times a hand card on a wide screen,
      as wide as a hand card on a phone */
-  #stack { container-type: inline-size; --stack-w: calc(var(--w) * 1.45); }
+  #stack { container-type: inline-size; --stack-w: calc(var(--w) * 1.45 + 17px); }   /* + the room the "you" label took (kura, Nov 4: "bigger") */
   #stack .mid-stack .card { --w: var(--stack-w); --u: calc(var(--w) / 108); }
   #stack > .mid-stack { flex: none; display: flex; align-items: flex-end; }
   #stack > .stack-side { flex: 1 1 0; min-width: 0; align-self: stretch; display: flex; gap: 6px; align-items: center; }
   /* a Wiretap's look cards: stacked down the right side (kura, Nov 4: "3 buttons stacked vertically on the right"), as big as fit the
      row's height (3 small cards and two 6px gaps in the stack's height less 12px) and the right side's width */
   #stack > .stack-side.right { padding-left: 6px; flex-direction: column; justify-content: center; align-items: flex-start; }
-  #stack .stack-side .look { --sw: min(calc(50cqw - var(--stack-w) / 2 - 12px), calc((var(--stack-w) * var(--h) / 108 + 24px) * 108 / 228)); }
+  #stack .stack-side .look { --sw: min(calc(50cqw - var(--stack-w) / 2 - 12px), calc((var(--stack-w) * var(--h) / 108) * 108 / 228)); }
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
   .card.gone { filter: grayscale(1); opacity: .75; }
   .gc-art canvas { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
@@ -135,11 +135,8 @@
                font: 600 max(6px, calc(var(--sw) * .075))/1.15 var(--title); letter-spacing: .5px; text-transform: uppercase; text-align: center; }
   .slot.spot svg { width: calc(var(--sw) * .28); height: calc(var(--sw) * .28); }
   .slot { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); border: 1.5px dashed var(--line); flex: none; }
-  /* who cast a card on the stack: a label under it, so it covers nothing */
-  .tagged { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .by { font: 600 10px/1 var(--title); letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
   /* the stack, like Magic's: each card cast in answer sits on top of the one before, overlapping it and a little higher (kura, Nov 4) */
-  #stack .tagged + .tagged { margin-left: calc(-0.55 * var(--stack-w)); }
+  #stack .mid-stack .card + .card { margin-left: calc(-0.55 * var(--stack-w)); }
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
   /* on a phone your hand is two rows, 3 and then 2, so each card is about 1.7 times as wide (kura, Nov 4: "make the cards bigger on mobile",
      using the empty height); 66px = the page's 16px sides, the panel's 10px padding and 1px border each side, and two 6px gaps */
@@ -153,7 +150,7 @@
     .side, .mid { padding-left: 4px; padding-right: 4px; }
     h1 { margin: 0 6px; }
     /* 34px: two 6px gaps, the panel's 1px border and 4px padding each side, and two 6px gaps between cards */
-    #stack { --stack-w: calc((100vw - 34px) / 3); }
+    #stack { --stack-w: calc((100vw - 34px) / 3 + 17px); }
     #hand { --w: calc((100vw - 34px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
     /* your 3 Broadcast places at the right edge, with space between them and your graveyard (kura, Nov 4: "for phones only") */
     #mField { justify-content: flex-end; }
@@ -202,7 +199,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.41" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.42" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -248,7 +245,7 @@
     return cv;
   }
 
-  function card(c, { small = false, click = null, tag = null, gone = false, zoom = true } = {}) {
+  function card(c, { small = false, click = null, gone = false, zoom = true } = {}) {
     const [name, kind, text] = CARDS[c.card];
     const el = mk(click ? "button" : "div", `card ${c.card}${small ? " small" : ""}${click ? " can" : ""}${gone ? " gone" : ""}`);
     const gc = mk("div", "gc"), inn = mk("div", "gc-in"), art = mk("div", "gc-art");
@@ -262,8 +259,7 @@
     if (click) el.onclick = click;
     el.dataset.uid = c.uid;
     if (zoom) zoomable(el, () => c);
-    if (tag == null) return el;
-    const box = mk("div", "tagged"); box.append(el, mk("span", "by", tag)); return box;
+    return el;
   }
 
   // the big card, copied from UN/TAP (tap-game src/page.html showBig() .. zoomable(); kura, Nov 4: "its perfect there"): press and hold a
@@ -440,9 +436,9 @@
     // the stack, full size so its text can be read (kura, Nov 4); a Wiretap being finished stays there, with the cards it looks at
     const cards = p?.kind === "wiretap" ? [p.card] : v.stack, from = [];
     const els = cards.map((c, i) => {
-      const el = card(c, { tag: c.by === "me" ? "you" : "" });   // the dummy's cards have no label (kura, Nov 4: "remove DUMMY text")
+      const el = card(c);   // no "you" or "dummy" label under it (kura, Nov 4)
       el.style.marginBottom = `${i * 10}px`;   // each later card sits a little higher
-      if (!shown.has(c.uid)) from.push([el.firstChild, played?.uid === c.uid ? played.box : c.by === "me" ? $("hand") : $("tHand")]);
+      if (!shown.has(c.uid)) from.push([el, played?.uid === c.uid ? played.box : c.by === "me" ? $("hand") : $("tHand")]);
       return el;
     });
     // a Wiretap's look: the cards come off the top of the dummy's deck one by one, slowly (kura, Nov 4: they appeared too fast), and
