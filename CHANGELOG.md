@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.53 "Scroll Up" · Thu Nov 5, 12:06 AM
+- The log has no box of its own and reads top to bottom: oldest at the top, what to do now at the bottom. Each new line slides the lines up. Removed: the log's cream box and newest-on-top order.
+- On a phone each side's 3 Broadcast places share the room beside its piles, so the row fills the panel. Removed: the small places with empty space beside them.
+- No "Player" line above your hand. Removed: the "Player" line.
+
 ## v0.52 "Fine Print" · Wed Nov 4, 11:53 PM
 - The log's text is much smaller: 9 on every screen. Removed: the 12 (PC) and 11 (phone) log text.
 - The log's box is exactly as tall as the card on the stack, top and bottom lined up. Removed: the box starting above the card.
