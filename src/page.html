@@ -43,7 +43,10 @@
   /* every panel keeps one height whatever is in it, so nothing on the screen moves up or down (kura, Nov 4) */
   #stack { height: calc(var(--h) * var(--u) + 36px); }   /* not clipped, so a card flying in shows all the way (kura, Nov 4) */
   #err { height: 1.2em; overflow: hidden; }
-  .zone { height: max(calc(var(--sw) * 76 / 108 + 20px), 88px); }
+  /* a row of piles and Broadcasts: a small card and its label; yours is at least 88px, room for your two buttons (the dummy's has none,
+     so on a phone its panel no longer has empty space under the piles: kura, Nov 4) */
+  .zone { height: calc(var(--sw) * 76 / 108 + 20px); }
+  .zone:has(#acts) { height: max(calc(var(--sw) * 76 / 108 + 20px), 88px); }
   .stat.mine { margin-top: -4px; }   /* closer to the row above (kura, Nov 4) */
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
   #hand { height: calc(var(--h) * var(--u) + 4px); }
@@ -146,7 +149,7 @@
   <div id="log"></div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.26" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.27" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {

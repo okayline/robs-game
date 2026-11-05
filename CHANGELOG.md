@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.27 "Snug" · Wed Nov 4, 9:58 PM
+- The dummy's row of piles and Broadcasts is only as tall as a small card and its label, so on a phone its panel has no empty space under "deck" (kura: "a lot of space on the dummy's panel underneath DECK 25"; about 31px on a 390px phone). Desktop is unchanged (its small cards already need more than 88px). Removed: the 88px floor on the dummy's row (it was there for your buttons; your row keeps it).
+
 ## v0.26 "Log Panel" · Wed Nov 4, 9:56 PM
 - The log is a panel of its own under yours, like UN/TAP's (kura: "take the log out of the game panel and can we make a panel for it like in un/tap"): cream, italic EB Garamond, newest at the top next to your panel, each older line fainter, 3 lines (kura: "only have it show three lines"). Its top line still says what to do now, in bold. Removed: the log inside the middle panel (3 small grey monospace lines, newest at the bottom, under the stack).
 
