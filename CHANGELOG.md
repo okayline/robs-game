@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.7 "Your Buttons" · Wed Nov 4, 8:31 PM
+- Your buttons (Let it resolve, Pass turn, Don't pay) are in the upper right of your panel, and the game log's text is smaller (13 → 11). Removed: the buttons in the middle panel.
+
 ## v0.6 "Fit Names" · Wed Nov 4, 8:30 PM
 - Small cards' text fits its bars: the name is smaller so it stays inside the pink name bar, and the card name is a little smaller in its bar. kura's screenshot showed both overlapping. Removed: the 9-size name and card name on small cards.
 

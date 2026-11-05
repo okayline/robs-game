@@ -40,11 +40,12 @@
   .mid { background: #f0f6ff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
   #ask { font: 600 14px/1.3 var(--title); color: var(--ink); }
   #ask.win { color: #2f9e6b; } #ask.lose { color: #d4558c; }
-  .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* your buttons: the upper right of your panel (kura, Nov 4) */
+  .acts { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex: none; }
   .acts button { font: 600 13px/1 var(--title); letter-spacing: 1px; padding: 9px 14px; border-radius: 6px; border: 1px solid #f0b8d0; background: #ffe1ee; color: var(--ink); cursor: pointer; }
   .acts button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
-  #log { font: 13px/1.35 ui-monospace, Consolas, monospace; color: var(--mute); }
+  #log { font: 11px/1.35 ui-monospace, Consolas, monospace; color: var(--mute); }
   #log div::before { content: "C:\\> "; }
   /* the card: blue frame, cream inside (tap-game's .gc) */
   .card { position: relative; width: var(--w); height: calc(var(--h) * var(--u)); border: 0; padding: 0; background: none; border-radius: calc(7 * var(--u)); text-align: left; color: var(--ink); flex: none; }
@@ -95,17 +96,16 @@
   <div class="mid">
     <div id="ask">Connecting…</div>
     <div class="row" id="stack" data-empty=""></div>
-    <div class="acts" id="acts"></div>
     <div id="err"></div>
     <div id="log"></div>
   </div>
   <div class="side">
-    <div class="zone"><div class="piles" id="mPiles"></div><div class="row" id="mField" data-empty="No Broadcasts yet."></div></div>
+    <div class="zone"><div class="piles" id="mPiles"></div><div class="row" id="mField" data-empty="No Broadcasts yet."></div><div class="acts" id="acts"></div></div>
     <div class="stat">You <span>deck <b id="mDeck">0</b></span></div>
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.6" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.7" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
