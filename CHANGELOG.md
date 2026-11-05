@@ -4,6 +4,12 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.52 "Fine Print" · Wed Nov 4, 11:53 PM
+- The log's text is much smaller: 9 on every screen. Removed: the 12 (PC) and 11 (phone) log text.
+- The log's box is exactly as tall as the card on the stack, top and bottom lined up. Removed: the box starting above the card.
+- On a phone the panels sit 14px in from the screen's edges, and the cards are a little smaller to make room. Removed: the 6px gaps.
+- On a phone the page shrinks to fit the screen again, so it never scrolls (the gaps grow a little when it shrinks). Removed: the page scrolling on phones (from v0.48).
+
 ## v0.51 "Back in the Middle" · Wed Nov 4, 11:55 PM
 - The log is in the middle panel again, on the left of the stack, as tall as the stack, in smaller text (12, and 11 on a phone). Still 3 lines, newest on top. Removed: the log's own panel under yours, and its bigger text (15).
 

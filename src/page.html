@@ -69,12 +69,13 @@
   .bar button:disabled { cursor: default; }   /* still pink: it only says what's happening */
   .bar button:focus-visible, .card:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   #err { color: #d4558c; font-size: 13px; min-height: 1em; }
-  /* the log: in the middle panel again, on the left of the stack, in smaller text (kura, Nov 4: "move the log feed to the main game panel
+  /* the log: in the middle panel again, on the left of the stack, in small text, 9px (kura, Nov 4: "make the log text much smaller"; "move the log feed to the main game panel
      again ... making the font smaller will help ... lefthand side of the panel"): as tall as the stack row and as wide as the room left
      of its middle card, less a 6px gap; newest at the top, each older line fainter, 3 lines (kura, Nov 4: "only have it show three lines") */
   .mid { position: relative; }
-  #log { position: absolute; left: 10px; top: 8px; width: calc((100% - 20px) / 2 - var(--stack-w) / 2 - 6px); height: calc(var(--stack-w) * var(--h) / 108 + 12px);
-         box-sizing: border-box; white-space: pre-wrap; font: italic 500 12px/1.35 var(--body); overflow: hidden; background: var(--cream);
+  /* as tall as the card (kura, Nov 4: "the same height as the card"): the card sits at the bottom of the stack row, 12px below its top */
+  #log { position: absolute; left: 10px; top: 20px; width: calc((100% - 20px) / 2 - var(--stack-w) / 2 - 6px); height: calc(var(--stack-w) * var(--h) / 108);
+         box-sizing: border-box; white-space: pre-wrap; font: italic 500 9px/1.3 var(--body); overflow: hidden; background: var(--cream);
          border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; color: var(--ink); display: flex; flex-direction: column; gap: 4px; }
   /* its top line says what to do now (kura, Nov 4: it was a line of its own above the stack) */
   #log .now { font-weight: 700; }
@@ -148,20 +149,18 @@
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
   /* on a phone your hand is two rows, 3 and then 2, so each card is about 1.7 times as wide (kura, Nov 4: "make the cards bigger on mobile",
      using the empty height); 66px = the page's 16px sides, the panel's 10px padding and 1px border each side, and two 6px gaps */
-  /* on a phone the panels sit 6px in from the screen's edges with 4px inside them, like UN/TAP's (kura, Nov 4: "make the phone width
-     the same as un/tap"); every width below leaves 32px less room than before: 46px = two 6px gaps, the panel's 1px border and 4px
-     padding each side, and four 6px gaps between cards */
+  /* on a phone the panels sit 14px in from the screen's edges with 4px inside them (kura, Nov 4: "can we do 14px gaps on the side";
+     was 6px); 62px = two 14px gaps, the panel's 1px border and 4px padding each side, and four 6px gaps between cards */
   @media (max-width: 500px) {
-    html, body { height: auto; overflow: auto; }   /* the page scrolls on a phone; fit() doesn't shrink it there */
-    :root { --w: calc((100vw - 46px) / 5); --sw: calc((100vw - 40px) / 6); }
+    :root { --w: calc((100vw - 62px) / 5); --sw: calc((100vw - 56px) / 6); }
     #game { padding: 8px 0; }
-    .side, .mid, .bar { margin: 0 6px; }
+    .side, .mid, .bar { margin: 0 14px; }
     .side, .mid { padding-left: 4px; padding-right: 4px; }
-    #log { left: 4px; width: calc((100% - 8px) / 2 - var(--stack-w) / 2 - 6px); font-size: 11px; line-height: 1.25; padding: 5px 6px; gap: 3px; }   /* narrow there: smaller still */
-    h1 { margin: 0 6px; }
-    /* 34px: two 6px gaps, the panel's 1px border and 4px padding each side, and two 6px gaps between cards */
-    .mid { --stack-w: calc((100vw - 34px) / 3 + 17px); }
-    #hand { --w: calc((100vw - 34px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
+    #log { left: 4px; width: calc((100% - 8px) / 2 - var(--stack-w) / 2 - 6px); font-size: 9px; line-height: 1.25; padding: 5px 6px; gap: 3px; }   /* narrow there: smaller still */
+    h1 { margin: 0 14px; }
+    /* 50px: two 14px gaps, the panel's 1px border and 4px padding each side, and two 6px gaps between cards */
+    .mid { --stack-w: calc((100vw - 50px) / 3 + 17px); }
+    #hand { --w: calc((100vw - 50px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
     /* your 3 Broadcast places at the right edge, with space between them and your graveyard (kura, Nov 4: "for phones only") */
     #mField { justify-content: flex-end; }
     /* your deck moves from the piles into the hand's last place, face down at card size (kura, Nov 4: "last space can be the player's
@@ -209,7 +208,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.51" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.52" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -570,9 +569,7 @@
     fit();
   }
   // shrink the whole screen to fit a short window, never grow it (tap-game's fit())
-  // on a phone it doesn't shrink: the page scrolls instead, so the panels reach the screen's edges (kura, Nov 4)
-  const phone = matchMedia("(max-width: 500px)");
-  const fit = () => { const g = $("game"); g.style.transform = phone.matches ? "" : `scale(${Math.min(1, innerHeight / g.offsetHeight)})`; };
+  const fit = () => { const g = $("game"); g.style.transform = `scale(${Math.min(1, innerHeight / g.offsetHeight)})`; };
   addEventListener("resize", fit);
 </script>
 </body>
