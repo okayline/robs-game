@@ -74,7 +74,7 @@
   /* the log: a strip across the bottom of the middle panel, under the stack, so its lines are long and mostly one line each (kura,
      Nov 5: "a little bigger font size, and have a longer row that sits closer to the bottom of the panel ... less double lines"; it was
      a narrow column left of the stack, in 9px); 3 lines high, each older line fainter */
-  #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 13px/1.3 var(--body); overflow: hidden; color: var(--ink);
+  #log { height: calc(3 * 1.3em + 6px); white-space: pre-wrap; font: italic 500 15px/1.3 var(--body); overflow: hidden; color: var(--ink);
          display: flex; flex-direction: column; justify-content: flex-end; gap: 3px; }
   /* no box of its own, and newest at the bottom: a new line slides the lines up (kura, Nov 5: "take the panel background away" and
      "newest messages appear on the bottom ... one line at a time scrolling up") */
@@ -128,8 +128,10 @@
   .card .gc-name { display: none; }
   .gc-art { height: calc(31 * var(--u)); display: flex; align-items: center; justify-content: center; }
   .gc-art img { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
-  .gc-type { font: 500 calc(6.4 * var(--u))/1 var(--body); background: #e2f0ff; border: 1px solid var(--line); border-radius: 2px; padding: 0 calc(4 * var(--u));
-             height: calc(15 * var(--u)); display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  .gc-type { font: 500 calc(12 * var(--u))/1 var(--body); background: #e2f0ff; border: 1px solid var(--line); border-radius: 2px; padding: 0 calc(4 * var(--u));
+             height: calc(16.4 * var(--u)); display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  /* as big as fits (kura, Nov 5: "Instant and Sorcery font much bigger ... as big as possible"; was 6.4 in a 15 bar), then one step down
+     to 12 (kura, Nov 5); 14 cut Wiretap's text */
   /* a Broadcast (a game point): its type line is inverted (kura, Nov 4) */
   .broadcast .gc-type { background: var(--ink); color: #e2f0ff; border-color: var(--ink); }
   .gc-txt { flex: 1; min-height: 0; overflow: hidden; background: #fffdf8; border: 1px solid var(--line); border-radius: 2px; padding: calc(4 * var(--u));
@@ -152,9 +154,13 @@
   .pile { display: flex; flex-direction: column; align-items: center; gap: 7px; font: 600 10px/1 var(--title); letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
   .pile b { color: var(--ink); }
   .pile.tapme { cursor: pointer; }
-  /* a graveyard you can tap: a grey dotted outline, then solid pink once tapped (kura, Nov 5) */
-  .pile.tapme > :first-child { outline: 2px dotted #9aa3b8; outline-offset: 2px; }
-  .pile.tapme.on > :first-child { outline: 2px solid var(--pink); }
+  /* your graveyard: a grey dotted outline all the time, solid pink while you pick a card to discard (kura, Nov 5) */
+  /* your graveyard's outline is drawn on its place, not on its top card, so it stays put all the time, even while a card flies in
+     (kura, Nov 5: "can we have the graveyard outline there persistent all the time"; it used to fly in on the new card) */
+  .pile { position: relative; }
+  #mPiles .pile:last-child::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%); pointer-events: none;
+    width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); outline: 2px dotted #9aa3b8; outline-offset: 2px; }
+  #mPiles .pile.tapme.on:last-child::before { outline: 2px solid var(--pink); }
   .pile.tapme.on span { color: var(--pink); }
   .back { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
           background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
@@ -176,7 +182,7 @@
     #game { padding: 8px 0; }
     .side, .mid, .bar { margin: 0 5px; }
     .side, .mid { padding-left: 8px; padding-right: 8px; }   /* room for a tappable graveyard's dashed outline (kura, Nov 5: "a little more padding"; was 4px) */
-    #log { font-size: 12px; }   /* a phone: a little smaller, so most lines still fit on one */
+    #log { font-size: 14px; }   /* a phone: a little smaller, so most lines still fit on one (kura, Nov 5: bigger; was 12) */
     h1 { margin: 0 5px; }
     /* 40px: two 5px gaps, the panel's 1px border and 8px padding each side, and two 6px gaps between cards */
     .mid { --stack-w: calc((100vw - 40px) / 3 + 17px); }
@@ -203,9 +209,9 @@
     /* the graveyard's count on its card, with a gravestone, instead of the "graveyard" label (kura, Nov 5): white on a small black box in
        the middle, with the card showing around it (kura, Nov 5: "no glow ... a black background for just the emoji and the number") */
     .pile:has(.gravn) > span { display: none; }
-    .pile { position: relative; }
     .pile .gravn { display: block; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap;
-                   font: 800 10px/1 var(--title); color: #fff; background: #000; border-radius: 3px; padding: 2px 4px; }   /* 10px (kura, Nov 5) */
+                   font: 800 calc(var(--sw) * 20 / 108)/1 var(--title); color: #fff; background: #000; border-radius: 3px;
+                   padding: calc(var(--sw) * 3 / 108) calc(var(--sw) * 6 / 108); }   /* sized with the card again (kura, Nov 5: "bigger again like it was before"; 10px for a moment) */
     #hand .handdeck { display: flex; align-items: center; justify-content: center; width: var(--w); height: calc(var(--h) * var(--u)); border-radius: calc(7 * var(--u));
                       font: 800 calc(22 * var(--u))/1 var(--title); color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
   }
@@ -247,13 +253,13 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.58" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.59" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
-    broadcast: ["Broadcast", "Enchantment", "stays on your side when it resolves."],
+    broadcast: ["Broadcast", "Enchantment", "stays on your side when it resolves. With 3 on your side, you win the game."],
     spam: ["Spam", "Sorcery", "put the top 2 cards of their deck into their graveyard."],
-    wiretap: ["Wiretap", "Sorcery", "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in any order."],
+    wiretap: ["Wiretap", "Sorcery", "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in their deck."],
     undelete: ["Undelete", "Sorcery", "shuffle your graveyard into your deck."],
     refute: ["Refute", "Instant", "counter target spell."],
     remand: ["Remand", "Instant", "counter target spell. Return it to its caster's hand."],
@@ -502,20 +508,20 @@
     if (v.winner) ask = v.winner === "me" ? "You win!" : "The Webmaster wins.";
     else if (p?.kind === "answer" && p.mine) {
       const top = v.stack[v.stack.length - 1];
-      ask = `The Webmaster cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
+      ask = `The Webmaster cast ${CARDS[top.card][0]}.`;   // what happened, no instructions (kura, Nov 5: "take out all explainer text")
       playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Resolve", () => send({ do: "let" })]);
-    } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to go under the other.";
+    } else if (p?.kind === "wiretap" && p.mine) ask = "Wiretap.";
     else if (p?.kind === "paywall" && p.mine) {
-      ask = "Paywall: pick a card from your hand to discard, or let your spell be countered.";
+      ask = "Paywall.";
       playable = (c) => () => send({ do: "pay", uid: c.uid });
       acts.push(["Don't pay", () => send({ do: "pay", uid: null })]);
     } else if (mine && v.turn === "me" && discarding && !v.cast) {   // discard mode (your graveyard tapped): any card in your hand
-      ask = "Discard: pick a card to throw away. You draw one. Tap your graveyard to cancel.";
+      ask = "Discard.";
       playable = (c) => () => { discarding = false; send({ do: "discard", uid: c.uid }); };
       acts.push(["Discard", null]);   // the bar says what you're doing (kura, Nov 5); tap your graveyard to cancel
     } else if (mine && v.turn === "me") {
-      ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, tap your graveyard to discard a card and draw one, or pass.";
+      ask = "Your turn.";
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
     } else ask = "The Webmaster is thinking…";

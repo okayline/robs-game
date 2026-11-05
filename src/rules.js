@@ -10,8 +10,8 @@
 // A deck is an array with its top card at index 0.
 
 export const CARDS = {
-  broadcast: { name: "Broadcast", kind: "Enchantment", type: "neon", text: "stays on your side when it resolves." },
-  wiretap: { name: "Wiretap", kind: "Sorcery", type: "construction", text: "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in any order." },
+  broadcast: { name: "Broadcast", kind: "Enchantment", type: "neon", text: "stays on your side when it resolves. With 3 on your side, you win the game." },
+  wiretap: { name: "Wiretap", kind: "Sorcery", type: "construction", text: "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in their deck." },
   spam: { name: "Spam", kind: "Sorcery", type: "guestbook", text: "put the top 2 cards of their deck into their graveyard." },
   undelete: { name: "Undelete", kind: "Sorcery", type: "construction", text: "shuffle your graveyard into your deck." },
   refute: { name: "Refute", kind: "Instant", type: "counter", text: "counter target spell." },
@@ -143,7 +143,7 @@ function resolve(g) {
       toGrave(g, top);
       if (top.card === "paywall" && g.sides[target.by].hand.length) {
         g.pending = { kind: "paywall", who: target.by, uid: target.uid };   // the target stays on the stack until they choose
-        say(g, `Paywall: ${NAMES[target.by]} can discard a card to keep ${CARDS[target.card].name}.`);
+        say(g, `Paywall resolves on ${CARDS[target.card].name}.`);   // no instructions in the log (kura, Nov 5)
         return;
       }
       g.stack.pop();
@@ -179,24 +179,17 @@ function spell(g, c) {
   }
 }
 
-// Wiretap, step 1: s picks one of the looked-at cards for the graveyard; step 2 (two left): which one goes on top.
+// Wiretap: s picks one of the looked-at cards for the graveyard, and the rest go back on top of the deck in the order they were (kura,
+// Nov 5: "skip the player selecting which one goes back"; there was a second pick for which went under the other).
 export function tap(g, s, uid) {
   const p = g.pending;
   if (p?.kind !== "wiretap" || p.who !== s) return "No Wiretap to finish.";
   const deck = g.sides[other(s)].deck, i = find(deck.slice(0, p.n), uid);
   if (i < 0) return "Pick one of the cards you're looking at.";
-  if (p.step === "mill") {
-    const [c] = deck.splice(i, 1);
-    g.sides[other(s)].grave.push(c);
-    p.n--;   // before the log line, so its board shows only the cards still being looked at (kura, Nov 4: a fourth card flashed in)
-    if (p.n >= 2) p.step = "top";
-    say(g, `Wiretap puts ${cardName(c)} in ${s === "a" ? "the Webmaster's" : "your"} graveyard.`);
-    if (p.n >= 2) return null;
-  } else {
-    // the card picked goes under the others going back (kura, Nov 4: "the card the player picks be the one that goes on bottom")
-    const [c] = deck.splice(i, 1);
-    deck.splice(p.n - 1, 0, c);
-  }
+  const [c] = deck.splice(i, 1);
+  g.sides[other(s)].grave.push(c);
+  p.n--;   // before the log line, so its board shows only the cards still being looked at (kura, Nov 4: a fourth card flashed in)
+  say(g, `Wiretap puts ${cardName(c)} in ${s === "a" ? "the Webmaster's" : "your"} graveyard.`);
   if (p.n) {   // one board with the rest going back on top, the Wiretap still shown (kura, Nov 4: they vanished at once)
     p.step = "back";
     say(g, `Wiretap puts ${p.n === 1 ? "the other card" : "the rest"} back on top of ${s === "a" ? "the Webmaster's" : "your"} deck.`);

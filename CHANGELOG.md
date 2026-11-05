@@ -4,6 +4,13 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.59 "Just the Facts" · Thu Nov 5, 12:46 AM
+- The log says only what happened, with no instructions: its last line is short ("The Webmaster cast Remand.", "Your turn.", "Wiretap.", "Paywall.", "Discard."), and a Paywall's line reads "Paywall resolves on Broadcast." The log's text is bigger: 15 on PC, 14 on a phone. Removed: the instructions in the log ("Answer it with a counter, or resolve it.", "cast an Enchantment or a Sorcery, tap your graveyard…", "pick the card…", "you can discard a card to keep…"), and the 13 (PC) and 12 (phone) log text.
+- The type line on cards (Instant, Sorcery, Enchantment) is almost twice as big (12, was 6.4). Removed: the small type line.
+- Broadcast's text: "stays on your side when it resolves. With 3 on your side, you win the game." Removed: the text that didn't say how to win.
+- Wiretap: you pick only the card for their graveyard; the rest go back on top of their deck in the order they were, and the same for the Webmaster's Wiretap. Its text: "look at the top 3 cards of their deck. Put 1 in their graveyard and the rest back in their deck." Removed: the second pick for which card went under the other, and "in any order".
+- Your graveyard always has its grey dotted outline (solid pink while you pick a discard), drawn on its place, so it stays put while a card flies in. Removed: the outline on the graveyard's top card, which flew in with each new card and only showed when you could discard.
+
 ## v0.58 "Flick" · Thu Nov 5, 12:43 AM
 - On a phone, flick a card up quickly to play it, the same as tapping it: it goes to the stack. A slow drag, a short move or a sideways move doesn't play it. Removed: nothing.
 - The action button is blue whenever you can press it, and grey when it only says what's happening (Passing…, Discard, Webmaster's turn). Removed: the pink action button, the blue Resolve of its own, and the pink label when it couldn't be pressed.
@@ -15,7 +22,7 @@ Newest first. Times are Hawaii time (HST).
 
 ## v0.56 "Big Print" · Thu Nov 5, 12:31 AM
 - The log's text is bigger: 13 on PC, 12 on a phone. Removed: the 11 (PC) and 10 (phone) log text.
-- On a phone the graveyard's 🪦 and count are white, 10px, on a small black box in the middle of the card, with the card showing around it. Removed: the dark count with a white glow.
+- On a phone the graveyard's 🪦 and count are white on a small black box in the middle of the card, with the card showing around it. Removed: the dark count with a white glow.
 
 ## v0.55 "Deep Blue" · Thu Nov 5, 12:25 AM
 - The Webmaster's things are a darker blue: its cards' frames (on the stack, its side and the big card), its card backs (its deck and its face-down cards) and its panel's labels. The darker blue is clearly different from your blue for people with red-green colour blindness too. Removed: the Webmaster's cards, card backs and labels in your blue.
