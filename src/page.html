@@ -269,7 +269,7 @@
 <div id="game">
   <h1>ROB'S GAME <a href="/">new match</a></h1>
   <div class="side them">
-    <div class="stat">The Webmaster <span>hand <b id="tHand">0</b></span></div>
+    <div class="stat">The Webmaster <span>hand <b id="tHand" data-count="t-hand">0</b></span></div>
     <div class="zone"><div class="row" id="tField"></div><div class="piles" id="tPiles"></div></div>
   </div>
   <div class="mid">
@@ -285,7 +285,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.70" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.71" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -479,17 +479,19 @@
   // a side's piles (kura, Nov 4): its deck face down, then its graveyard; at the right of the dummy's panel, the top left of yours
   // onStack: a card shown on the stack while the match already has it in a graveyard (a Wiretap being finished): it isn't shown in the
   // graveyard until it leaves the stack, so it flies there then (kura, Nov 4: "after the wiretap, the main card just disappeared")
-  function piles(side, onStack = null) {
-    const pile = (el, label, n) => { const p = mk("div", "pile"); const t = mk("span", "", `${label} `); t.append(mk("b", "", n)); p.append(el, t); return p; };
+  // who: "t" or "m", naming its counts (data-count) so they can wait for the cards flying to them (counted(), below)
+  function piles(side, onStack = null, who = "") {
+    const num = (cls, key, n) => { const b = mk("b", cls, n); b.dataset.count = `${who}-${key}`; return b; };
+    const pile = (el, label, n) => { const p = mk("div", "pile"); const t = mk("span", "", `${label} `); t.append(num("", `${label}-label`, n)); p.append(el, t); return p; };
     const out = [];
     const back = mk("div", side.deck ? "back" : "slot");
     const k = Math.min(4, Math.ceil(side.deck / 8));   // a thicker stack for a fuller deck
     back.style.boxShadow = Array.from({ length: k }, (_, i) => `${i + 1}px ${i + 1}px 0 color-mix(in srgb, var(--frame) ${70 - i * 10}%, #000)`).join(",") || "none";
-    if (side.deck) back.append(mk("b", "deckn", side.deck));   // the count on the back itself: the Webmaster's deck on a phone (CSS)
+    if (side.deck) back.append(num("deckn", "deckn", side.deck));   // the count on the back itself: the Webmaster's deck on a phone (CSS)
     out.push(pile(back, "deck", side.deck));
     const grave = side.grave.filter((c) => c.uid !== onStack), top = grave[grave.length - 1];
     const g = pile(top ? card(top, { small: true, gone: true }) : mk("div", "slot"), "graveyard", grave.length);
-    g.append(mk("b", "gravn", `🪦 ${grave.length}`));   // the count on the card itself
+    g.append(num("gravn", "gravn", `🪦 ${grave.length}`));   // the count on the card itself
     out.push(g);
     return out;
   }
@@ -506,8 +508,23 @@
   // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
   // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
   // from: an element, or a box already measured (a card you played, measured when you clicked it); gap: ms between cards
+  // the numbers on the board (graveyards, decks, the Webmaster's hand) change only once the cards flying in a board have landed (kura,
+  // Nov 5: "could the number change only after the animation finishes please ... across the whole game"): every flight below reports
+  // when it ends (busy), and counted() shows the old numbers until the last one has
+  let busyUntil = 0, countTimer = null;
+  const busy = (ms) => { busyUntil = Math.max(busyUntil, performance.now() + ms); };
+  function counted(old) {
+    clearTimeout(countTimer); countTimer = null;
+    const wait = busyUntil - performance.now();
+    const changed = [...document.querySelectorAll("[data-count]")].filter((e) => old.has(e.dataset.count) && old.get(e.dataset.count) !== e.textContent);
+    if (wait <= 0 || !changed.length) return;
+    const fresh = changed.map((e) => [e, e.textContent]);
+    for (const e of changed) e.textContent = old.get(e.dataset.count);
+    countTimer = setTimeout(() => { countTimer = null; for (const [e, t] of fresh) if (e.isConnected) e.textContent = t; }, wait);
+  }
   function fly(els, from, { gap = 150, ms = 600, scale = .45, delay = 0 } = {}) {
     if (!els.length || !from || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    busy(delay + (els.length - 1) * gap + ms);
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1;   // fit()'s scale
     const d = from.getBoundingClientRect ? from.getBoundingClientRect() : from;
     els.forEach((el, i) => {
@@ -528,6 +545,7 @@
   function away(els, to, { flip = false } = {}) {
     if (!els.length || !to || matchMedia("(prefers-reduced-motion: reduce)").matches) { if (flip) els.forEach((el) => el.classList.add("down")); return; }
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1, d = to.getBoundingClientRect();
+    busy(300 + (els.length - 1) * 500 + 700);   // the last card's delay and flight, below
     els.forEach((el, i) => {
       const r = el.getBoundingClientRect();
       const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k, s = d.width / r.width;
@@ -545,6 +563,7 @@
   const MOVE_GAP = 400, MOVE_MS = 700, UNDELETE_SHOWN = 4;
   function ghost(src, box, to, { delay = 0, flip = false } = {}) {
     if (!to || !box.width || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    busy(delay + MOVE_MS);
     const d = to.getBoundingClientRect(), g = src.cloneNode(true);
     g.classList.remove("dim", "can"); g.style.cssText = "";
     Object.assign(g.style, { position: "fixed", left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px`, margin: "0",
@@ -568,10 +587,11 @@
     const before = new Map([...document.querySelectorAll("#game .card[data-uid]")].map((el) =>
       [el.dataset.uid, { el, box: el.getBoundingClientRect(), where: el.closest("#stack") ? "stack" : el.closest("#hand") ? "hand" : "other" }]));
     const pv = lastV; lastV = v;
+    const oldCounts = new Map([...document.querySelectorAll("[data-count]")].map((e) => [e.dataset.count, e.textContent])); busyUntil = 0;   // counted(), at the end
     const tDeckBox = $("tPiles").querySelector(".back, .slot")?.getBoundingClientRect(), mDeckBox = myDeck()?.getBoundingClientRect();
     $("tHand").textContent = v.them.hand;
     const onStack = v.pending?.kind === "wiretap" ? v.pending.card.uid : null;
-    $("tPiles").replaceChildren(...piles(v.them, onStack)); $("mPiles").replaceChildren(...piles(v.me, onStack));
+    $("tPiles").replaceChildren(...piles(v.them, onStack, "t")); $("mPiles").replaceChildren(...piles(v.me, onStack, "m"));
     // each side's Broadcasts fill three dotted places, one per Broadcast needed to win (kura, Nov 4: "blank areas for the 3 broadcast cards")
     const field = (list) => [...list.map((c) => card(c, { small: true, live: true })), ...Array.from({ length: Math.max(0, WIN - list.length) }, unstable)];
     $("tField").replaceChildren(...field(v.them.field));
@@ -663,7 +683,7 @@
     if (myGrave && canDiscard) {
       myGrave.classList.add("tapme"); myGrave.classList.toggle("on", discarding);
       myGrave.onclick = () => { discarding = !discarding; draw(lastV); };
-      myGrave.querySelector(".gravn").textContent = "DISCARD";   // on your turn the box is a Discard switch (kura, Nov 5)
+      const gn = myGrave.querySelector(".gravn"); gn.textContent = "DISCARD"; delete gn.dataset.count;   // on your turn the box is a Discard switch (kura, Nov 5), not a count
     }
     autoAct = null;
     if (acts.length === 1 && acts[0][0] === "Pass turn" && !canDiscard && !v.winner && !v.me.hand.some((c) => playable(c))) {   // nothing else to do: it passes by itself
@@ -680,6 +700,7 @@
     while (slots.length && slots[slots.length - 1] === null) slots.pop();
     const dealt = [];
     const deck = mk("div", `handdeck ${v.me.deck ? "back" : "slot"}`, v.me.deck);   // your deck again, for a phone's hand (CSS shows one of the two)
+    deck.dataset.count = "m-handdeck";
     $("hand").replaceChildren(...slots.map((u) => {
       if (u === null) return mk("div", "card gap");
       const c = held.get(u), f = v.winner ? null : playable(c), el = card(c, { click: f });
@@ -729,6 +750,7 @@
     // the dummy's draws: face-down cards from its deck to its hand count
     if (pv && tDeckBox && v.them.hand > pv.them.hand && v.them.deck < pv.them.deck)
       for (let k = 0; k < Math.min(v.them.hand - pv.them.hand, pv.them.deck - v.them.deck); k++) ghost(mk("div", "card small down"), tDeckBox, $("tHand"), { delay: k * 150 });
+    counted(oldCounts);
     fit();
   }
   // shrink the whole screen to fit a short window, never grow it (tap-game's fit())

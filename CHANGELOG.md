@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.71 "Counts Wait" · Thu Nov 5, 6:38 AM
+- The numbers on the board (graveyards, decks and the Webmaster's hand) change once the cards moving in a step have landed, everywhere in the game. Removed: the numbers jumping ahead before the cards got there.
+
 ## v0.70 "Quick Return" · Thu Nov 5, 6:35 AM
 - After you pick a Wiretap's card for the graveyard, the other cards go back on the deck as soon as it lands (0.7 s, was 1.5 s). Removed: the longer pause before they went back.
 
