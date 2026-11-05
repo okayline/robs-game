@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.76 "Up Close" · Thu Nov 5, 6:49 AM
+- How to play's last tip says "Hold or hover to see a card up close!". Removed: "Hold or hover over a card to see it up close".
+
 ## v0.75 "A Bit Higher" · Thu Nov 5, 6:47 AM
 - How to play (at the start and from the "?") sits a little higher in the panel, on every screen. Removed: nothing.
 
