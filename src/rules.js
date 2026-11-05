@@ -26,7 +26,7 @@ export const DECK = { broadcast: 5, wiretap: 5, spam: 4, undelete: 2, refute: 6,
 export const HAND = 5, WIN = 3;
 export const isCounter = (c) => CARDS[c.card].kind === "Instant";
 export const other = (s) => (s === "a" ? "b" : "a");
-export const NAMES = { a: "you", b: "the Webmaster" };
+export const NAMES = { a: "you", b: "the Student Athlete" };
 
 // Flavour lines: real lines from old personal web pages (kura, Nov 4), one picked per card when the decks are dealt. The same lines,
 // with where each was found, are in tap-game's page.html (by button type).
@@ -181,8 +181,8 @@ function resolve(g) {
         return;
       }
       g.stack.pop();
-      if (top.card === "remand") { g.sides[target.by].hand.push(strip(target)); say(g, `${CARDS[target.card].name} is countered and goes back to ${NAMES[target.by] === "you" ? "your" : "the Webmaster's"} hand.`); }
-      else if (top.card === "rollback") { g.sides[target.by].deck.unshift(strip(target)); say(g, `${CARDS[target.card].name} is countered and goes on top of ${NAMES[target.by] === "you" ? "your" : "the Webmaster's"} deck.`); }
+      if (top.card === "remand") { g.sides[target.by].hand.push(strip(target)); say(g, `${CARDS[target.card].name} is countered and goes back to ${NAMES[target.by] === "you" ? "your" : "the Student Athlete's"} hand.`); }
+      else if (top.card === "rollback") { g.sides[target.by].deck.unshift(strip(target)); say(g, `${CARDS[target.card].name} is countered and goes on top of ${NAMES[target.by] === "you" ? "your" : "the Student Athlete's"} deck.`); }
       else { toGrave(g, target); say(g, `${CARDS[target.card].name} is countered.`); }
     } else spell(g, top);
   }
@@ -204,12 +204,12 @@ function spell(g, c) {
     const n = Math.min(2, them.deck.length);
     if (!n) { say(g, "Spam: their deck is empty, nothing to put in the graveyard."); return; }
     them.grave.push(...them.deck.splice(0, n));
-    say(g, `Spam puts the top ${n === 1 ? "card" : `${n} cards`} of ${c.by === "a" ? "the Webmaster's" : "your"} deck in ${c.by === "a" ? "its" : "your"} graveyard.`);
+    say(g, `Spam puts the top ${n === 1 ? "card" : `${n} cards`} of ${c.by === "a" ? "the Student Athlete's" : "your"} deck in ${c.by === "a" ? "their" : "your"} graveyard.`);
   } else if (c.card === "wiretap") {
     const n = Math.min(3, them.deck.length);
     if (!n) { say(g, "Wiretap: their deck is empty, nothing to look at."); return; }
     g.pending = { kind: "wiretap", who: c.by, step: "mill", n, card: strip(c) };   // card: the Wiretap itself, shown while it is chosen
-    say(g, `Wiretap: ${NAMES[c.by]} look${c.by === "a" ? "" : "s"} at the top ${n} of ${c.by === "a" ? "the Webmaster's" : "your"} deck.`);
+    say(g, `Wiretap: ${NAMES[c.by]} look${c.by === "a" ? "" : "s"} at the top ${n} of ${c.by === "a" ? "the Student Athlete's" : "your"} deck.`);
   }
 }
 
@@ -223,10 +223,10 @@ export function tap(g, s, uid) {
   const [c] = deck.splice(i, 1);
   g.sides[other(s)].grave.push(c);
   p.n--;   // before the log line, so its board shows only the cards still being looked at (kura, Nov 4: a fourth card flashed in)
-  say(g, `Wiretap puts ${cardName(c)} in ${s === "a" ? "the Webmaster's" : "your"} graveyard.`);
+  say(g, `Wiretap puts ${cardName(c)} in ${s === "a" ? "the Student Athlete's" : "your"} graveyard.`);
   if (p.n) {   // one board with the rest going back on top, the Wiretap still shown (kura, Nov 4: they vanished at once)
     p.step = "back";
-    say(g, `Wiretap puts ${p.n === 1 ? "the other card" : "the rest"} back on top of ${s === "a" ? "the Webmaster's" : "your"} deck.`);
+    say(g, `Wiretap puts ${p.n === 1 ? "the other card" : "the rest"} back on top of ${s === "a" ? "the Student Athlete's" : "your"} deck.`);
   }
   g.pending = null;
   resolve(g);
@@ -278,7 +278,7 @@ export function pass(g, s) {
   g.turn = other(s); g.cast = false; g.n++; g.moves = 0;
   const side = g.sides[g.turn], n = Math.max(0, HAND - side.hand.length);
   for (let i = 0; i < n && !g.winner; i++) draw(g, g.turn);
-  if (!g.winner) say(g, `${g.turn === "a" ? "Your turn: you draw" : "The Webmaster's turn: it draws"} ${n} card${n === 1 ? "" : "s"}.`);
+  if (!g.winner) say(g, `${g.turn === "a" ? "Your turn: you draw" : "The Student Athlete's turn: they draw"} ${n} card${n === 1 ? "" : "s"}.`);
   return null;
 }
 

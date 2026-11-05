@@ -21,7 +21,7 @@
     --title: Cinzel, Georgia, serif; --body: "EB Garamond", Georgia, serif;
     /* five across: 78px = the page's 16px sides, the panel's 10px padding and 1px border each side, and four 6px gaps (was 72: 6px too
        wide on a phone, so the hand scrolled sideways) */
-    --w: min(112px, calc((100vw - 78px) / 5)); --u: calc(var(--w) / 108); --h: 134;   /* 16 shorter than 150: the name bar's 12 and its 4 gap (kura, Nov 5: "make the cards shorter") */
+    --w: min(112px, calc((100vw - 78px) / 5)); --u: calc(var(--w) / 108); --h: 134; --ph: 76;   /* --ph: the places' and small cards' height per 108 of width (66 on a phone, below). --h: 16 shorter than 150: the name bar's 12 and its 4 gap (kura, Nov 5: "make the cards shorter") */
     --sw: min(100px, calc((100vw - 72px) / 6));   /* small cards (fields, the stack, a Wiretap's look): name, picture and card name only */
   }
   * { box-sizing: border-box; }
@@ -41,21 +41,21 @@
   /* the opponent's line (kura, Nov 5: "rename THE WEBMASTER to "STUDENT ATHLETE #832"" and put it "left-justified, underneath the
      opponents deck cards, on the same line as "Deck 25""): under its three places at the left, where the deck's label was */
   .zone { position: relative; }
-  .zone .stat { position: absolute; left: 0; top: calc(var(--sw) * 76 / 108 + 5px); white-space: nowrap; }
-  .row { display: flex; gap: 6px; flex-wrap: wrap; min-height: calc(var(--sw) * 76 / 108); align-items: center; }
+  .zone .stat { position: absolute; left: 0; top: calc(var(--sw) * var(--ph) / 108 + 5px); white-space: nowrap; }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; min-height: calc(var(--sw) * var(--ph) / 108); align-items: center; }
   /* your hand stays one row: it scrolls sideways when it's wider than the screen */
   /* the stack: the cards being cast, full size, in the middle of the screen */
   #stack { justify-content: center; align-items: flex-end; flex-wrap: nowrap; }
   /* every panel keeps one height whatever is in it, so nothing on the screen moves up or down (kura, Nov 4) */
   #stack { height: calc(var(--stack-w) * var(--h) / 108 + 12px); }   /* not clipped, so a card flying in shows all the way (kura, Nov 4) */
   /* a row of piles and Broadcasts: a small card and its label (kura, Nov 4: no empty space under the piles) */
-  .zone { height: calc(var(--sw) * 76 / 108 + 20px); }
+  .zone { height: calc(var(--sw) * var(--ph) / 108 + 20px); }
   /* wider than a phone, each row of piles and Broadcasts has 5 things (3 places, deck, graveyard), so they line up in your hand's
      5 columns, as wide as its cards (kura, Nov 4: "spread out evenly across and match the cards below them") */
   @media (min-width: 501px) {
     .side .zone { --sw: var(--w); display: grid; grid-template-columns: repeat(5, var(--w)); gap: 6px; align-items: start; }
     .zone .row, .zone .piles { display: contents; }
-    .side:not(.them) .zone { height: calc(var(--sw) * 76 / 108 + 4px); }   /* no labels under your piles: just the deck's 4px stack */
+    .side:not(.them) .zone { height: calc(var(--sw) * var(--ph) / 108 + 4px); }   /* no labels under your piles: just the deck's 4px stack */
   }
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
   #hand { height: calc(var(--h) * var(--u) + 4px); }
@@ -112,7 +112,7 @@
   #log div::before { content: "C:\\> "; }
   /* the card: blue frame, cream inside (tap-game's .gc) */
   .card { position: relative; width: var(--w); height: calc(var(--h) * var(--u)); border: 0; padding: 0; background: none; border-radius: calc(7 * var(--u)); text-align: left; color: var(--ink); flex: none; }
-  .card.small { --w: var(--sw); --u: calc(var(--w) / 108); height: calc(76 * var(--u)); }
+  .card.small { --w: var(--sw); --u: calc(var(--w) / 108); height: calc(var(--ph) * var(--u)); }
   .card.can { cursor: pointer; }   /* no glow (kura, Nov 4: "no glow please"); the cards you can't play are dimmed */
   .card.dim { opacity: .55; }
   .card.gap { visibility: hidden; }
@@ -221,20 +221,20 @@
      (kura, Nov 5: "can we have the graveyard outline there persistent all the time"; it used to fly in on the new card) */
   .pile { position: relative; }
   #mPiles .pile:last-child::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%); pointer-events: none;
-    width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); outline: 2px dotted #9aa3b8; outline-offset: -2px; }
+    width: var(--sw); height: calc(var(--sw) * var(--ph) / 108); border-radius: calc(7 * var(--sw) / 108); outline: 2px dotted #9aa3b8; outline-offset: -2px; }
   /* the outline just inside the place, like the GPU places' dotted borders, so the five are evenly spaced (kura, Nov 5: "space all 5
      out evenly across the width and make it look nice and work with the dotted line"; it was 2px outside) */
   #mPiles .pile:last-child > .slot { border-color: transparent; }   /* the outline is its border: no dashed line under it */
   #mPiles .pile.tapme.on:last-child::before { outline: 2px solid var(--pink); }
   .pile.tapme.on span { color: var(--pink); }
-  .back { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
+  .back { width: var(--sw); height: calc(var(--sw) * var(--ph) / 108); border-radius: calc(7 * var(--sw) / 108); flex: none;
           background: repeating-linear-gradient(45deg, var(--frame) 0 6px, color-mix(in srgb, var(--frame) 85%, #000) 6px 12px); }
   .slot.spot { border-style: dotted; }   /* a Broadcast's empty place: dotted (kura, Nov 4) */
   /* ... with a crossed-out signal and "Broadcast: OFF" in it (kura, Nov 4: "some sort of no signal sign"); sized to the place, small (kura, Nov 4: "can the text be smaller"), 6px at least */
   .slot.spot { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--sw) * .04); color: #9aa3b8;
                font: 600 max(6px, calc(var(--sw) * .075))/1.15 var(--title); letter-spacing: .5px; text-transform: uppercase; text-align: center; }
   .slot.spot svg { width: calc(var(--sw) * .28); height: calc(var(--sw) * .28); }
-  .slot { width: var(--sw); height: calc(var(--sw) * 76 / 108); border-radius: calc(7 * var(--sw) / 108); border: 1.5px dashed var(--line); flex: none; }
+  .slot { width: var(--sw); height: calc(var(--sw) * var(--ph) / 108); border-radius: calc(7 * var(--sw) / 108); border: 1.5px dashed var(--line); flex: none; }
   /* the stack, like Magic's: each card cast in answer sits on top of the one before, overlapping it and a little higher (kura, Nov 4) */
   #stack .mid-stack .card + .card { margin-left: calc(-0.55 * var(--stack-w)); }
   /* a card arriving: yours slides up from your hand, the dummy's down from its side; a Broadcast that lands pops in */
@@ -251,7 +251,18 @@
     #log { font-size: 14px; }   /* a phone: a little smaller, so most lines still fit on one (kura, Nov 5: bigger; was 12) */
     h1 { margin: 0 5px; }
     /* 40px: two 5px gaps, the panel's 1px border and 8px padding each side, and two 6px gaps between cards */
-    .mid { --stack-w: calc((100vw - 40px) / 3 + 17px); }
+    /* the page shorter on a phone, so fit() shrinks it less and it fills more of the width (kura, Nov 5: "yes" to the first four, "but can we
+       keep the main area card as big as possible, using some of the space above it", "button ... a bit fatter", "the "temps unstable" and
+       graveyard row a little thinner", "remove some of the space below STUDENT ATHLETE line"): */
+    .side:not(.them) { --ph: 66; }   /* your panel's places and small cards a little shorter (76 elsewhere; kura: "only shorter in the player's panel") */
+    #game { gap: 6px; }   /* 6px between the big parts (8 elsewhere) */
+    .bar, .bar button { height: 44px; }   /* the button (50 elsewhere) */
+    .bar button { white-space: nowrap; font-size: 16px; letter-spacing: 2px; }   /* "Student Athlete's answering" on one line (17px, 3px elsewhere) */
+    #log { height: calc(2 * 1.3em + 6px); }   /* 2 lines (3 elsewhere) */
+    .side.them { padding-bottom: 4px; }   /* less under the opponent's line (8 elsewhere) */
+    /* the card being played takes the 12px kept above it for flying cards (the row stays as tall): 12 * 108 / 134 wider */
+    .mid { --stack-w: calc((100vw - 40px) / 3 + 17px + 9.7px); }
+    #stack { height: calc(var(--stack-w) * var(--h) / 108); }
     #hand { --w: calc((100vw - 40px) / 3); --u: calc(var(--w) / 108); flex-wrap: wrap; height: auto; overflow: visible; }
     /* each side's row fills the panel (kura, Nov 5: "make the broadcast off squares fit the size of the panel"); its height follows them */
     .zone { height: auto; }
@@ -314,7 +325,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.86" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.87" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -434,7 +445,7 @@
       flickable(el, (e) => { flicked = e.timeStamp; click(e); });
     }
     el.dataset.uid = c.uid;
-    if (c.uid?.[0] === "b") el.classList.add("theirs");   // seat b is always the Webmaster
+    if (c.uid?.[0] === "b") el.classList.add("theirs");   // seat b is always the Student Athlete
     if (zoom) zoomable(el, () => c);
     return el;
   }
@@ -617,6 +628,13 @@
     if (flip) setTimeout(() => g.classList.add("down"), delay + MOVE_MS / 2);
     g.animate(k, { duration: MOVE_MS, delay, easing: "ease-in-out", fill: "forwards" }).finished.then(() => g.remove());
   }
+  // while the opponent decides, the log's last line (kura, Nov 5: "can we have some lines like "Student athlete works hard for their
+  // scholarship""; it was "The Webmaster is thinking…")
+  const THINK = ["The Student Athlete works hard for their scholarship.", "The Student Athlete is icing their knee…", "The Student Athlete is late for practice…",
+    "The Student Athlete is cramming for a midterm…", "The Student Athlete is watching game film…", "The Student Athlete is checking the group chat…",
+    "The Student Athlete is chugging a sports drink…", "The Student Athlete is asking their coach…", "The Student Athlete is checking their NIL deal…",
+    "The Student Athlete is stretching it out…"];
+  let thinking = null, lastThink = -1;
   let lastV = null, sentAway = new Set(), discarding = false;   // discarding: you pressed Discard and are picking the card   // the board before this one; the Wiretap cards already flown back onto a deck
   // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
   let played = null, looked = new Set(), lookOrder = [];   // looked: the Wiretap look cards on screen; lookOrder: their uids, left to right
@@ -638,10 +656,10 @@
     $("mField").replaceChildren(...field(v.me.field));
     const p = v.pending, mine = v.waiting, acts = [];
     let ask, playable = () => null;
-    if (v.winner) ask = v.winner === "me" ? "You win!" : "The Webmaster wins.";
+    if (v.winner) ask = v.winner === "me" ? "You win!" : "The Student Athlete wins.";
     else if (p?.kind === "answer" && p.mine) {
       const top = v.stack[v.stack.length - 1];
-      ask = `The Webmaster cast ${CARDS[top.card][0]}.`;   // what happened, no instructions (kura, Nov 5: "take out all explainer text")
+      ask = `The Student Athlete cast ${CARDS[top.card][0]}.`;   // what happened, no instructions (kura, Nov 5: "take out all explainer text")
       playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Resolve", () => send({ do: "let" })]);
     } else if (p?.kind === "wiretap" && p.mine) ask = "Wiretap.";
@@ -657,7 +675,11 @@
       ask = "Your turn.";
       if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
-    } else ask = "The Webmaster is thinking…";
+    } else {   // the opponent deciding: one line picked when it starts, kept until it's done, never the same twice in a row
+      if (thinking == null) { let i; do i = Math.floor(Math.random() * THINK.length); while (i === lastThink && THINK.length > 1); lastThink = i; thinking = THINK[i]; }
+      ask = thinking;
+    }
+    if (ask !== thinking) thinking = null;
     const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
     // oldest at the top, fading towards the top (CSS), and what to do now at the bottom (kura, Nov 5); when a line is added, the lines start
     // one new line lower and slide smoothly up into place (kura, Nov 5: "smoothly scroll up"): one more line than shows sits above the
@@ -733,7 +755,7 @@
       autoAct = acts[0][1];
       acts[0] = ["Passing…", null];
     }
-    if (!acts.length) acts.push([v.winner ? (v.winner === "me" ? "You win" : "The Webmaster wins") : p?.kind === "wiretap" && p.mine ? "Pick a card" : v.turn === "them" ? "Webmaster's turn" : "Webmaster's answering", null]);
+    if (!acts.length) acts.push([v.winner ? (v.winner === "me" ? "You win" : "The Student Athlete wins") : p?.kind === "wiretap" && p.mine ? "Pick a card" : v.turn === "them" ? "Student Athlete's turn" : "Student Athlete's answering", null]);
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); if (f) b.onclick = f; else b.disabled = true; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining
     // cards stay in the same place")

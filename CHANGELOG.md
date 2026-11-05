@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.87 "Scholarship" · Thu Nov 5, 8:25 AM
+- The opponent is the Student Athlete everywhere: in the log, on the button and at the end. Removed: "the Webmaster".
+- While the Student Athlete decides, the log says what they're up to instead ("The Student Athlete works hard for their scholarship.", "...is icing their knee…", and eight more), a different line each time. Removed: "The Webmaster is thinking…".
+- On a phone the page is shorter, so it fills more of the screen's width: the card being played is a little bigger (it takes the space above it), the button is a little thinner, your row of places is a little shorter, the log shows 2 lines, there's less space under the Student Athlete's line, and the gaps are 6px. Removed: the 3rd log line, the 12px above the card being played, and 2px from each gap, on a phone.
+
 ## v0.86 "Wiretap Ending" · Thu Nov 5, 8:12 AM
 - With reduced motion turned on, the end of a Wiretap still moves: the card picked flies up into the opponent's graveyard, the rest turn face down and fly up onto their deck, and your Wiretap goes down to your graveyard (the opponent's Wiretap the other way round). Everything else stays still with reduced motion. Removed: the Wiretap's cards vanishing at its end with reduced motion.
 - Resting the mouse on a card shows it up close after 1 second (was 1.2). Removed: nothing.
