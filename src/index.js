@@ -4,7 +4,7 @@
 //   GET /img/<n>     88x31 button n's GIF, from this site (img(), below)
 // Built like UN/TAP (okayline/tap-game), and dealt from the same 88x31 buttons.
 import { DurableObject } from "cloudflare:workers";
-import { newGame, dealDeck, cast, letIt, tap, pay, pass, view } from "./rules.js";
+import { newGame, dealDeck, cast, letIt, tap, pay, pass, view, hooks } from "./rules.js";
 import { dummyRun } from "./dummy.js";
 import PAGE from "./page.html";
 
@@ -63,15 +63,20 @@ export class Match extends DurableObject {
     const g = await this.ctx.storage.get("g");
     let a;
     try { a = JSON.parse(msg); } catch { return; }
+    // one board per log line, yours and the dummy's: the page shows them one at a time (kura, Nov 4: actions and the log showed up
+    // all at once). Everything up to the storage write below runs without waiting, so no other match's lines can land in here.
+    const frames = [];
+    hooks.say = () => frames.push(view(g, "a"));
     const err =
       a.do === "cast" ? cast(g, "a", a.uid) :
       a.do === "let" ? letIt(g, "a") :
       a.do === "tap" ? tap(g, "a", a.uid) :
       a.do === "pay" ? pay(g, "a", a.uid ?? null) :
       a.do === "pass" ? pass(g, "a") : "Unknown action.";
-    if (err) return ws.send(JSON.stringify({ error: err }));
-    const frames = [view(g, "a")];   // your move, then each of the dummy's moves: the page shows them one at a time
-    dummyRun(g, () => frames.push(view(g, "a")));
+    if (err) { hooks.say = null; return ws.send(JSON.stringify({ error: err })); }
+    dummyRun(g);
+    hooks.say = null;
+    if (!frames.length) frames.push(view(g, "a"));
     await this.ctx.storage.put("g", g);
     for (const s of this.ctx.getWebSockets()) s.send(JSON.stringify({ frames }));
   }

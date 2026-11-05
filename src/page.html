@@ -127,7 +127,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.13" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.14" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -142,8 +142,8 @@
   const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const ws = new WebSocket(location.href.replace(/^http/, "ws") + "/ws");
   const send = (o) => { $("err").textContent = ""; ws.send(JSON.stringify(o)); };
-  // after your move the match sends one board per move (yours, then each of the dummy's); they're shown STEP_MS apart, so you can
-  // follow what the dummy did (kura, Nov 4: "space out when they are displayed")
+  // after your move the match sends one board per action (each log line: yours, then the dummy's); they're shown STEP_MS apart, so
+  // you can follow what happened (kura, Nov 4: "space out when they are displayed", and the log too)
   const STEP_MS = 1500, queue = [];   // (kura, Nov 4: slower; was 800)
   let playing = null;
   const play = () => { if (playing) return; const next = () => { if (!queue.length) { playing = null; return; } draw(queue.shift()); playing = setTimeout(next, queue.length ? STEP_MS : 0); }; next(); };

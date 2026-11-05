@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.14 "Line by Line" · Wed Nov 4, 8:43 PM
+- Every action shows on its own, 1.5 s apart, with its log line: a cast, a counter, each step of a counter fight resolving, a Wiretap, a draw, a pass. The match sends one board per log line (rules.js hooks.say), yours and the dummy's. kura: actions and the log showed up all at once. Removed: one board per dummy move, which bunched several actions and log lines together.
+
 ## v0.13 "Slower" · Wed Nov 4, 8:41 PM
 - Slower: the dummy's moves show 1.5 s apart, and a card arriving takes 0.6 s to slide or pop in. Removed: the 0.8 s gap between moves and the 0.35–0.4 s card animations.
 

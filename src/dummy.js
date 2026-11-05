@@ -36,8 +36,7 @@ export function dummyMove(g) {
   return !pass(g, "b");
 }
 
-// Let the dummy move until it's your move or the match is over; step() runs after each of its moves (index.js sends each one,
-// so the page can show them one at a time).
-export function dummyRun(g, step = () => {}) {
-  for (let i = 0; i < 50 && dummyMove(g); i++) step();
+// Let the dummy move until it's your move or the match is over.
+export function dummyRun(g) {
+  for (let i = 0; i < 50 && dummyMove(g); i++);
 }

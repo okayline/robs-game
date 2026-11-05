@@ -73,7 +73,9 @@ export function newGame(deckA, deckB, rnd = Math.random) {
 }
 
 const cap = (s) => s[0].toUpperCase() + s.slice(1);
-function say(g, line) { g.log.push(line); if (g.log.length > 30) g.log.shift(); }
+// hooks.say, when set, runs after each log line (index.js: one board per line, so the page shows every action one at a time)
+export const hooks = { say: null };
+function say(g, line) { g.log.push(line); if (g.log.length > 30) g.log.shift(); hooks.say?.(g); }
 const cardName = (c) => `${CARDS[c.card].name} (${c.name})`;
 const find = (list, uid) => list.findIndex((c) => c.uid === uid);
 
