@@ -62,7 +62,8 @@
   .card.small { --w: var(--sw); --u: calc(var(--w) / 108); height: calc(76 * var(--u)); }
   .card.can { cursor: pointer; filter: drop-shadow(0 0 6px var(--pink)); }
   .card.dim { opacity: .55; }
-  .card.gap { visibility: hidden; }   /* the place of a card that left your hand */
+  .card.gap { visibility: hidden; }
+  #stack .look { align-self: center; margin-bottom: 24px; }   /* a Wiretap's look cards, a little higher (kura, Nov 4) */   /* the place of a card that left your hand */
   /* a graveyard card: grey, and its picture is a still frame (kura, Nov 4) */
   .card.gone { filter: grayscale(1); opacity: .75; }
   .gc-art canvas { width: calc(88 * var(--u)); height: calc(31 * var(--u)); image-rendering: pixelated; }
@@ -124,7 +125,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.18" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.19" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -197,17 +198,21 @@
   const deal = (els) => fly(els, $("mPiles").querySelector(".back, .slot"));
   // cards fly to their places from another spot on the screen (from: an element), like UN/TAP's cards sliding between rows: dealt
   // cards from your deck, cards cast onto the stack from your hand or the dummy's side (kura, Nov 4: the old slide-in was cut off)
-  function fly(els, from) {
+  // from: an element, or a box already measured (a card you played, measured when you clicked it); gap: ms between cards
+  function fly(els, from, { gap = 150, ms = 600, scale = .45 } = {}) {
     if (!els.length || !from || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const k = $("game").getBoundingClientRect().width / $("game").offsetWidth || 1;   // fit()'s scale
-    const d = from.getBoundingClientRect();
+    const d = from.getBoundingClientRect ? from.getBoundingClientRect() : from;
     els.forEach((el, i) => {
       const r = el.getBoundingClientRect();
       const dx = (d.left + d.width / 2 - (r.left + r.width / 2)) / k, dy = (d.top + d.height / 2 - (r.top + r.height / 2)) / k;
-      el.animate([{ transform: `translate(${dx}px, ${dy}px) scale(.45)`, opacity: .4 }, { transform: "none", opacity: 1 }],
-        { duration: 600, delay: i * 150, easing: "ease-out", fill: "backwards" });
+      el.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: .4 }, { transform: "none", opacity: 1 }],
+        { duration: ms, delay: i * gap, easing: "ease-out", fill: "backwards" });
     });
   }
+  // the card you just played from your hand, and where it was: it flies onto the stack from there (kura, Nov 4)
+  let played = null, looked = new Set();   // looked: the Wiretap look cards on screen
+  const play1 = (c, msg) => (e) => { played = { uid: c.uid, box: e.currentTarget.getBoundingClientRect() }; send(msg); };
   const fresh = (el, c, cls) => { if (!shown.has(c.uid)) el.classList.add(cls); return el; };
 
   function draw(v) {
@@ -221,7 +226,7 @@
     else if (p?.kind === "answer" && p.mine) {
       const top = v.stack[v.stack.length - 1];
       ask = `The dummy cast ${CARDS[top.card][0]}. Answer it with a counter, or resolve it.`;
-      playable = (c) => (CARDS[c.card][1] === "Instant" ? () => send({ do: "cast", uid: c.uid }) : null);
+      playable = (c) => (CARDS[c.card][1] === "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Resolve", () => send({ do: "let" })]);
     } else if (p?.kind === "wiretap" && p.mine) ask = p.step === "mill" ? "Wiretap: pick the card to put in their graveyard." : "Wiretap: pick the card to put on top of their deck.";
     else if (p?.kind === "paywall" && p.mine) {
@@ -230,7 +235,7 @@
       acts.push(["Don't pay", () => send({ do: "pay", uid: null })]);
     } else if (mine && v.turn === "me") {
       ask = v.cast ? "Your turn. You've cast your spell; pass when you're done." : "Your turn: cast an Enchantment or a Sorcery, or pass.";
-      if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? () => send({ do: "cast", uid: c.uid }) : null);
+      if (!v.cast) playable = (c) => (CARDS[c.card][1] !== "Instant" ? play1(c, { do: "cast", uid: c.uid }) : null);
       acts.push(["Pass turn", () => send({ do: "pass" })]);
     } else ask = "The dummy is thinking…";
     const now = mk("div", "now" + (v.winner ? (v.winner === "me" ? " win" : " lose") : ""), ask);
@@ -240,12 +245,18 @@
     const els = cards.map((c, i) => {
       const el = card(c, { tag: c.by === "me" ? "you" : "dummy" });
       el.style.marginBottom = `${i * 10}px`;   // each later card sits a little higher
-      if (!shown.has(c.uid)) from.push([el.firstChild, c.by === "me" ? $("hand") : $("tHand")]);
+      if (!shown.has(c.uid)) from.push([el.firstChild, played?.uid === c.uid ? played.box : c.by === "me" ? $("hand") : $("tHand")]);
       return el;
     });
-    if (p?.kind === "wiretap" && p.mine) els.push(...p.look.map((c) => card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) })));
+    // a Wiretap's look: the cards come off the top of the dummy's deck one by one, slowly (kura, Nov 4: they appeared too fast), and
+    // sit a little higher than the bottom of the stack row
+    const look = p?.kind === "wiretap" && p.mine ? p.look.map((c) => { const el = card(c, { small: true, click: () => send({ do: "tap", uid: c.uid }) }); el.classList.add("look"); return el; }) : [];
+    const newLook = look.filter((el, i) => !looked.has(p.look[i].uid));
+    looked = new Set(look.length ? p.look.map((c) => c.uid) : []);
+    els.push(...look);
     $("stack").replaceChildren(...els);
     for (const [el, src] of from) fly([el], src);
+    fly(newLook, $("tPiles").querySelector(".back, .slot"), { gap: 400, ms: 900, scale: .6 });
     shown = new Set([...cards, ...v.them.field, ...v.me.field].map((c) => c.uid));
     $("acts").replaceChildren(...acts.map(([t, f]) => { const b = mk("button", "", t); b.onclick = f; return b; }));
     // your hand keeps its places: a card that leaves leaves a gap, and a new card fills the first gap (kura, Nov 4: "the remaining

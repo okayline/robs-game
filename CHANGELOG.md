@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.19 "From Your Hand" · Wed Nov 4, 8:59 PM
+- A card you play flies onto the stack from where it was in your hand. A Wiretap's three cards come off the top of the dummy's deck one by one, more slowly (0.9 s each, 0.4 s apart), and sit a little higher. Fixed: after you picked a card for the graveyard, a fourth card flashed into its place for a moment (the log line's board was taken before the look shrank). kura's notes on the last match. Removed: cards you play starting from the middle of your hand, the look cards appearing at once at the bottom of the row, and the flash.
+
 ## v0.18 "Your Answer" · Wed Nov 4, 8:54 PM
 - Fixed: when the dummy cast a spell, the match could stop at "The dummy is thinking…" with no way to answer. Its log line was sent before the spell asked you for an answer, and nothing was sent after it; now the board as it stands is always sent last. Your hand keeps its places: a card you play leaves a gap, and the next card dealt fills it. kura: "got to this screen and cant continue" and "can the remaining cards stay in the same place". Removed: the hand closing up when a card leaves it.
 

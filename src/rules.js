@@ -172,9 +172,10 @@ export function tap(g, s, uid) {
   if (p.step === "mill") {
     const [c] = deck.splice(i, 1);
     g.sides[other(s)].grave.push(c);
+    p.n--;   // before the log line, so its board shows only the cards still being looked at (kura, Nov 4: a fourth card flashed in)
+    if (p.n >= 2) p.step = "top";
     say(g, `Wiretap puts ${cardName(c)} in ${s === "a" ? "the dummy's" : "your"} graveyard.`);
-    p.n--;
-    if (p.n >= 2) { p.step = "top"; return null; }
+    if (p.n >= 2) return null;
   } else {
     deck.unshift(...deck.splice(i, 1));
   }
