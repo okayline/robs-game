@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.23 "Deep Space" · Wed Nov 4, 9:32 PM
+- The page's background is the same space picture as UN/TAP (`public/space.jpg`, 2560 × 1440, 378 KB), fixed behind everything. kura: "can you use this for robs-game background as well?" Removed: the flat midnight-blue background (it stays only as the colour shown until the picture loads).
+
 ## v0.22 "Stays Put" · Wed Nov 4, 9:12 PM
 - A Wiretap's unpicked cards fly back onto the dummy's deck one at a time, in the order they go back: the card you chose for the top lands last, on top. They don't fade; each stays on the deck pile, at its size, until the next board. kura: "can they not disappear, and go back in the order that makes sense" and "not have disappearing animations". Removed: the fade-out, and both cards flying back at once in screen order.
 
