@@ -40,6 +40,7 @@
   #err { height: 1.2em; overflow: hidden; }
   #log { height: calc(3 * 1.35em); overflow: hidden; }
   .zone { height: max(calc(var(--sw) * 76 / 108 + 16px), 84px); }
+  .stat.mine { margin-top: -4px; }   /* closer to the row above (kura, Nov 4) */
   .zone .row { flex-wrap: nowrap; overflow: hidden; }
   #hand { height: calc(var(--h) * var(--u) + 4px); }
   /* the shared footer (dungeon-items footer.js), drawn into #ddfoot under the screen, a little in from the right (as in tap-game) */
@@ -121,13 +122,13 @@
     <div id="log"></div>
   </div>
   <div class="side">
-    <div class="zone"><div class="row" id="mField" data-empty="No Broadcasts yet."></div><div class="piles" id="mPiles"></div><div class="acts" id="acts"></div></div>
-    <div class="stat">You</div>
+    <div class="zone"><div class="piles" id="mPiles"></div><div class="row" id="mField" data-empty="No Broadcasts yet."></div><div class="acts" id="acts"></div></div>
+    <div class="stat mine">Player</div>
     <div class="row" id="hand" data-empty="No cards in hand."></div>
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.15" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.16" data-copy="no"></script>
 <script>
   // the same card text as rules.js CARDS
   const CARDS = {
@@ -179,7 +180,7 @@
     const box = mk("div", "tagged"); box.append(el, mk("span", "by", tag)); return box;
   }
 
-  // a side's piles, at the right of its panel (kura, Nov 4): its deck face down, then its graveyard
+  // a side's piles (kura, Nov 4): its deck face down, then its graveyard; at the right of the dummy's panel, the top left of yours
   function piles(side) {
     const pile = (el, label, n) => { const p = mk("div", "pile"); const t = mk("span", "", `${label} `); t.append(mk("b", "", n)); p.append(el, t); return p; };
     const out = [];

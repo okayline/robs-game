@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.16 "Player" · Wed Nov 4, 8:46 PM
+- Your deck and graveyard are at the top left of your panel (the dummy's stay at the right of its panel), your stat line says "PLAYER", and it sits a little closer to the row above. Removed: your piles at the right, "YOU", and some of the space above it.
+
 ## v0.15 "Deal" · Wed Nov 4, 8:45 PM
 - Cards are dealt: each card that comes into your hand flies there from your deck (the opening five one after another), so you can see draws happen. Your deck now has a face-down pile too, and both sides' piles (deck, then graveyard) are at the right of their panels; your buttons stay at the far right. kura: "no way for the cards to get from the deck to my hand", "the graveyard can be on the right more", "a picture of the player's deck". Removed: cards appearing in your hand with no movement, your deck count on your stat line (the pile shows it), and the piles at the left.
 
