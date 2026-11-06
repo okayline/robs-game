@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.02 "Brackets" · Thu Nov 5, 4:45 PM
+- Every 3D GPU's bracket is measured on photos of the real cards (kura: "make all of them accurate to IRL"): its top tab sits about 109 mm above the bottom of the fingers on every card, and its end about 11 mm past them. The RTX 5070's bracket starts 1 px lower and its legs reach 3 px past the fingers; the Arc B580's starts 2 px below the top of the card and its legs reach 3 px past; the RX 9070 XT's and RX 9070's legs reach 4 px past. The RTX 5090, 5080, 4090 and GTX 1080 Ti already matched. Removed: the B580's and 5070's higher brackets and the shorter legs.
+- The footer says v1.02. Removed: "v1.01".
+
 ## v1.01 "No Red Line" · Thu Nov 5, 4:35 PM
 - Fixed: a thin red line across the RX 9070's front in 3D, seen at an angle (kura). Where a rounded shroud's corner steps in, the step takes the frame's colour, but the hidden faces between the steps took it too and showed through the hairlines between them: on the 9070, the red of its stripe. Now only the steps take it. Removed: the red line, and the frame's colour on the hidden faces.
 - The footer says v1.01. Removed: "v1.00".
