@@ -483,7 +483,8 @@
   // A GPU's big card shows it in 3D, with the real card's sides (kura, Nov 5: "give them a depth when you turn the card ... adding the
   // depth/sides to the flat GPU"). Each GPU's shape is its settings here, keyed by its picture's name:
   //   groups  parts that stand the same height off the card: d, how far in art pixels; boxes, each part's place on the picture
-  //           { x, y, w, h } and which of its sides are drawn (sides: t top, b bottom, l left, r right; the hidden ones are left out)
+  //           { x, y, w, h } and which of its sides are drawn (sides: t top, b bottom, l left, r right; the hidden ones are left out);
+  //           z: [z0, z1], a part that only stands from z0 to z1 up from the card (the bracket's legs), else all of 0 to d
   //   marks   on a box's side: top, bottom, left, right: [[a0, a1, b0, b1, paint, paint2?], ...]: from a0 to a1 along the side (x on
   //           the top and bottom, y on the left and right, in the picture's pixels) and b0 to b1 up from the card (0 on the card, d-1 at
   //           the front). paint: a colour (with paint2, a checkerboard), or "dp" / "hdmi": a port on the bracket, three wide (b0 to b0 + 2),
@@ -617,6 +618,35 @@
         { x: 22, y: 28, w: 3, h: 2, sides: "tblr" }, { x: 26, y: 28, w: 18, h: 2, sides: "tblr" }, { x: 45, y: 28, w: 3, h: 1, sides: "tblr" },
       ] },
     ] },
+    // Arc B580 Limited Edition (Intel's own): 272 x 111 x 39 mm, two slots, so 11 px at its picture's scale (76 px). Top, from kura's
+    // photos (Nov 5): a black frame strip on the back half with the white-lit "intel ARC" about a quarter along, open fins on the fan
+    // half, and the 8-pin socket set into the fins where the short board ends. The bottom isn't in the photos: fins and the frame strip,
+    // like the top. The far end: four screw holes for a support bracket (TechPowerUp). Bracket, from kura's photo: shiny, rows of long
+    // slots and round holes across the fan side, the ports along its back edge (DisplayPort, the primary DisplayPort, DisplayPort,
+    // HDMI), etched logos by the fingers, and below them its two legs with a notch beside each (kura asked for that end, Nov 5)
+    "arc-b580": { groups: [
+      { d: 11, boxes: [
+        { x: 9, y: 0, w: 76, h: 26, sides: "tbr",
+          top: [[9, 84, 0, 3, "#1a1a1c"], [22, 31, 1, 2, "#eef0fa"], [27, 27, 1, 2, "#2a2a2e"],
+                [11, 82, 4, 9, "#0e0e10"], ...Array.from({ length: 36 }, (_, i) => [12 + 2 * i, 12 + 2 * i, 4, 9, "#28282c"]),
+                [41, 46, 4, 9, "#0a0a0b"], [42, 45, 5, 8, "#1e1e20", "#303032"]],
+          bottom: [[9, 84, 0, 3, "#1a1a1c"], [11, 82, 4, 9, "#0e0e10"], ...Array.from({ length: 36 }, (_, i) => [12 + 2 * i, 12 + 2 * i, 4, 9, "#26262a"])],
+          right: [[8, 8, 3, 3, "#0a0a0b"], [8, 8, 7, 7, "#0a0a0b"], [18, 18, 3, 3, "#0a0a0b"], [18, 18, 7, 7, "#0a0a0b"]] },
+        { x: 62, y: 26, w: 19, h: 1, sides: "blr",     // the shroud's lower lip under the far fan
+          bottom: [[62, 80, 0, 3, "#1a1a1c"], [62, 80, 4, 9, "#0e0e10"], ...Array.from({ length: 9 }, (_, i) => [63 + 2 * i, 63 + 2 * i, 4, 9, "#26262a"])] },
+        { x: 6, y: 0, w: 2, h: 28, sides: "tblr",
+          left: [...[[2, 2], [4, 6], [8, 8], [10, 13], [15, 15], [17, 20], [22, 22]].flatMap(([a, b]) => [9, 7, 5].map((z) => [a, b, z, z, "#141416"])),   // three rows of vents, in columns, each starting with a hole just below the tab (kura marked them), a row of metal along the fan side
+                 [2, 5, 1, 3, "dp"], [7, 11, 1, 3, "dp"], [13, 17, 1, 3, "dp"], [19, 22, 1, 3, "hdmi"],   // the ports, a row of metal under them
+                 ...[[24, 3], [24, 6], [24, 9], [26, 4], [26, 8]].map(([a, z]) => [a, a, z, z + 1, "#77777d"])] },   // the etched logos by the fingers
+        { x: 6, y: 28, w: 2, h: 3, sides: "blr", z: [7, 10] },   // the bracket's two legs below it, one per slot, with a notch beside each
+        { x: 6, y: 28, w: 2, h: 3, sides: "tblr", z: [2, 5] },
+        { x: 3, y: 0, w: 3, h: 2, sides: "tbl", top: [[4, 4, 2, 2, "#040405"], [4, 4, 8, 8, "#040405"]] },
+      ] },
+      { d: 1, boxes: [   // the fingers, split at the picture's gaps (x 18, 21) and the key notch (x 40)
+        { x: 16, y: 28, w: 2, h: 1, sides: "tblr" }, { x: 19, y: 28, w: 2, h: 2, sides: "tblr" },
+        { x: 22, y: 28, w: 18, h: 2, sides: "tblr" }, { x: 41, y: 28, w: 3, h: 1, sides: "tblr" },
+      ] },
+    ] },
   };
   // a port's shading (the 5080 mockup's, kura, Nov 5): i is how far along it from a0, z how far up from b0; null: the bracket's metal
   const portPaint = ([a0, a1, b0, , kind], along, z) => {
@@ -669,20 +699,22 @@
       const edge = (k, alt) => (lum(k) >= 20 ? k : best(alt));
       const r = (a, n) => Array.from({ length: n }, (_, i) => a + i);
       for (const b of boxes) {
-        const { x, y, w, h } = b, s = b.sides ?? "tblr";
+        const { x, y, w, h } = b, s = b.sides ?? "tblr", [z0, z1] = b.z ?? [0, d], t = z1 - z0, zb = u(z0 - d);
         const topC = (xx) => edge(P(xx, y), r(y, 4).map((yy) => P(xx, yy))), botC = (xx) => edge(P(xx, y + h - 1), r(y + h - 4, 4).map((yy) => P(xx, yy)));
         const leftC = (yy) => edge(P(x, yy), r(x, 4).map((xx) => P(xx, yy))), rightC = (yy) => edge(P(x + w - 1, yy), r(x + w - 4, 4).map((xx) => P(xx, yy)));
-        // top and bottom: w across by d deep, row j at z j (rotateX lays row 0 on the card); left and right: d across by h down,
-        // column i at z i (rotateY lays column 0 on the card)
-        if (s.includes("t")) face(tex(w, d, (i, j) => paint(b.top, topC(x + i), .95, x + i, j)), w, d, `translate3d(${u(x)}, ${u(y)}, ${u(-d)}) rotateX(90deg)`);
-        if (s.includes("b")) face(tex(w, d, (i, j) => paint(b.bottom, botC(x + i), .62, x + i, j)), w, d, `translate3d(${u(x)}, ${u(y + h)}, ${u(-d)}) rotateX(90deg)`);
-        if (s.includes("l")) face(tex(d, h, (i, j) => paint(b.left, leftC(y + j), .78, y + j, i)), d, h, `translate3d(${u(x)}, ${u(y)}, ${u(-d)}) rotateY(-90deg)`);
-        if (s.includes("r")) face(tex(d, h, (i, j) => paint(b.right, rightC(y + j), .78, y + j, i)), d, h, `translate3d(${u(x + w)}, ${u(y)}, ${u(-d)}) rotateY(-90deg)`);
+        // top and bottom: w across by t deep, row j at z z0 + j (rotateX lays row 0 nearest the card); left and right: t across by h
+        // down, column i at z z0 + i (rotateY lays column 0 nearest the card)
+        if (s.includes("t")) face(tex(w, t, (i, j) => paint(b.top, topC(x + i), .95, x + i, z0 + j)), w, t, `translate3d(${u(x)}, ${u(y)}, ${zb}) rotateX(90deg)`);
+        if (s.includes("b")) face(tex(w, t, (i, j) => paint(b.bottom, botC(x + i), .62, x + i, z0 + j)), w, t, `translate3d(${u(x)}, ${u(y + h)}, ${zb}) rotateX(90deg)`);
+        if (s.includes("l")) face(tex(t, h, (i, j) => paint(b.left, leftC(y + j), .78, y + j, z0 + i)), t, h, `translate3d(${u(x)}, ${u(y)}, ${zb}) rotateY(-90deg)`);
+        if (s.includes("r")) face(tex(t, h, (i, j) => paint(b.right, rightC(y + j), .78, y + j, z0 + i)), t, h, `translate3d(${u(x + w)}, ${u(y)}, ${zb}) rotateY(-90deg)`);
       }
-      for (const b of boxes) {   // the fronts last: the picture's own pixels there
-        const cv = mk("canvas"); cv.width = b.w; cv.height = b.h; cv.getContext("2d").drawImage(im, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);
-        if (c.spin && live) fronts.push({ cv, b });
-        face(cv, b.w, b.h, `translate3d(${u(b.x)}, ${u(b.y)}, 0)`);
+      for (const b of boxes) {   // the fronts last: the picture's own pixels there (a part that stops short of the front: its metal)
+        const z1 = (b.z ?? [0, d])[1];
+        const cv = z1 === d ? mk("canvas") : tex(b.w, b.h, (i, j) => paint(null, P(b.x + i, b.y + j), .9, 0, 1));
+        if (z1 === d) { cv.width = b.w; cv.height = b.h; cv.getContext("2d").drawImage(im, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h); }
+        if (c.spin && live && z1 === d) fronts.push({ cv, b });
+        face(cv, b.w, b.h, `translate3d(${u(b.x)}, ${u(b.y)}, ${u(z1 - d)})`);
       }
       bigFlip.append(g);
       return { g, d };

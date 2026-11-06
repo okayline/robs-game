@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.98 "Battlemage 3D" · Thu Nov 5, 3:19 PM
+- The Arc B580's big card is in 3D, 11 px deep for its two slots. Top, from kura's photos: a black frame strip with the white-lit "intel ARC", open fins on the fan half, and the 8-pin socket set into them. The bottom: the frame strip and fins. The far end: four screw holes. The bracket, from kura's photo and her marks: three rows of long slots and round holes in columns, each starting with a hole under the tab, with a row of metal on each side; the four ports along the back edge; etched logos by the fingers; and below them the bracket's two legs, one per slot. Removed: nothing.
+- A 3D part can stand off the card from any height to any other (`z: [z0, z1]` in `GPU_3D`), for the bracket's legs. Removed: every part having to reach from the card to the front.
+
 ## v0.97 "Blower 3D" · Thu Nov 5, 3:01 PM
 - The footer says v0.97. Removed: "v0.94".
 - The GTX 1080 Ti's big card is in 3D, 11 px deep for its two slots. Top, from kura's photos: the silver faceted shroud on the fan side, and on the back half a black band with the green backlit "GEFORCE GTX" logo, then the 6-pin and 8-pin power sockets at the far end. Bottom, as kura marked it: a black strip along the back half, silver facets with two screws, black under the fan, and the far end's silver cap. The far end: a small finned heatsink. The bracket: triangle vents, and the ports in one column on its back edge (DisplayPort, HDMI, DisplayPort, DisplayPort). Removed: nothing.
