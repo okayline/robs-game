@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.01 "No Red Line" · Thu Nov 5, 4:35 PM
+- Fixed: a thin red line across the RX 9070's front in 3D, seen at an angle (kura). Where a rounded shroud's corner steps in, the step takes the frame's colour, but the hidden faces between the steps took it too and showed through the hairlines between them: on the 9070, the red of its stripe. Now only the steps take it. Removed: the red line, and the frame's colour on the hidden faces.
+- The footer says v1.01. Removed: "v1.00".
+
 ## v1.00 "Round Corners" · Thu Nov 5, 4:26 PM
 - The RX 9070's big card is in 3D, on AMD's own design (shown only as a render, never sold): 11 px deep, from AMD's "RX 9070 Series" slide (the shorter, thinner of its two cards). Top: a mesh panel in a frame almost the whole length, the 16-pin socket in a recess in it, and a dark band by the bracket with the white-lit "RADEON"; the picture's red stripe as a red band. Bottom: the board past the fingers, then a long vent. Removed: nothing.
 - The RX 9070 XT's bottom is the board and the vent too, from a photo of a black sample. Removed: its mesh bottom (a guess).

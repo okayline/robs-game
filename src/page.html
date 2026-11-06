@@ -334,7 +334,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v1.00" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v1.01" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -511,8 +511,9 @@
   const ROUND = (d, slices, box, end = true) => {
     const x0 = Math.min(...slices.map((s) => s[0])), y0 = Math.min(...slices.map((s) => s[1]));
     const x1 = Math.max(...slices.map((s) => s[0] + s[2])), y1 = Math.max(...slices.map((s) => s[1] + s[3]));
+    const span = (s) => s && [s[0], s[0] + s[2] - 1];   // the columns a neighbouring slice covers: there a slice's top or bottom is hidden
     return slices.flatMap(([x, y, w, h], i) => (end ? [{ ...box, x, y, w: w - 1, h }, { ...box, x: x + w - 1, y, w: 1, h, z: [1, d - 1] }] : [{ ...box, x, y, w, h }])
-      .map((b, k) => ({ ...b, out: [y0, y1], ...(i || k ? {} : { clear: [x0, y0, x1 - x0, y1 - y0] }) })));
+      .map((b, k) => ({ ...b, out: [y0, y1], inT: span(slices[i - 1]), inB: span(slices[i + 1]), ...(i || k ? {} : { clear: [x0, y0, x1 - x0, y1 - y0] }) })));
   };
   // the RX 9070's top, from AMD's slide (kura, Nov 5): along x in the picture, z up from the card (11 deep, 0 on the card): the back row
   // dark; the mesh panel's frame from x 11 to 81, z 1 to 9; its mesh inside it; the dark band by the bracket (to x 34) with "RADEON" lit in it; the
@@ -784,8 +785,11 @@
         const { x, y, w, h } = b, s = b.sides ?? "tblr", [z0, z1] = b.z ?? [0, d], t = z1 - z0, zb = u(z0 - d);
         // a rounded shroud's slice (out, ROUND): the first pixel that isn't dark coming in from outside the shroud, down to this slice
         const outer = (xx, from, to) => { for (let yy = from; yy !== to; yy += Math.sign(to - from)) if (lum(P(xx, yy)) >= 20) return P(xx, yy); return null; };
-        const topC = (xx) => (b.out && outer(xx, b.out[0] - 1, y + 1)) || edge(P(xx, y), r(y, 4).map((yy) => P(xx, yy)));
-        const botC = (xx) => (b.out && outer(xx, b.out[1], y + h - 2)) || edge(P(xx, y + h - 1), r(y + h - 4, 4).map((yy) => P(xx, yy)));
+        // (only where the slice's top or bottom shows: where the next slice covers it, its own row's colour, so the hairline seams between
+        // the slices' fronts show the front's colour, not the frame's: kura, Nov 5: "a thin horizontal red line" on the 9070, its red stripe)
+        const open = (rg, xx) => !rg || xx < rg[0] || xx > rg[1];
+        const topC = (xx) => (b.out && open(b.inT, xx) && outer(xx, b.out[0] - 1, y + 1)) || edge(P(xx, y), r(y, 4).map((yy) => P(xx, yy)));
+        const botC = (xx) => (b.out && open(b.inB, xx) && outer(xx, b.out[1], y + h - 2)) || edge(P(xx, y + h - 1), r(y + h - 4, 4).map((yy) => P(xx, yy)));
         const leftC = (yy) => edge(P(x, yy), r(x, 4).map((xx) => P(xx, yy))), rightC = (yy) => edge(P(x + w - 1, yy), r(x + w - 4, 4).map((xx) => P(xx, yy)));
         // top and bottom: w across by t deep, row j at z z0 + j (rotateX lays row 0 nearest the card); left and right: t across by h
         // down, column i at z z0 + i (rotateY lays column 0 nearest the card)
