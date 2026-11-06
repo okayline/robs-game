@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.99 "Red Team" · Thu Nov 5, 3:30 PM
+- The RX 9070 XT's big card is in 3D, on AMD's own design (shown only as a render, never sold): a mesh grille the whole length of the top with the 16-pin socket in a recess near the far end, a dark band with the white-lit "RADEON" by the bracket, and the picture's red stripe as a red band at the top right. Its bracket starts where the shroud's top corner slope ends, with two rows of vent holes and the ports from a Gigabyte 9070 XT (the HDMI turned over, as on the B580). Its thickness (12 px) and its bottom are guesses: no source gives them. Removed: nothing.
+- The footer says v0.99. Removed: "v0.97".
+
 ## v0.98 "Battlemage 3D" · Thu Nov 5, 3:19 PM
 - The Arc B580's big card is in 3D, 11 px deep for its two slots. Top, from kura's photos: a black frame strip with the white-lit "intel ARC", open fins on the fan half, and the 8-pin socket set into them. The bottom: the frame strip and fins. The far end: four screw holes. The bracket, from kura's photo and her marks: three rows of long slots and round holes in columns, each starting with a hole under the tab, with a row of metal on each side; the four ports along the back edge; etched logos by the fingers; and below them the bracket's two legs, one per slot. Removed: nothing.
 - Every 3D GPU's bracket has its legs below it (kura, Nov 5): two on the two-slot cards, three on the RTX 4090. Removed: the brackets running straight down to their ends.

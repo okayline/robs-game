@@ -334,7 +334,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.97" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v0.99" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -655,6 +655,30 @@
       { d: 1, boxes: [   // the fingers, split at the picture's gaps (x 18, 21) and the key notch (x 40)
         { x: 16, y: 28, w: 2, h: 1, sides: "tblr" }, { x: 19, y: 28, w: 2, h: 2, sides: "tblr" },
         { x: 22, y: 28, w: 18, h: 2, sides: "tblr" }, { x: 41, y: 28, w: 3, h: 1, sides: "tblr" },
+      ] },
+    ] },
+    // RX 9070 XT, AMD's own design (kura's choice, Nov 5): AMD showed it only as an "artistic render, not available for purchase",
+    // and a few black samples turned up in China; it was never sold (PC Gamer). Top, from kura's photos of the render: a fine mesh
+    // grille the whole length, the 16-pin socket in a recess about three quarters along, and a dark band on the fan side with the
+    // white-lit "RADEON" by the bracket. The picture's red stripe at the top right stays, as a red band along that front edge (the
+    // render's red is its lighting). Bracket, from kura's photo of a Gigabyte 9070 XT (the render doesn't show one): rows of vent
+    // holes across the fan side, three DisplayPorts and the HDMI along the back edge. Not in any source: its thickness (12 px, about
+    // 2.5 slots, from the render) and the bottom (mesh, like the top)
+    "rx-9070-xt": { groups: [
+      { d: 12, boxes: [
+        { x: 10, y: 1, w: 75, h: 25, sides: "tbr",
+          top: [[12, 83, 1, 8, "#1c1c1e", "#38383c"], [10, 84, 9, 11, "#1e1e20"], ...[13, 16, 19, 22, 25, 28].map((a) => [a, a + 1, 10, 10, "#eeeef2"])],
+          bottom: [[12, 83, 1, 8, "#1c1c1e", "#38383c"], [10, 84, 9, 11, "#1e1e20"]] },
+        { x: 35, y: 0, w: 24, h: 1, sides: "tlr", top: [[35, 58, 1, 8, "#1c1c1e", "#38383c"], [35, 58, 9, 11, "#1e1e20"]] },   // the top's raised middle and far parts
+        { x: 64, y: 0, w: 17, h: 1, sides: "tlr", top: [[64, 80, 1, 8, "#1c1c1e", "#38383c"], [64, 80, 9, 11, "#a8161c"], [66, 73, 3, 8, "#0a0a0b"], [67, 72, 4, 7, "#1e1e20", "#303032"]] },
+        { x: 7, y: 4, w: 1, h: 24, sides: "tblr",                // the bracket, starting where the shroud's top corner slope ends (kura)
+          left: [...[[5, 7], [9, 11], [13, 15], [17, 19], [21, 23], [25, 26]].flatMap(([a, b]) => [[a, b, 6, 7, "#141416"], [a, b, 9, 10, "#141416"]]),
+                 [5, 9, 1, 3, "dp"], [11, 15, 1, 3, "dp"], [17, 21, 1, 3, "dp"], [23, 26, 1, 3, "hdmi-back"]] },
+        { x: 7, y: 28, w: 1, h: 3, sides: "blr", z: [1, 4] }, { x: 7, y: 28, w: 1, h: 3, sides: "blr", z: [7, 10] },
+        { x: 5, y: 4, w: 2, h: 2, sides: "tbl", z: [0, 11] },   // its screw tab, at its new top
+      ] },
+      { d: 1, boxes: [   // the fingers, split at the picture's gap (x 22) and the key notch (x 42)
+        { x: 20, y: 28, w: 2, h: 3, sides: "tblr" }, { x: 23, y: 28, w: 19, h: 3, sides: "tblr" }, { x: 43, y: 28, w: 2, h: 2, sides: "tblr" },
       ] },
     ] },
   };
