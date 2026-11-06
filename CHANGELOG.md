@@ -4,6 +4,13 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.00 "Round Corners" · Thu Nov 5, 4:26 PM
+- The RX 9070's big card is in 3D, on AMD's own design (shown only as a render, never sold): 11 px deep, from AMD's "RX 9070 Series" slide (the shorter, thinner of its two cards). Top: a mesh panel in a frame almost the whole length, the 16-pin socket in a recess in it, and a dark band by the bracket with the white-lit "RADEON"; the picture's red stripe as a red band. Bottom: the board past the fingers, then a long vent. Removed: nothing.
+- The RX 9070 XT's bottom is the board and the vent too, from a photo of a black sample. Removed: its mesh bottom (a guess).
+- Every 3D GPU's corners are rounded, as the real cards' are: the shroud steps in at its corners, rounder than the pictures, and its far end rounds off seen from the top and bottom too (not the GTX 1080 Ti's far end, its slanted cap). Removed: the square shrouds, and 1 to 2 px off the raised bars that would stick out past the new corners.
+- Every 3D GPU's bracket is where the real one is: its top tab 111.15 mm above the bottom of the fingers (a standard card's height), so it starts lower on the taller cards (RTX 5090, 5080 and 4090: 6 px down; Arc B580: 1 px), and its legs reach 2 px past the fingers, as a real bracket's do. The RTX 5090 has three legs, like the 4090. The 5090 and 5080 ports are a row shorter each, and the 4090's vents and ports sit in the shorter bracket. Removed: brackets from the top of the picture, legs ending above or at the fingers, and the 5090's two legs.
+- The footer says v1.00. Removed: "v0.99".
+
 ## v0.99 "Red Team" · Thu Nov 5, 3:30 PM
 - The RX 9070 XT's big card is in 3D, on AMD's own design (shown only as a render, never sold): a mesh grille the whole length of the top with the 16-pin socket in a recess near the far end, a dark band with the white-lit "RADEON" by the bracket, and the picture's red stripe as a red band at the top right. Its bracket starts where the shroud's top corner slope ends, with two rows of vent holes and the ports from a Gigabyte 9070 XT (the HDMI turned over, as on the B580). Its thickness (12 px) and its bottom are guesses: no source gives them. Removed: nothing.
 - The footer says v0.99. Removed: "v0.97".
