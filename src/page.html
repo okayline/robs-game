@@ -537,6 +537,30 @@
         { x: 24, y: 28, w: 18, h: 3, sides: "tblr" }, { x: 43, y: 28, w: 2, h: 1, sides: "tblr" },
       ] },
     ] },
+    // RTX 5070 Founders Edition: 242 x 112 mm, two slots (40 mm); its picture is as long as the others' (78 px), so the real card's
+    // thickness at its scale is 13 px. Top, from kura's photos (Nov 5): the black middle section has two long vents side by side and
+    // the 12V-2x6 socket's recess at its far end, and "GeForce RTX" is etched (not lit) on the metal over the far fan. Underneath: two
+    // small vents (LanOC). The far end: threaded holes for a support bracket. Bracket (LanOC): three DisplayPorts above the HDMI, near
+    // the board's side, and four large vent holes beside them (their place on the bracket isn't in the photos: put on the fan side)
+    "rtx-5070": { groups: [
+      { d: 13, boxes: [
+        { x: 8, y: 1, w: 78, h: 25, sides: "tbr",
+          top: [[35, 58, 1, 11, "#18181a"], [36, 52, 6, 6, "#040405"], [36, 52, 8, 8, "#040405"], [53, 57, 2, 10, "#0a0a0b"], [54, 56, 3, 9, "#1e1e20", "#303032"]],
+          bottom: [[35, 58, 1, 11, "#131315"], [40, 44, 4, 8, "#040405"], [49, 53, 4, 8, "#040405"]],
+          right: [[8, 9, 6, 7, "#141416"], [18, 19, 6, 7, "#141416"]] },
+        { x: 59, y: 0, w: 24, h: 1, sides: "tlr",      // the right frame's top bar (the rest of the top is 1 px lower), with the etched logo
+          top: [[66, 79, 6, 7, "#6e6e74"], [73, 73, 6, 7, "#a4a4aa"]] },
+        { x: 60, y: 26, w: 23, h: 1, sides: "blr" },   // the right frame's bottom bar
+        { x: 4, y: 0, w: 2, h: 31, sides: "tblr",
+          left: [[4, 8, 2, 4, "dp"], [10, 14, 2, 4, "dp"], [16, 20, 2, 4, "dp"], [22, 26, 2, 4, "hdmi"],
+                 [4, 8, 8, 10, "#0e0e10"], [10, 14, 8, 10, "#0e0e10"], [16, 20, 8, 10, "#0e0e10"], [22, 26, 8, 10, "#0e0e10"]] },
+        { x: 1, y: 0, w: 3, h: 2, sides: "tbl", top: [[2, 2, 3, 3, "#040405"], [2, 2, 9, 9, "#040405"]] },
+      ] },
+      { d: 1, boxes: [   // the fingers, split at the picture's gaps (x 16, 20) and the key notch (x 39-40)
+        { x: 14, y: 28, w: 2, h: 1, sides: "tblr" }, { x: 17, y: 28, w: 3, h: 2, sides: "tblr" },
+        { x: 21, y: 28, w: 18, h: 2, sides: "tblr" }, { x: 41, y: 28, w: 3, h: 1, sides: "tblr" },
+      ] },
+    ] },
   };
   // a port's shading (the 5080 mockup's, kura, Nov 5): i is how far along it from a0, z how far up from b0; null: the bracket's metal
   const portPaint = ([a0, a1, b0, , kind], along, z) => {

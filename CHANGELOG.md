@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.95 "Fifty-Seventy" · Thu Nov 5, 2:31 PM
+- The RTX 5070's big card is in 3D. It's 13 px deep, because the real card is shorter than the 5080 (242 x 112 mm) but just as thick. Top, from kura's photos: two long vents side by side and the power socket's recess in the black middle, and "GeForce RTX" etched (not lit) over the far fan. Underneath: two small vents. The far end: threaded holes. The bracket: the ports on its back half and four large vent holes on the fan side. Removed: nothing.
+
 ## v0.94 "Ports" · Thu Nov 5, 2:30 PM
 - The footer says v0.94 (kura, 2:24 PM). Removed: "v0.92", left there through v0.93.
 - The RTX 5080's big card is in 3D too. Its top edge follows kura's photos: one long vent along the fan side and the power socket's recess in the black middle, and the lit GeForce RTX logo on the metal just past it. Underneath: two small vents. The far end: two screws for a support bracket. Removed: nothing.
