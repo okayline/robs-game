@@ -561,6 +561,36 @@
         { x: 21, y: 28, w: 18, h: 2, sides: "tblr" }, { x: 41, y: 28, w: 3, h: 1, sides: "tblr" },
       ] },
     ] },
+    // RTX 4090 Founders Edition: 304 mm long, three slots (61 mm), so 15 px at its picture's scale (73 px). Top, from kura's photos
+    // (Nov 5): the black middle is open heatsink fins all the way across, with the 12VHPWR socket set into them about 60% along,
+    // pointing straight up (not angled); the backlit GeForce RTX logo is on the metal over the far fan. Underneath: the angled
+    // sections' fins show too (LanOC). The far end: a magnetic plate over the support-bracket screws. Bracket, from kura's photos: four
+    // tall finned vents in a row, on a plate with three screws at each end, across the fan side; the three DisplayPorts and the HDMI
+    // in a row on the back edge under them; plain metal on the last quarter, by the fingers. The picture is the card's back: its
+    // backplate by the bracket and the far fan
+    "rtx-4090": { groups: [
+      { d: 15, boxes: [
+        { x: 11, y: 1, w: 73, h: 25, sides: "tbr",
+          top: [[34, 58, 1, 13, "#141416"], ...Array.from({ length: 13 }, (_, i) => [34 + 2 * i, 34 + 2 * i, 1, 13, "#2a2a2e"]),
+                [48, 51, 4, 10, "#0a0a0b"], [49, 50, 5, 9, "#1e1e20", "#303032"]],
+          bottom: [[35, 58, 1, 13, "#121214"], ...Array.from({ length: 12 }, (_, i) => [36 + 2 * i, 36 + 2 * i, 1, 13, "#26262a"])],
+          right: [[5, 21, 2, 2, "#4e4e54"], [5, 21, 12, 12, "#4e4e54"], [5, 5, 2, 12, "#4e4e54"], [21, 21, 2, 12, "#4e4e54"]] },
+        { x: 16, y: 0, w: 18, h: 1, sides: "tlr" },    // the frame's top bars (the middle is 1 px lower), the right one with the logo
+        { x: 59, y: 0, w: 21, h: 1, sides: "tlr", top: [[64, 77, 6, 9, "#464850"], [64, 77, 7, 8, "#f4f6ff"], [72, 72, 7, 8, "#5a5c64"]] },
+        { x: 61, y: 26, w: 20, h: 2, sides: "blr" },   // the right frame's bottom bar, 2 px lower
+        { x: 7, y: 0, w: 3, h: 31, sides: "tblr",
+          left: [[3, 22, 2, 12, "#8e8e94"],                                                          // the vents' plate
+                 ...[[4, 8], [9, 12], [13, 16], [17, 21]].flatMap(([a, b]) => [[a, b, 3, 11, "#0c0c0e"],   // the four vents, finned
+                   ...Array.from({ length: b - a + 1 }, (_, i) => i % 2 ? [a + i, a + i, 4, 10, "#26262a"] : null).filter(Boolean)]),
+                 ...[3, 22].flatMap((a) => [[a, a, 3, 3, "#5a5a60"], [a, a, 7, 7, "#5a5a60"], [a, a, 11, 11, "#5a5a60"]]),   // its six screws
+                 [4, 7, 0, 2, "dp"], [8, 12, 0, 2, "dp"], [13, 17, 0, 2, "dp"], [19, 22, 0, 2, "hdmi"]] },
+        { x: 4, y: 0, w: 3, h: 2, sides: "tbl", top: [[5, 5, 2, 2, "#040405"], [5, 5, 7, 7, "#040405"], [5, 5, 12, 12, "#040405"]] },   // a notch per slot
+      ] },
+      { d: 1, boxes: [   // the fingers, split at the picture's gaps (x 20, 23) and the key notch (x 42)
+        { x: 18, y: 28, w: 2, h: 1, sides: "tblr" }, { x: 21, y: 28, w: 2, h: 3, sides: "tblr" },
+        { x: 24, y: 28, w: 18, h: 3, sides: "tblr" }, { x: 43, y: 28, w: 3, h: 2, sides: "tblr" },
+      ] },
+    ] },
   };
   // a port's shading (the 5080 mockup's, kura, Nov 5): i is how far along it from a0, z how far up from b0; null: the bracket's metal
   const portPaint = ([a0, a1, b0, , kind], along, z) => {

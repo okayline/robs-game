@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.96 "Forty Ninety 3D" · Thu Nov 5, 2:45 PM
+- The RTX 4090's big card is in 3D, 15 px deep for its three slots. Top, from kura's photos: open fins across the black middle, with the power socket set into them about 60% along, pointing straight up, and the backlit GeForce RTX logo over the far fan. Underneath: fins in the angled sections. The far end: the outline of its magnetic cover plate. The bracket: four finned vents in a row on a plate with six screws, the three DisplayPorts and the HDMI in a row along the back edge under them, and plain metal by the fingers. Removed: nothing.
+
 ## v0.95 "Fifty-Seventy" · Thu Nov 5, 2:31 PM
 - The RTX 5070's big card is in 3D. It's 13 px deep, because the real card is shorter than the 5080 (242 x 112 mm) but just as thick. Top, from kura's photos: two long vents side by side and the power socket's recess in the black middle, and "GeForce RTX" etched (not lit) over the far fan. Underneath: two small vents. The far end: threaded holes. The bracket: the ports on its back half and four large vent holes on the fan side. Removed: nothing.
 
