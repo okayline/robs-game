@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.06 "Right Address" · Thu Nov 5, 9:58 PM
+- Fixed: the GPU pictures didn't show (kura: a blank Arc B580 big card, "this is only inside Rob's game"). They were asked for at the wrong address on 88x31. Removed: the wrong address.
+- The footer says v1.06. Removed: "v1.05".
+
 ## v1.05 "One Shelf" · Thu Nov 5, 9:55 PM
 - The GPU pictures and their spinning fans now come from 88x31, where all of them live in one place (kura: "can the gpu pics be in a single place too?"). Nothing looks different. Removed: Rob's Game's own copies, and the fan-making tool (it lives with the pictures on 88x31 now).
 - The footer says v1.05. Removed: "v1.04".

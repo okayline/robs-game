@@ -60,7 +60,7 @@ export const FLAVOUR = {
 //   RX 9070 XT: David McAfee, AMD, at launch, techpowerup.com/333301/amd-rdna-4-and-radeon-rx-9070-series-unveiled-usd-549-usd-599
 //   RX 9070: AMD's RX 9000 Series line, amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070-gre.html
 //   Voodoo3 3000: a 1999 Voodoo3 print ad as an eBay seller describes it, ebay.com/itm/166305819875 (not confirmed elsewhere)
-export const GPU_PICS = "https://88x31.app/banners/gamma/gpu";   // the GPU pictures, on 88x31 (kura, Nov 5: "can the gpu pics be in a single place too?")
+export const GPU_PICS = "https://club.88x31.app/banners/gamma/gpu";   // the GPU pictures, on 88x31 (kura, Nov 5: "can the gpu pics be in a single place too?")
 export const GPUS = [
   { model: "RTX 5090", pic: "rtx-5090", spin: true, gen: "Blackwell", flav: "Twice the performance of the 4090." },
   { model: "RTX 5080", pic: "rtx-5080", spin: true, gen: "Blackwell", flav: "AI is coming home to GeForce." },
