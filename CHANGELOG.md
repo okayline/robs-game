@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.94 "Ports" · Thu Nov 5, 2:30 PM
+- The RTX 5080's big card is in 3D too. Its top edge follows kura's photos: one long vent along the fan side and the power socket's recess in the black middle, and the lit GeForce RTX logo on the metal just past it. Underneath: two small vents. The far end: two screws for a support bracket. Removed: nothing.
+- Both cards' brackets have the ports from kura's photo: three DisplayPorts above the HDMI, spread from the tab to the fingers, each a shaded slot, the HDMI tapered at its two corners. Removed: the 5090's four short, wide ports.
+- Fixed: the 3D GPUs showed only black on kura's phone. Each face is now built the way the mockups that worked there were: a small canvas of its own pixels, nothing clipped. Also fixed: the top and bottom sides' details were drawn back to front, and the ends' pictures were squashed sideways. Removed: each face clipping a whole copy of the picture, and `findLast`.
+
 ## v0.93 "Depth" · Thu Nov 5, 1:50 PM
 - The RTX 5090's big card shows it in 3D: turn the card and you see its real sides, 10 px deep (the real card is two slots, 40 mm). On top: the black middle section with two vents, the lit white GeForce RTX logo and the recessed power socket. Underneath: one vent. At the far end: solid metal. On the bracket: three DisplayPorts and the HDMI at the bottom, and a screw notch for each slot. The gold fingers stand 1 px off the card. Face on, it looks as it did. Removed: nothing.
 - A GPU's big card (one with a 3D shape) tilts up and down too: drag a finger up or down, or move the mouse up or down over the card (it still closes more than 16 px above or below the card). Other cards turn sideways only, as before. Removed: nothing.
