@@ -334,7 +334,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v1.02" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v1.03" data-copy="no"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
   // expanded one on the zooms"); the full text is the same as rules.js CARDS
@@ -523,6 +523,22 @@
   const RX9070_TOP = [[9, 82, 0, 0, "#1e1e20"], [11, 81, 1, 9, "#2a2a2e"], [13, 80, 2, 8, "#141416", "#2c2c30"], [9, 34, 8, 10, "#161618"], [13, 34, 2, 7, "#141416", "#2c2c30"],
     ...[19, 21, 23, 25, 27, 29].map((a) => [a, a, 9, 9, "#eeeef2"]), [59, 71, 1, 8, "#0a0a0b"], [60, 70, 2, 7, "#1a1a1c", "#48484e"]];
   const RX9070_BOTTOM = [[9, 55, 1, 2, "#1c2026"], [57, 77, 3, 8, "#0a0a0b", "#26262a"]];   // the board along the bottom past the fingers, then the vent (a sample's photo)
+  // the GTX 1080 Ti's top and bottom (11 deep, 0 on the card), x 11 to 77: backplate, board edge, black wall, then the bevel: silver,
+  // dark by the fan's housing (x 53-72); colours given per side, since the bottom is in shadow
+  const GTX1080_SIDE = (back, board, wall, bevel0, bevel, fan) => [[11, 77, 0, 0, back], [11, 77, 1, 1, board], [11, 77, 2, 7, wall],
+    [11, 52, 8, 8, bevel0], [11, 52, 9, 10, bevel], [53, 72, 8, 10, fan], [73, 77, 8, 8, bevel0], [73, 77, 9, 10, bevel]];
+  // its lit "GEFORCE GTX", 2 x 3 px letters 1 px apart from x 38, on z 4-6 (the letters' tops toward the card, as on the real one)
+  const GTX1080_LOGO = (() => {
+    const G = { G: ["11", "1.", "11"], E: ["11", "1.", "11"], F: ["11", "1.", "1."], O: ["11", "11", "11"], R: ["11", "11", "1."],
+      C: ["11", "1.", "11"], T: ["11", ".1", ".1"], X: ["1.", ".1", "1."] };
+    let x = 38; const out = [];
+    for (const ch of "GEFORCE GTX") {
+      if (ch === " ") { x += 2; continue; }
+      G[ch].forEach((row, j) => [...row].forEach((p, i) => p === "1" && out.push([x + i, x + i, 4 + j, 4 + j, "#7ee04a"])));
+      x += 3;
+    }
+    return out;
+  })();
   const GPU_3D = {
     // RTX 5090 Founders Edition: 304 x 137 x 40 mm, two slots, so 10 px; all-metal cover; the black middle section has two vents on
     // top and one under, and on top the lit white GeForce RTX logo and the recessed, angled 12V-2x6 socket; bracket: three
@@ -626,22 +642,24 @@
         { x: 24, y: 28, w: 18, h: 3, sides: "tblr" }, { x: 43, y: 28, w: 3, h: 2, sides: "tblr" },
       ] },
     ] },
-    // GTX 1080 Ti Founders Edition: 10.5 in (267 mm) long, two slots (40 mm), so 11 px at its picture's scale (70 px). Top, from
-    // kura's photos (Nov 5): the fan side is the silver faceted shroud; the back half is a black band with the green backlit "GEFORCE
-    // GTX" logo (where the picture shows it, top right), then at the far end the 6-pin and the 8-pin power sockets (the 8-pin
-    // nearest the end). Bottom, from kura's photo (she traced it, then marked it on the mockup): a black strip along the back half, silver facets with
-    // two screws as far as the fan's housing, which is black all the way across, then the far end's silver cap with a screw. The far
+    // GTX 1080 Ti Founders Edition: 10.5 in (267 mm) long, two slots (40 mm), so 11 px at its picture's scale (70 px). Top and bottom
+    // (GTX1080_SIDE, from kura's TechPowerUp photos, Nov 5): every pixel painted, none taken from the picture's edge (kura: "sharper",
+    // "it looks too fuzzy"): from the card up, the backplate, the board's edge, the black side wall, then a thin silver bevel along the
+    // face (dark where the fan's housing meets it). Top: the two gold SLI fingers by the bracket, the lit "GEFORCE GTX" (GTX1080_LOGO)
+    // about halfway along, ending before the fan, and the 6-pin and 8-pin at the far end. Bottom: three screws on the bevel. The far
     // end: a small heatsink, where some air leaves (LanOC). Bracket: triangle vents
     // across most of it, and the ports in one column on its back edge: from the tab, DisplayPort, HDMI, DisplayPort, DisplayPort
     "gtx-1080-ti": { groups: [
       { d: 11, boxes: [
         ...ROUND(11, [[15, 0, 63, 1], [14, 1, 64, 1], [13, 2, 65, 1], [12, 3, 66, 1], [11, 4, 67, 18], [12, 22, 66, 1], [13, 23, 65, 1], [14, 24, 64, 1], [15, 25, 63, 1]], { sides: "tbr",
-          top: [[20, 77, 0, 4, "#161618"], [60, 69, 1, 4, "#1c3612"], [60, 69, 2, 3, "#7ee04a"], [66, 66, 2, 3, "#2c4a1e"],
-                [71, 73, 0, 3, "#0a0a0b"], [71, 73, 1, 2, "#2a2a2c", "#141416"], [74, 77, 0, 3, "#0a0a0b"], [74, 77, 1, 2, "#2a2a2c", "#141416"]],
-          bottom: [[11, 52, 0, 4, "#141416"], [11, 52, 5, 7, "#a8a8ae"], [11, 52, 8, 10, "#c4c4ca"], [28, 28, 8, 8, "#4a4a50"], [45, 45, 8, 8, "#4a4a50"],
-                   [53, 72, 0, 9, "#1c1c1e"], [53, 72, 10, 10, "#3a3a3e"], [73, 77, 0, 4, "#141416"], [73, 77, 5, 10, "#9c9ca2"], [76, 76, 8, 8, "#4a4a50"]] }, false),
+          top: [...GTX1080_SIDE("#2a2a2e", "#1c2016", "#141416", "#7c7c82", "#c4c4ca", "#2c2c30"),
+                [14, 17, 1, 1, "#c9a24a"], [19, 22, 1, 1, "#c9a24a"], ...GTX1080_LOGO,
+                [71, 73, 0, 3, "#2c2c30"], [71, 73, 1, 2, "#050506", "#3a3a3e"], [74, 77, 0, 3, "#2c2c30"], [74, 77, 1, 2, "#050506", "#3a3a3e"]],
+          bottom: [...GTX1080_SIDE("#1e1e22", "#141810", "#0e0e10", "#5e5e64", "#9c9ca2", "#1a1a1e"),
+                   [28, 28, 9, 9, "#3a3a3e"], [45, 45, 9, 9, "#3a3a3e"], [76, 76, 9, 9, "#3a3a3e"]] }, false),
         { x: 78, y: 3, w: 3, h: 21, sides: "tbr",      // the far end's faceted cap, with its little heatsink
-          bottom: [[78, 80, 0, 4, "#141416"], [78, 80, 5, 10, "#9c9ca2"]],
+          top: [[78, 80, 0, 0, "#2a2a2e"], [78, 80, 1, 7, "#8e8e94"], [78, 80, 8, 10, "#c4c4ca"]],
+          bottom: [[78, 80, 0, 0, "#1e1e22"], [78, 80, 1, 7, "#6a6a70"], [78, 80, 8, 10, "#9c9ca2"]],
           right: [[5, 21, 2, 8, "#141416"], ...Array.from({ length: 8 }, (_, i) => [6 + 2 * i, 6 + 2 * i, 3, 7, "#2a2a2e"])] },
         { x: 9, y: 0, w: 1, h: 28, sides: "tblr",
           left: [[3, 28, 4, 10, "#141416", "#8c8c92"],
@@ -764,11 +782,11 @@
         const f = mk("div", "f"); f.style.width = u(w); f.style.height = u(h); f.style.transform = t;
         cv.style.width = cv.style.height = "100%"; cv.style.display = "block"; cv.style.imageRendering = "pixelated"; f.append(cv); g.append(f);
       };
-      // a texture: w x h texels, fill(i, j) gives each one's colour
+      // a texture: w x h texels, fill(i, j) gives each one's colour (null: left transparent)
       const tex = (w, h, fill) => {
         const cv = mk("canvas"); cv.width = w; cv.height = h;
         const ctx = cv.getContext("2d"), id = ctx.createImageData(w, h);
-        for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const k = fill(i, j); id.data.set([k[0], k[1], k[2], 255], (j * w + i) * 4); }
+        for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const k = fill(i, j); if (k) id.data.set([k[0], k[1], k[2], 255], (j * w + i) * 4); }
         ctx.putImageData(id, 0, 0); return cv;
       };
       // a side's colour at `along` (x or y in the picture) and z (0 on the card, d-1 at the front): its last mark there, else its
@@ -787,16 +805,16 @@
         const { x, y, w, h } = b, s = b.sides ?? "tblr", [z0, z1] = b.z ?? [0, d], t = z1 - z0, zb = u(z0 - d);
         // a rounded shroud's slice (out, ROUND): the first pixel that isn't dark coming in from outside the shroud, down to this slice
         const outer = (xx, from, to) => { for (let yy = from; yy !== to; yy += Math.sign(to - from)) if (lum(P(xx, yy)) >= 20) return P(xx, yy); return null; };
-        // (only where the slice's top or bottom shows: where the next slice covers it, its own row's colour, so the hairline seams between
-        // the slices' fronts show the front's colour, not the frame's: kura, Nov 5: "a thin horizontal red line" on the 9070, its red stripe)
+        // (only where the slice's top or bottom shows: where the next slice covers it, nothing is drawn, so nothing hidden shows through the
+        // fronts as the card turns: kura, Nov 5, the 9070's "thin horizontal red line", then the "shearing" on many cards)
         const open = (rg, xx) => !rg || xx < rg[0] || xx > rg[1];
         const topC = (xx) => (b.out && open(b.inT, xx) && outer(xx, b.out[0] - 1, y + 1)) || edge(P(xx, y), r(y, 4).map((yy) => P(xx, yy)));
         const botC = (xx) => (b.out && open(b.inB, xx) && outer(xx, b.out[1], y + h - 2)) || edge(P(xx, y + h - 1), r(y + h - 4, 4).map((yy) => P(xx, yy)));
         const leftC = (yy) => edge(P(x, yy), r(x, 4).map((xx) => P(xx, yy))), rightC = (yy) => edge(P(x + w - 1, yy), r(x + w - 4, 4).map((xx) => P(xx, yy)));
         // top and bottom: w across by t deep, row j at z z0 + j (rotateX lays row 0 nearest the card); left and right: t across by h
         // down, column i at z z0 + i (rotateY lays column 0 nearest the card)
-        if (s.includes("t")) face(tex(w, t, (i, j) => paint(b.top, topC(x + i), .95, x + i, z0 + j)), w, t, `translate3d(${u(x)}, ${u(y)}, ${zb}) rotateX(90deg)`);
-        if (s.includes("b")) face(tex(w, t, (i, j) => paint(b.bottom, botC(x + i), .62, x + i, z0 + j)), w, t, `translate3d(${u(x)}, ${u(y + h)}, ${zb}) rotateX(90deg)`);
+        if (s.includes("t")) face(tex(w, t, (i, j) => b.out && !open(b.inT, x + i) ? null : paint(b.top, topC(x + i), .95, x + i, z0 + j)), w, t, `translate3d(${u(x)}, ${u(y)}, ${zb}) rotateX(90deg)`);
+        if (s.includes("b")) face(tex(w, t, (i, j) => b.out && !open(b.inB, x + i) ? null : paint(b.bottom, botC(x + i), .62, x + i, z0 + j)), w, t, `translate3d(${u(x)}, ${u(y + h)}, ${zb}) rotateX(90deg)`);
         if (s.includes("l")) face(tex(t, h, (i, j) => paint(b.left, leftC(y + j), .78, y + j, z0 + i)), t, h, `translate3d(${u(x)}, ${u(y)}, ${zb}) rotateY(-90deg)`);
         if (s.includes("r")) face(tex(t, h, (i, j) => paint(b.right, rightC(y + j), .78, y + j, z0 + i)), t, h, `translate3d(${u(x + w)}, ${u(y)}, ${zb}) rotateY(-90deg)`);
       }

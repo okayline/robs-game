@@ -4,6 +4,11 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.03 "Sharp Edges" · Thu Nov 5, 5:25 PM
+- The GTX 1080 Ti's top and bottom in 3D are redrawn from kura's photos of the real card (kura: "make the 1080 ti model sharper, it looks too fuzzy", "the bottom and top sides aren't accurate"): every pixel has its own colour now instead of the picture's edge stretched across. From the card up: the backplate, the board's edge, the black side wall, and a thin silver bevel along the front, dark by the fan. On top, the two gold SLI fingers by the bracket, the lit "GEFORCE GTX" about halfway along, and the 6-pin and 8-pin at the far end. Removed: the stretched streaks (and the green smear over the fan), the small logo over the fan, and the old bottom's silver half and black block under the fan.
+- Fixed: thin lines sliding across the 3D GPUs as they turn (kura: "slight shearing when i turn the models, on a lot of them"). Where a rounded corner's slices overlap, the hidden faces between them are no longer drawn, so they can't show through. Removed: those hidden faces.
+- The footer says v1.03. Removed: "v1.02".
+
 ## v1.02 "Brackets" · Thu Nov 5, 4:45 PM
 - Every 3D GPU's bracket is measured on photos of the real cards (kura: "make all of them accurate to IRL"): its top tab sits about 109 mm above the bottom of the fingers on every card, and its end about 11 mm past them. The RTX 5070's bracket starts 1 px lower and its legs reach 3 px past the fingers; the Arc B580's starts 2 px below the top of the card and its legs reach 3 px past; the RX 9070 XT's and RX 9070's legs reach 4 px past. The RTX 5090, 5080, 4090 and GTX 1080 Ti already matched. Removed: the B580's and 5070's higher brackets and the shorter legs.
 - The footer says v1.02. Removed: "v1.01".
