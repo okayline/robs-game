@@ -4,6 +4,9 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v0.97 "Blower 3D" · Thu Nov 5, 3:01 PM
+- The GTX 1080 Ti's big card is in 3D, 11 px deep for its two slots. Top, from kura's photos: the silver faceted shroud on the fan side, and on the back half a black band with the green backlit "GEFORCE GTX" logo, then the 6-pin and 8-pin power sockets at the far end. Bottom, as kura marked it: a black strip along the back half, silver facets with two screws, black under the fan, and the far end's silver cap. The far end: a small finned heatsink. The bracket: triangle vents, and the ports in one column on its back edge (DisplayPort, HDMI, DisplayPort, DisplayPort). Removed: nothing.
+
 ## v0.96 "Forty Ninety 3D" · Thu Nov 5, 2:45 PM
 - The RTX 4090's big card is in 3D, 15 px deep for its three slots. Top, from kura's photos: open fins across the black middle, with the power socket set into them about 60% along, pointing straight up, and the backlit GeForce RTX logo over the far fan. Underneath: fins in the angled sections. The far end: the outline of its magnetic cover plate. The bracket: four finned vents in a row on a plate with six screws, the three DisplayPorts and the HDMI in a row along the back edge under them, and plain metal by the fingers. Removed: nothing.
 
