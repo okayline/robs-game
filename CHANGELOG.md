@@ -5,6 +5,7 @@ Newest first. Times are Hawaii time (HST).
 ---
 
 ## v0.94 "Ports" · Thu Nov 5, 2:30 PM
+- The footer says v0.94 (kura, 2:24 PM). Removed: "v0.92", left there through v0.93.
 - The RTX 5080's big card is in 3D too. Its top edge follows kura's photos: one long vent along the fan side and the power socket's recess in the black middle, and the lit GeForce RTX logo on the metal just past it. Underneath: two small vents. The far end: two screws for a support bracket. Removed: nothing.
 - Both cards' brackets have the ports from kura's photo: three DisplayPorts above the HDMI, spread from the tab to the fingers, each a shaded slot, the HDMI tapered at its two corners. Removed: the 5090's four short, wide ports.
 - Fixed: the 3D GPUs showed only black on kura's phone. Each face is now built the way the mockups that worked there were: a small canvas of its own pixels, nothing clipped. Also fixed: the top and bottom sides' details were drawn back to front, and the ends' pictures were squashed sideways. Removed: each face clipping a whole copy of the picture, and `findLast`.
