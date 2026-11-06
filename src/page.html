@@ -321,7 +321,7 @@
   </div>
   <div id="ddfoot"></div>
 </div>
-<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v1.06" data-copy="no"></script>
+<script defer src="https://dungeon-items.ddddungeon.workers.dev/footer.js" data-version="v1.07" data-copy="no"></script>
 <script src="https://dungeon-items.ddddungeon.workers.dev/zoom.js"></script>
 <script>
   // name, type, the card's short line, and the full text for the big card (kura, Nov 5: "simple one-line explanations, and then the
@@ -464,7 +464,8 @@
       const gc = card(c, { zoom: false, live, full: true }).querySelector(".gc");
       const key = c.card === "broadcast" && c.image && c.image.split("/").pop().replace(".png", "");
       return { face: gc, w: 108, h: 150, width: "min(78vw, 300px)", cls: `${c.card}${c.uid?.[0] === "b" ? " theirs" : ""}`,   // its kind too, so a Broadcast's bar is dark there (kura, Nov 5)
-        gpu: key ? { key, image: c.image, frames: c.spin, art: gc.querySelector(".gc-art"), spin: live && !!c.spin } : null };
+        gpu: key ? { key, image: c.image, frames: c.spin, art: gc.querySelector(".gc-art"), spin: live && !!c.spin } : null,
+        relief: !key && c.id && c.image ? { image: c.image, art: gc.querySelector(".gc-art"), id: c.id } : null };   // a 3D printed button stands up (v1.07)
     },
   });
   document.addEventListener("contextmenu", (e) => { if (e.target.closest(".card")) e.preventDefault(); });   // a long press opens no menu

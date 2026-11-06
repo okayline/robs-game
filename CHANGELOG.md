@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.07 "Stand Up" · Thu Nov 5, 10:00 PM
+- A 3D printed 88x31 button (Under Construction, Synthwave, Island Life) stands up on its big card at its print's heights, and tilts like a GPU (kura: "yep could we do that please!"). Removed: nothing.
+- The footer says v1.07. Removed: "v1.06".
+
 ## v1.06 "Right Address" · Thu Nov 5, 9:58 PM
 - Fixed: the GPU pictures didn't show (kura: a blank Arc B580 big card, "this is only inside Rob's game"). They were asked for at the wrong address on 88x31. Removed: the wrong address.
 - The footer says v1.06. Removed: "v1.05".
