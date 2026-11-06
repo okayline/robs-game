@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.04 "Shared View" · Thu Nov 5, 9:40 PM
+- The big card now comes from one place every game shares (dungeon-items' zoom.js), so a change to how it turns changes it in every game at once (kura: "it would be nice to change it to "90 degrees" once, and have it change everywhere"). It works as before, with what 88x31's version added since: a GPU tilts up to edge-on (90 degrees, was 80), stays open while you tilt it up and down until it has turned half way, and the mouse turns it at the same speed whatever the card's size. Removed: Rob's Game's own copy of the big card and the GPUs' 3D shapes (they're in the shared one now).
+- The footer says v1.04. Removed: "v1.03".
+
 ## v1.03 "Sharp Edges" · Thu Nov 5, 5:25 PM
 - The GTX 1080 Ti's top and bottom in 3D are redrawn from kura's photos of the real card (kura: "make the 1080 ti model sharper, it looks too fuzzy", "the bottom and top sides aren't accurate"): every pixel has its own colour now instead of the picture's edge stretched across. From the card up: the backplate, the board's edge, the black side wall, and a thin silver bevel along the front, dark by the fan. On top, the two gold SLI fingers by the bracket, the lit "GEFORCE GTX" about halfway along, and the 6-pin and 8-pin at the far end. Removed: the stretched streaks (and the green smear over the fan), the small logo over the fan, and the old bottom's silver half and black block under the fan.
 - Fixed: thin lines sliding across the 3D GPUs as they turn (kura: "slight shearing when i turn the models, on a lot of them"). Where a rounded corner's slices overlap, the hidden faces between them are no longer drawn, so they can't show through. Removed: those hidden faces.
