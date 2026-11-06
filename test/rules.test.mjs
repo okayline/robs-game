@@ -14,7 +14,7 @@ test("a deck is 30 cards: 5 GPU, 5 Wiretap, 4 Spam, 2 Undelete, 6 Refute, 4 Rema
 test("a deck's 5 GPUs are 5 different models, each with its picture and generation", () => {
   const g = dealDeck(pool, "a").filter((x) => x.card === "broadcast");
   assert.equal(new Set(g.map((x) => x.name)).size, 5);
-  assert.ok(g.every((x) => x.image.startsWith("/gpu/") && x.gen && x.flav));
+  assert.ok(g.every((x) => x.image.startsWith("https://88x31.app/banners/gamma/gpu/") && x.gen && x.flav));
 });
 
 test("a match's two decks have 5 GPUs each and never share one", () => {

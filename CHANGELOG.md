@@ -4,6 +4,10 @@ Newest first. Times are Hawaii time (HST).
 
 ---
 
+## v1.05 "One Shelf" · Thu Nov 5, 9:55 PM
+- The GPU pictures and their spinning fans now come from 88x31, where all of them live in one place (kura: "can the gpu pics be in a single place too?"). Nothing looks different. Removed: Rob's Game's own copies, and the fan-making tool (it lives with the pictures on 88x31 now).
+- The footer says v1.05. Removed: "v1.04".
+
 ## v1.04 "Shared View" · Thu Nov 5, 9:40 PM
 - The big card now comes from one place every game shares (dungeon-items' zoom.js), so a change to how it turns changes it in every game at once (kura: "it would be nice to change it to "90 degrees" once, and have it change everywhere"). It works as before, with what 88x31's version added since: a GPU tilts up to edge-on (90 degrees, was 80), stays open while you tilt it up and down until it has turned half way, and the mouse turns it at the same speed whatever the card's size. Removed: Rob's Game's own copy of the big card and the GPUs' 3D shapes (they're in the shared one now).
 - The footer says v1.04. Removed: "v1.03".

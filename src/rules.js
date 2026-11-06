@@ -46,7 +46,8 @@ export const FLAVOUR = {
 };
 
 // The GPUs (kura, Nov 5: "can Broadcasts be GPUs please", for Rob, who builds PCs). Each side gets 5 of these 10, all different. pic: the
-// picture in public/gpu/ (kura's own 88x31 pixel art); spin: public/gpu/<pic>-frames.png holds 24 frames of its fans turning, shown once it
+// picture in 88x31's public/banners/gamma/gpu/ (kura's own 88x31 pixel art, in one place since v1.05, served from GPU_PICS); spin:
+// <pic>-frames.png there holds 24 frames of its fans turning (88x31's tools/spin.py makes them), shown once it
 // has resolved (the other pictures stay still for now). gen: the chip generation, after "Enchantment —" on the big card. flav: a real
 // line from when the card was on sale (kura's pick, Nov 5; kura: capital first letter and proper punctuation), from:
 //   RTX 5090: NVIDIA's CES 2025 claim, pcgamer.com/hardware/graphics-cards/nvidia-announces-the-rtx-50-series-led-by-the-usd1-999-rtx-5090-with-twice-the-performance-of-the-4090
@@ -59,6 +60,7 @@ export const FLAVOUR = {
 //   RX 9070 XT: David McAfee, AMD, at launch, techpowerup.com/333301/amd-rdna-4-and-radeon-rx-9070-series-unveiled-usd-549-usd-599
 //   RX 9070: AMD's RX 9000 Series line, amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070-gre.html
 //   Voodoo3 3000: a 1999 Voodoo3 print ad as an eBay seller describes it, ebay.com/itm/166305819875 (not confirmed elsewhere)
+export const GPU_PICS = "https://88x31.app/banners/gamma/gpu";   // the GPU pictures, on 88x31 (kura, Nov 5: "can the gpu pics be in a single place too?")
 export const GPUS = [
   { model: "RTX 5090", pic: "rtx-5090", spin: true, gen: "Blackwell", flav: "Twice the performance of the 4090." },
   { model: "RTX 5080", pic: "rtx-5080", spin: true, gen: "Blackwell", flav: "AI is coming home to GeForce." },
@@ -90,7 +92,7 @@ export function dealDeck(pool, side, rnd = Math.random, gpus = shuffle([...GPUS]
     if (card === "broadcast") {
       for (let i = 0; i < n; i++) {
         const g = gpus[i % gpus.length];
-        deck.push({ uid: `${side}${deck.length}`, card, id: 0, name: g.model, image: `/gpu/${g.pic}.png`, spin: g.spin ? `/gpu/${g.pic}-frames.png` : null,
+        deck.push({ uid: `${side}${deck.length}`, card, id: 0, name: g.model, image: `${GPU_PICS}/${g.pic}.png`, spin: g.spin ? `${GPU_PICS}/${g.pic}-frames.png` : null,
           gen: g.gen, series: null, rarity: "common", flav: g.flav });
       }
       continue;
